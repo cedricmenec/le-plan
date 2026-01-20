@@ -1,7 +1,7 @@
 # Implementation Plan: Initialisation et C�ur des Missions
 
 ## Phase 1: Setup Infrastructure
-- [~] Task: Initialisation du projet Next.js avec Tailwind et TypeScript
+- [x] Task: Initialisation du projet Next.js avec Tailwind et TypeScript [27d288a]
     - [ ] Ex�cuter create-next-app
     - [ ] Configurer Shadcn/ui
 - [ ] Task: Configuration de Supabase
