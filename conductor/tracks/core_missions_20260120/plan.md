@@ -23,6 +23,6 @@
 - [x] Task: Liste et Visualisation des Missions [3b8f283]
     - [x] Écrire les tests pour l'affichage de la liste
     - [x] Implémenter la liste des missions avec filtres simples
-- [ ] Task: Gestion des sous-tâches
+- [~] Task: Gestion des sous-tâches
     - [ ] Implémenter l'ajout et le toggle des sous-tâches
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Gestion des Missions (Frontend)' (Protocol in workflow.md)

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { SubtaskList } from './subtask-list'
 
 interface Mission {
   id: string
@@ -65,6 +66,7 @@ export function MissionList() {
                 <div className="text-sm">
                   Estimation: {mission.estimation} j
                 </div>
+                <SubtaskList missionId={mission.id} />
               </CardContent>
             </Card>
           ))}
