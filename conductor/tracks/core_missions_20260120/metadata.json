@@ -1,8 +1,8 @@
 {
-    "description":  "Initialisation du projet et gestion du cœur des Missions",
-    "track_id":  "core_missions_20260120",
-    "type":  "feature",
-    "created_at":  "2026-01-20T22:44:39Z",
-    "status":  "new",
-    "updated_at":  "2026-01-20T22:44:39Z"
+    "description": "Initialisation du projet et gestion du coeur des Missions",
+    "track_id": "core_missions_20260120",
+    "type": "feature",
+    "created_at": "2026-01-20T22:44:39Z",
+    "status": "new",
+    "updated_at": "2026-01-20T22:44:39Z"
 }

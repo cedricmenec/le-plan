@@ -1,14 +1,14 @@
-# Specification: Initialisation et Cúur des Missions
+# Specification: Initialisation et Coeur des Missions
 
 ## 1. Objectif
-Mettre en place les fondations techniques du projet et implÈmenter la gestion centrale des missions.
+Mettre en place les fondations techniques du projet et impl√©menter la gestion centrale des missions.
 
-## 2. PortÈe (Scope)
+## 2. Port√©e (Scope)
 *   **Infrastructure :** Setup Next.js, Tailwind CSS, Shadcn/ui et connexion Supabase.
-*   **ModËle de DonnÈes :** Table 'missions' avec nom, type, estimation, score de confiance, et projet parent.
-*   **FonctionnalitÈs :**
-    *   CrÈation, lecture, mise ‡ jour et suppression (CRUD) de missions.
-    *   Gestion des sous-t‚ches simples.
+*   **Mod√©le de Donn√©es :** Table 'missions' avec nom, type, estimation, score de confiance, et projet parent.
+*   **Fonctionnalit√©s :**
+    *   Cr√©ation, lecture, mise √† jour et suppression (CRUD) de missions.
+    *   Gestion des sous-t√¢ches simples.
     *   Calcul de la charge totale par semaine.
 *   **Interface :** Dashboard minimaliste avec liste des missions et indicateurs de charge globale.
 
