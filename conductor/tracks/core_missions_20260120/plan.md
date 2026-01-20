@@ -20,9 +20,9 @@
 - [x] Task: Création des composants de base pour les Missions [fb952c1]
     - [x] Écrire les tests pour la création de mission
     - [x] Implémenter le formulaire de création
-- [~] Task: Liste et Visualisation des Missions
-    - [ ] Écrire les tests pour l'affichage de la liste
-    - [ ] Implémenter la liste des missions avec filtres simples
+- [x] Task: Liste et Visualisation des Missions [3b8f283]
+    - [x] Écrire les tests pour l'affichage de la liste
+    - [x] Implémenter la liste des missions avec filtres simples
 - [ ] Task: Gestion des sous-tâches
     - [ ] Implémenter l'ajout et le toggle des sous-tâches
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Gestion des Missions (Frontend)' (Protocol in workflow.md)
