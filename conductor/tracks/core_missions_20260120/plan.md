@@ -17,9 +17,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Modèle de Données et Backend' (Protocol in workflow.md) [23c4c3a]
 
 ## Phase 3: Gestion des Missions (Frontend)
-- [~] Task: Création des composants de base pour les Missions
-    - [ ] Écrire les tests pour la création de mission
-    - [ ] Implémenter le formulaire de création
+- [x] Task: Création des composants de base pour les Missions [fb952c1]
+    - [x] Écrire les tests pour la création de mission
+    - [x] Implémenter le formulaire de création
 - [ ] Task: Liste et Visualisation des Missions
     - [ ] Écrire les tests pour l'affichage de la liste
     - [ ] Implémenter la liste des missions avec filtres simples
