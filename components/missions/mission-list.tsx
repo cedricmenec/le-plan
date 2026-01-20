@@ -36,6 +36,15 @@ export function MissionList() {
     }
 
     fetchMissions()
+
+    const onCreated = () => {
+      // another component created a mission — re-fetch to stay in sync
+      setLoading(true)
+      fetchMissions()
+    }
+
+    window.addEventListener('missions:created', onCreated)
+    return () => window.removeEventListener('missions:created', onCreated)
   }, [supabase])
 
   if (loading) {

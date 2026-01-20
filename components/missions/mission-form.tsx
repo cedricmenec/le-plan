@@ -24,40 +24,47 @@ export function MissionForm() {
     event.preventDefault()
     setLoading(true)
 
-    const formData = new FormData(event.currentTarget)
+    // Capture the form element synchronously — React's synthetic event is released after awaits
+    const form = event.currentTarget as HTMLFormElement
+
+    const formData = new FormData(form)
     const title = formData.get('title') as string
     const type = formData.get('type') as string
     const estimation = parseFloat(formData.get('estimation') as string)
     const confidence = parseFloat(formData.get('confidence') as string)
     const project_parent = formData.get('project_parent') as string
 
-    const { data: { user } } = await supabase.auth.getUser()
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
 
-    if (!user) {
-      alert('Vous devez être connecté')
+      if (!user) {
+        alert('Vous devez être connecté')
+        return
+      }
+
+      const { error } = await supabase
+        .from('missions')
+        .insert({
+          title,
+          type,
+          estimation,
+          confidence,
+          project_parent,
+          user_id: user.id,
+        })
+
+      if (error) {
+        alert('Erreur lors de la création de la mission')
+      } else {
+        // Use the captured form reference instead of `event` (which may be null after awaits)
+        form.reset()
+        // notify sibling components (e.g. MissionList) to refetch their data
+        window.dispatchEvent(new CustomEvent('missions:created'))
+        alert('Mission créée avec succès')
+      }
+    } finally {
       setLoading(false)
-      return
     }
-
-    const { error } = await supabase
-      .from('missions')
-      .insert({
-        title,
-        type,
-        estimation,
-        confidence,
-        project_parent,
-        user_id: user.id,
-      })
-
-    if (error) {
-      alert('Erreur lors de la création de la mission')
-    } else {
-      event.currentTarget.reset()
-      alert('Mission créée avec succès')
-    }
-
-    setLoading(false)
   }
 
   return (
@@ -71,7 +78,7 @@ export function MissionForm() {
             <Label htmlFor="title">Titre</Label>
             <Input id="title" name="title" placeholder="Nom de la mission" required />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="type">Type</Label>
             <Select name="type" required>

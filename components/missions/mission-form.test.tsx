@@ -1,24 +1,50 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { expect, test, vi } from 'vitest'
 import { MissionForm } from './mission-form'
 
 // Mock Supabase
 vi.mock('@/lib/supabase/client', () => ({
   createClient: vi.fn(() => ({
+    auth: {
+      getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-1' } } })),
+    },
     from: vi.fn(() => ({
-      insert: vi.fn(() => ({
-        select: vi.fn(() => ({
-          single: vi.fn(() => Promise.resolve({ data: {}, error: null })),
-        })),
-      })),
+      insert: vi.fn(() => Promise.resolve({ data: {}, error: null })),
     })),
   })),
 }))
 
 test('renders mission form with basic fields', () => {
   render(<MissionForm />)
-  
+
   expect(screen.getByLabelText(/titre/i)).toBeDefined()
   expect(screen.getByLabelText(/type/i)).toBeDefined()
   expect(screen.getByLabelText(/estimation/i)).toBeDefined()
+})
+
+test('submitting the form resets fields on success', async () => {
+  const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => { })
+  render(<MissionForm />)
+
+  const title = screen.getByLabelText(/titre/i) as HTMLInputElement
+  const estimation = screen.getByLabelText(/estimation/i) as HTMLInputElement
+  const submit = screen.getByRole('button', { name: /créer la mission/i })
+  const form = title.closest('form') as HTMLFormElement
+
+  // populate and submit
+  fireEvent.change(title, { target: { value: 'Test mission' } })
+  expect(title.value).toBe('Test mission')
+
+  // submit the form programmatically (bypass browser constraint validation in the test)
+  fireEvent.submit(form)
+
+  // wait for the success alert to have been called
+  const { waitFor } = await import('@testing-library/react')
+  await waitFor(() => expect(alertSpy).toHaveBeenCalledWith('Mission créée avec succès'))
+
+  // form should be reset: title cleared, estimation back to its default
+  expect(title.value).toBe('')
+  expect(estimation.value).toBe('1')
+
+  alertSpy.mockRestore()
 })
