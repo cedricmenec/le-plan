@@ -10,9 +10,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Setup Infrastructure' (Protocol in workflow.md) [79ad1f7]
 
 ## Phase 2: Modèle de Données et Backend
-- [ ] Task: Définition du schéma de base de données
-    - [ ] Créer la migration pour la table 'missions'
-    - [ ] Créer la migration pour la table 'subtasks'
+- [x] Task: Définition du schéma de base de données [dd91444]
+    - [x] Créer la migration pour la table 'missions'
+    - [x] Créer la migration pour la table 'subtasks'
 - [ ] Task: Mise en place de l'authentification
     - [ ] Configurer Supabase Auth
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Modèle de Données et Backend' (Protocol in workflow.md)
