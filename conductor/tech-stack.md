@@ -14,3 +14,4 @@
 ## 3. Déploiement & Outils
 *   **Hébergement :** Vercel (optimisé pour Next.js).
 *   **Gestion de version :** Git (GitHub).
+*   **Tests :** [Vitest](https://vitest.dev/) - Pour les tests unitaires et d'intégration rapides.

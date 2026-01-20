@@ -149,21 +149,23 @@ Le MVP est consid√©r√© comme r√©ussi si :
 # Product Definition
 
 ## 1. Vue d'ensemble
-Le projet consiste ‡ dÈvelopper une **application Web** personnelle de visibilitÈ et d'arbitrage de la charge de travail. Elle vise ‡ rendre les missions professionnelles explicites et arbitrables, rÈduisant ainsi la charge cognitive et facilitant les discussions factuelles avec le management.
+Le projet consiste √† d√©velopper une **application Web** personnelle de visibilit√© et d'arbitrage de la charge de travail. Elle vise √† rendre les missions professionnelles explicites et arbitrables, r√©duisant ainsi la charge cognitive et facilitant les discussions factuelles avec le management.
 
 ## 2. Plateforme
 *   **Type :** Application Web (accessible via navigateur moderne).
-*   **AccessibilitÈ :** ConÁue pour une utilisation rapide sur ordinateur de bureau (contexte professionnel).
+*   **Accessibilit√© :** Con√ßue pour une utilisation rapide sur ordinateur de bureau (contexte professionnel).
 
-## 3. FonctionnalitÈs ClÈs (MVP)
-*   **Tableau de Bord de Charge :** Visualisation claire de la charge actuelle, ‡ venir et terminÈe.
-*   **Gestion des Missions :** CrÈation et suivi de missions (Feature, …tude, Support) avec estimation de charge.
+## 3. Fonctionnalit√©s Cl√©s (MVP)
+*   **Tableau de Bord de Charge (Inclus) :** Visualisation de la liste des missions et de la charge globale.
+*   **Gestion des Missions (Inclus) :** Cr√©ation, lecture et suivi de missions (Feature, √âtude, Support, Docs) avec estimation de charge et score de confiance.
+*   **Sous-t√¢ches (Inclus) :** D√©composition des missions en actions simples avec suivi d'√©tat (checkbox).
+*   **Authentification (Inclus) :** S√©curisation des donn√©es par utilisateur via Supabase Auth.
 *   **Vues Temporelles :**
     *   *Vue Hebdomadaire* pour le pilotage tactique.
-    *   *Vue Trimestrielle (PI)* pour les arbitrages stratÈgiques.
-*   **Indicateurs de CapacitÈ :** Mise en Èvidence visuelle immÈdiate des surcharges et des conflits de planning.
+    *   *Vue Trimestrielle (PI)* pour les arbitrages strat√©giques.
+*   **Indicateurs de Capacit√© :** Mise en √©vidence visuelle imm√©diate des surcharges et des conflits de planning.
 
-## 4. Principes d'ExpÈrience Utilisateur
+## 4. Principes d'Exp√©rience Utilisateur
 *   **Friction Minimale :** Moins de 5 minutes par jour pour la planification.
-*   **ClartÈ Visuelle :** L'information doit Ítre comprÈhensible par un tiers (Product Manager) sans explication complexe.
-*   **SÈrÈnitÈ :** L'interface doit favoriser un sentiment de contrÙle et d'apaisement.
+*   **Clart√© Visuelle :** L'information doit √™tre compr√©hensible par un tiers (Product Manager) sans explication complexe.
+*   **S√©r√©nit√© :** L'interface doit favoriser un sentiment de contr√¥le et d'apaisement.
