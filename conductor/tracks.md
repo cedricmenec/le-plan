@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Initialisation du projet et gestion du cúur des Missions**
+- [~] **Track: Initialisation du projet et gestion du c≈ìur des Missions**
   *Link: [./tracks/core_missions_20260120/](./tracks/core_missions_20260120/)*
