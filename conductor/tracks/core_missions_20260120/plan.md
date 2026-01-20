@@ -20,7 +20,7 @@
 - [x] Task: Création des composants de base pour les Missions [fb952c1]
     - [x] Écrire les tests pour la création de mission
     - [x] Implémenter le formulaire de création
-- [ ] Task: Liste et Visualisation des Missions
+- [~] Task: Liste et Visualisation des Missions
     - [ ] Écrire les tests pour l'affichage de la liste
     - [ ] Implémenter la liste des missions avec filtres simples
 - [ ] Task: Gestion des sous-tâches
