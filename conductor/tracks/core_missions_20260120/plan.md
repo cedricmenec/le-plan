@@ -13,7 +13,7 @@
 - [x] Task: Définition du schéma de base de données [dd91444]
     - [x] Créer la migration pour la table 'missions'
     - [x] Créer la migration pour la table 'subtasks'
-- [ ] Task: Mise en place de l'authentification
+- [~] Task: Mise en place de l'authentification
     - [ ] Configurer Supabase Auth
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Modèle de Données et Backend' (Protocol in workflow.md)
 
