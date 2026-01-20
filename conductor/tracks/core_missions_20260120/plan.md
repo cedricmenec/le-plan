@@ -1,13 +1,13 @@
 # Implementation Plan: Initialisation et Coeur des Missions
 
-## Phase 1: Setup Infrastructure
+## Phase 1: Setup Infrastructure [checkpoint: 79ad1f7]
 - [x] Task: Initialisation du projet Next.js avec Tailwind et TypeScript [27d288a]
-    - [ ] Exécuter create-next-app
-    - [ ] Configurer Shadcn/ui
+    - [x] Exécuter create-next-app
+    - [x] Configurer Shadcn/ui
 - [x] Task: Configuration de Supabase [80e8b8f]
-    - [ ] Initialiser le projet Supabase
-    - [ ] Configurer les variables d'environnement
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Setup Infrastructure' (Protocol in workflow.md)
+    - [x] Initialiser le projet Supabase
+    - [x] Configurer les variables d'environnement
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Setup Infrastructure' (Protocol in workflow.md) [79ad1f7]
 
 ## Phase 2: Modèle de Données et Backend
 - [ ] Task: Définition du schéma de base de données
