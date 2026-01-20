@@ -4,7 +4,7 @@
 - [x] Task: Initialisation du projet Next.js avec Tailwind et TypeScript [27d288a]
     - [ ] Ex�cuter create-next-app
     - [ ] Configurer Shadcn/ui
-- [~] Task: Configuration de Supabase
+- [x] Task: Configuration de Supabase [80e8b8f]
     - [ ] Initialiser le projet Supabase
     - [ ] Configurer les variables d'environnement
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Setup Infrastructure' (Protocol in workflow.md)
