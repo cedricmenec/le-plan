@@ -3,7 +3,7 @@
 This plan covers the implementation of update and delete operations for missions, including UI components for editing, confirmation dialogs for deletion, and managing subtasks within the edit flow.
 
 ## Phase 1: Infrastructure & Database Verification
-- [~] Task: Verify Database Cascade Deletes
+- [x] Task: Verify Database Cascade Deletes 08620e5
     - [ ] Check if `subtasks` table has `ON DELETE CASCADE` for the `mission_id` foreign key in Supabase.
     - [ ] If not, create a migration to add it or plan manual cleanup logic.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure & Database Verification' (Protocol in workflow.md)
