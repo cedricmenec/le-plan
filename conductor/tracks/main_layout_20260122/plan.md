@@ -22,10 +22,10 @@ This plan refactors the application's root layout and mission display to align w
     - Move `MissionForm` into this dialog
 - [x] Task: Update `DashboardHeader` with Dialog trigger
     - Connect the "Quick Add Mission" button to the `AddMissionDialog`
-- [~] Task: Clean up `app/page.tsx`
+- [x] Task: Clean up `app/page.tsx`
     - Remove the permanent `MissionForm` sidebar
     - Integrate `DashboardHeader` and the refreshed `MissionList`
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Mission Creation Flow' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Mission Creation Flow' (Protocol in workflow.md) [checkpoint: e783987]
 
 ## Phase 3: Mission List & Card Refresh
 
