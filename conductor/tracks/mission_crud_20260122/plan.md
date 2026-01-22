@@ -7,7 +7,7 @@ This plan covers the implementation of update and delete operations for missions
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure & Database Verification' (Protocol in workflow.md) eb92bb8
 
 ## Phase 2: Actions Menu & UI Components
-- [ ] Task: Implement Mission Actions Dropdown
+- [x] Task: Implement Mission Actions Dropdown d4ab45b
     - [ ] Write tests for `MissionActions` component (Edit/Delete options).
     - [ ] Create `MissionActions` component using Shadcn `DropdownMenu`.
     - [ ] Integrate `MissionActions` into the `MissionList` cards.
