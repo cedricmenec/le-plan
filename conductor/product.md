@@ -156,7 +156,7 @@ Le projet consiste à développer une **application Web** personnelle de visibil
 *   **Accessibilité :** Conçue pour une utilisation rapide sur ordinateur de bureau (contexte professionnel).
 
 ## 3. Fonctionnalités Clés (MVP)
-*   **Tableau de Bord de Charge (Inclus) :** Visualisation de la liste des missions et de la charge globale.
+*   **Tableau de Bord de Charge (Inclus) :** Interface de type Dashboard avec barre de navigation latérale, header d'actions rapides et grille de missions active.
 *   **Gestion des Missions (Inclus) :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge et score de confiance.
 *   **Sous-tâches (Inclus) :** Décomposition des missions en actions simples avec suivi d'état (checkbox).
 *   **Authentification (Inclus) :** Sécurisation des données par utilisateur via Supabase Auth.
