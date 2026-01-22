@@ -13,3 +13,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Implement Mission update and delete operations
 - **ID**: `mission_crud_20260122`
 - **Link**: [conductor/archive/mission_crud_20260122](archive/mission_crud_20260122/)
+
+---
+
+- [~] **Track: Implémente le layout principal de l'application, ainsi que la liste des missions actives en respectant et adaptant l'exemple fourni.**
+*Link: [./tracks/main_layout_20260122/](./tracks/main_layout_20260122/)*
