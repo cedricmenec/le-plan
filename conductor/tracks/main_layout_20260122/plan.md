@@ -17,12 +17,12 @@ This plan refactors the application's root layout and mission display to align w
 
 ## Phase 2: Mission Creation Flow Refactoring
 
-- [ ] Task: Implement `AddMissionDialog`
+- [x] Task: Implement `AddMissionDialog`
     - Create `components/missions/add-mission-dialog.tsx` using shadcn `Dialog`
     - Move `MissionForm` into this dialog
-- [ ] Task: Update `DashboardHeader` with Dialog trigger
+- [x] Task: Update `DashboardHeader` with Dialog trigger
     - Connect the "Quick Add Mission" button to the `AddMissionDialog`
-- [ ] Task: Clean up `app/page.tsx`
+- [~] Task: Clean up `app/page.tsx`
     - Remove the permanent `MissionForm` sidebar
     - Integrate `DashboardHeader` and the refreshed `MissionList`
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Mission Creation Flow' (Protocol in workflow.md)

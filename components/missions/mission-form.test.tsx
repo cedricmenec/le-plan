@@ -22,29 +22,26 @@ test('renders mission form with basic fields', () => {
   expect(screen.getByLabelText(/estimation/i)).toBeDefined()
 })
 
-test('submitting the form resets fields on success', async () => {
-  const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => { })
-  render(<MissionForm />)
+test('submitting the form calls onSuccess and resets fields', async () => {
+  const onSuccess = vi.fn()
+  render(<MissionForm onSuccess={onSuccess} />)
 
   const title = screen.getByLabelText(/titre/i) as HTMLInputElement
   const estimation = screen.getByLabelText(/estimation/i) as HTMLInputElement
-  const submit = screen.getByRole('button', { name: /créer la mission/i })
   const form = title.closest('form') as HTMLFormElement
 
   // populate and submit
   fireEvent.change(title, { target: { value: 'Test mission' } })
   expect(title.value).toBe('Test mission')
 
-  // submit the form programmatically (bypass browser constraint validation in the test)
+  // submit the form programmatically
   fireEvent.submit(form)
 
-  // wait for the success alert to have been called
+  // wait for onSuccess to have been called
   const { waitFor } = await import('@testing-library/react')
-  await waitFor(() => expect(alertSpy).toHaveBeenCalledWith('Mission créée avec succès'))
+  await waitFor(() => expect(onSuccess).toHaveBeenCalled())
 
   // form should be reset: title cleared, estimation back to its default
   expect(title.value).toBe('')
   expect(estimation.value).toBe('1')
-
-  alertSpy.mockRestore()
 })

@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const MISSION_TYPES = [
   { value: 'feature', label: 'Feature' },
@@ -16,7 +15,11 @@ const MISSION_TYPES = [
   { value: 'other', label: 'Autre' },
 ]
 
-export function MissionForm() {
+interface MissionFormProps {
+  onSuccess?: () => void
+}
+
+export function MissionForm({ onSuccess }: MissionFormProps) {
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
 
@@ -60,7 +63,7 @@ export function MissionForm() {
         form.reset()
         // notify sibling components (e.g. MissionList) to refetch their data
         window.dispatchEvent(new CustomEvent('missions:created'))
-        alert('Mission créée avec succès')
+        if (onSuccess) onSuccess()
       }
     } finally {
       setLoading(false)
@@ -68,54 +71,47 @@ export function MissionForm() {
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Nouvelle Mission</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Titre</Label>
-            <Input id="title" name="title" placeholder="Nom de la mission" required />
-          </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="title">Titre</Label>
+        <Input id="title" name="title" placeholder="Nom de la mission" required />
+      </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="type">Type</Label>
-            <Select name="type" required>
-              <SelectTrigger id="type">
-                <SelectValue placeholder="Choisir un type" />
-              </SelectTrigger>
-              <SelectContent>
-                {MISSION_TYPES.map((t) => (
-                  <SelectItem key={t.value} value={t.value}>
-                    {t.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+      <div className="space-y-2">
+        <Label htmlFor="type">Type</Label>
+        <Select name="type" required>
+          <SelectTrigger id="type">
+            <SelectValue placeholder="Choisir un type" />
+          </SelectTrigger>
+          <SelectContent>
+            {MISSION_TYPES.map((t) => (
+              <SelectItem key={t.value} value={t.value}>
+                {t.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="estimation">Estimation (jours)</Label>
-              <Input id="estimation" name="estimation" type="number" step="0.5" defaultValue="1" required />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confidence">Confiance (%)</Label>
-              <Input id="confidence" name="confidence" type="number" min="0" max="100" defaultValue="100" required />
-            </div>
-          </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="estimation">Estimation (jours)</Label>
+          <Input id="estimation" name="estimation" type="number" step="0.5" defaultValue="1" required />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="confidence">Confiance (%)</Label>
+          <Input id="confidence" name="confidence" type="number" min="0" max="100" defaultValue="100" required />
+        </div>
+      </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="project_parent">Projet Parent (Optionnel)</Label>
-            <Input id="project_parent" name="project_parent" placeholder="Ex: Produit A" />
-          </div>
+      <div className="space-y-2">
+        <Label htmlFor="project_parent">Projet Parent (Optionnel)</Label>
+        <Input id="project_parent" name="project_parent" placeholder="Ex: Produit A" />
+      </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Création...' : 'Créer la Mission'}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading ? 'Création...' : 'Créer la Mission'}
+      </Button>
+    </form>
   )
 }

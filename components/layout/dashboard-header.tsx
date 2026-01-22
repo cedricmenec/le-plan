@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Filter, Plus, Flag } from 'lucide-react'
+import { AddMissionDialog } from '@/components/missions/add-mission-dialog'
 
 export function DashboardHeader() {
   return (
@@ -17,10 +18,12 @@ export function DashboardHeader() {
           <Filter className="h-5 w-5" />
           Filter
         </Button>
-        <Button className="gap-2">
-          <Plus className="h-5 w-5" />
-          Quick Add Mission
-        </Button>
+        <AddMissionDialog>
+          <Button className="gap-2">
+            <Plus className="h-5 w-5" />
+            Quick Add Mission
+          </Button>
+        </AddMissionDialog>
       </div>
     </header>
   )
