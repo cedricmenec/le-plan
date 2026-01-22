@@ -29,12 +29,12 @@ This plan refactors the application's root layout and mission display to align w
 
 ## Phase 3: Mission List & Card Refresh
 
-- [ ] Task: Refactor `MissionList` for Grid Layout
+- [x] Task: Refactor `MissionList` for Grid Layout
     - Update `components/missions/mission-list.tsx` to use a responsive grid (1/2/3 columns)
-- [ ] Task: Enhance `MissionCard` visuals
+- [x] Task: Enhance `MissionCard` visuals
     - Update mission cards with type icons, confidence indicators, and a progress bar (mocked)
     - Ensure style alignment with the dashboard aesthetic
-- [ ] Task: Verify overall responsiveness and final touches
+- [x] Task: Verify overall responsiveness and final touches
     - Check mobile view and navigation
     - Ensure all placeholder links are styled correctly
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Mission List & Card Refresh' (Protocol in workflow.md)

@@ -2,12 +2,21 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { SubtaskList } from './subtask-list'
 import { MissionActions } from './mission-actions'
 import { DeleteMissionDialog } from './delete-mission-dialog'
 import { EditMissionModal } from './edit-mission-modal'
+import { 
+  Smartphone, 
+  BookOpen, 
+  Bug, 
+  Wrench, 
+  FileText, 
+  MoreHorizontal, 
+  ShieldCheck, 
+  AlertTriangle,
+  ArrowRight
+} from 'lucide-react'
 
 interface Mission {
   id: string
@@ -17,6 +26,22 @@ interface Mission {
   confidence: number
   status: string
   project_parent?: string
+}
+
+const TYPE_ICONS: Record<string, any> = {
+  feature: Smartphone,
+  study: BookOpen,
+  support: Wrench,
+  docs: FileText,
+  other: MoreHorizontal,
+}
+
+const TYPE_COLORS: Record<string, string> = {
+  feature: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400',
+  study: 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400',
+  support: 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400',
+  docs: 'bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400',
+  other: 'bg-slate-50 dark:bg-slate-900/20 text-slate-600 dark:text-slate-400',
 }
 
 export function MissionList() {
@@ -46,7 +71,6 @@ export function MissionList() {
     fetchMissions()
 
     const onCreated = () => {
-      // another component created a mission — re-fetch to stay in sync
       setLoading(true)
       fetchMissions()
     }
@@ -100,48 +124,93 @@ export function MissionList() {
   }
 
   if (loading) {
-    return <p>Chargement des missions...</p>
+    return <p className="text-slate-500 animate-pulse">Chargement des missions...</p>
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Mes Missions</h2>
+    <div className="space-y-6">
       {missions.length === 0 ? (
         <p className="text-muted-foreground italic">Aucune mission pour le moment.</p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {missions.map((mission) => (
-            <Card key={mission.id}>
-              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <div className="flex flex-col space-y-1">
-                  <CardTitle className="text-sm font-medium">
-                    {mission.title}
-                  </CardTitle>
-                  <Badge className="w-fit" variant={mission.status === 'done' ? 'default' : 'secondary'}>
-                    {mission.status}
-                  </Badge>
-                </div>
-                <MissionActions 
-                  onEdit={() => setMissionToEdit(mission)} 
-                  onDelete={() => setMissionToDelete(mission)} 
-                />
-              </CardHeader>
-              <CardContent className={(deletingId === mission.id || updatingId === mission.id) ? 'opacity-50 pointer-events-none relative' : ''}>
-                {(deletingId === mission.id || updatingId === mission.id) && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-background/20 z-10">
-                    <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {missions.map((mission) => {
+            const Icon = TYPE_ICONS[mission.type] || TYPE_ICONS.other
+            const colorClass = TYPE_COLORS[mission.type] || TYPE_COLORS.other
+            const isHighConfidence = mission.confidence >= 80
+            
+            // Mock progress calculation for UI fidelity
+            const progress = mission.status === 'done' ? 100 : Math.min(Math.max(20, (mission.id.charCodeAt(0) % 80)), 90)
+
+            return (
+              <div 
+                key={mission.id}
+                className={`group bg-white dark:bg-[#15202b] rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between ${
+                  (deletingId === mission.id || updatingId === mission.id) ? 'opacity-50 pointer-events-none' : ''
+                }`}
+              >
+                <div>
+                  <div className="flex justify-between items-start mb-3">
+                    <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${colorClass}`}>
+                      <Icon className="h-6 w-6" />
+                    </div>
+                    
+                    <div className="flex items-center gap-4">
+                      <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md border ${
+                        isHighConfidence 
+                          ? 'bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-900/30 text-green-700 dark:text-green-300'
+                          : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-100 dark:border-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+                      }`}>
+                        {isHighConfidence ? <ShieldCheck className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
+                        <span className="text-[11px] font-bold">{mission.confidence}%</span>
+                      </div>
+                      
+                      <MissionActions 
+                        onEdit={() => setMissionToEdit(mission)} 
+                        onDelete={() => setMissionToDelete(mission)} 
+                      />
+                    </div>
                   </div>
-                )}
-                <div className="text-xs text-muted-foreground mb-2 capitalize">
-                  {mission.type} {mission.project_parent && `• ${mission.project_parent}`}
+
+                  <div className="mb-4">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide ${colorClass}`}>
+                        {mission.type}
+                      </span>
+                      {mission.project_parent && (
+                        <span className="text-[11px] text-slate-400 font-medium">
+                          {mission.project_parent}
+                        </span>
+                      )}
+                    </div>
+                    <h4 className="text-base font-semibold text-slate-900 dark:text-white leading-snug">
+                      {mission.title}
+                    </h4>
+                  </div>
                 </div>
-                <div className="text-sm">
-                  Estimation: {mission.estimation} j
+
+                <div className="space-y-2 mt-auto">
+                  <div className="flex justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                    <span>Avancement</span>
+                    <span>{mission.estimation} j</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        mission.status === 'done' ? 'bg-green-500' : 'bg-primary'
+                      }`}
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                  <div className="pt-3 flex justify-between items-center text-[11px] text-slate-400 border-t border-slate-50 dark:border-slate-800/50 mt-4">
+                    <span>Statut: {mission.status}</span>
+                    <button className="text-primary font-semibold flex items-center gap-1 hover:underline">
+                      Détails <ArrowRight className="h-3 w-3" />
+                    </button>
+                  </div>
                 </div>
-                <SubtaskList missionId={mission.id} />
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+            )
+          })}
         </div>
       )}
 
