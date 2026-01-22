@@ -20,9 +20,6 @@ This plan covers the implementation of update and delete operations for missions
 - [x] Task: Integrate Subtask Editing in Modal ebf1698
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Subtask Management in Edit Modal' (Protocol in workflow.md) 0de7de1
 
-## Phase 5: Deletion Logic & Cleanup
-- [ ] Task: Implement Delete Logic
-    - [ ] Write tests for mission deletion.
-    - [ ] Implement Supabase delete call.
-    - [ ] Ensure UI updates correctly (removal from list) after deletion.
-- [ ] Task: Conductor - User Manual Verification 'Phase 5: Deletion Logic & Cleanup' (Protocol in workflow.md)
+## Phase 5: Deletion Logic & Cleanup [checkpoint: edf7069]
+- [x] Task: Implement Delete Logic 3bfe798
+- [x] Task: Conductor - User Manual Verification 'Phase 5: Deletion Logic & Cleanup' (Protocol in workflow.md) edf7069
