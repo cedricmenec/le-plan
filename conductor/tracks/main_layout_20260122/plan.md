@@ -10,10 +10,10 @@ This plan refactors the application's root layout and mission display to align w
 - [x] Task: Create `DashboardHeader` component
     - Create `components/layout/dashboard-header.tsx`
     - Include title, description, and "Quick Add Mission" button placeholder
-- [~] Task: Refactor Root Layout
+- [x] Task: Refactor Root Layout
     - Update `app/layout.tsx` to include the `Sidebar`
     - Ensure correct main content area with proper padding/max-width
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Dashboard Foundation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Dashboard Foundation' (Protocol in workflow.md) [checkpoint: 8ddac5a]
 
 ## Phase 2: Mission Creation Flow Refactoring
 
