@@ -16,12 +16,9 @@ This plan covers the implementation of update and delete operations for missions
 - [x] Task: Implement Update Logic 3bfe798
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Mission Update Logic & Modal' (Protocol in workflow.md) 96b5028
 
-## Phase 4: Subtask Management in Edit Modal
-- [ ] Task: Integrate Subtask Editing in Modal
-    - [ ] Write tests for subtask management within the `EditMissionModal`.
-    - [ ] Allow adding, updating, and removing subtasks inside the modal.
-    - [ ] Ensure subtask changes are persisted (either via bulk update or individual calls).
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Subtask Management in Edit Modal' (Protocol in workflow.md)
+## Phase 4: Subtask Management in Edit Modal [checkpoint: 0de7de1]
+- [x] Task: Integrate Subtask Editing in Modal ebf1698
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Subtask Management in Edit Modal' (Protocol in workflow.md) 0de7de1
 
 ## Phase 5: Deletion Logic & Cleanup
 - [ ] Task: Implement Delete Logic
