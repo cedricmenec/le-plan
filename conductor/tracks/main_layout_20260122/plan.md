@@ -37,4 +37,4 @@ This plan refactors the application's root layout and mission display to align w
 - [x] Task: Verify overall responsiveness and final touches
     - Check mobile view and navigation
     - Ensure all placeholder links are styled correctly
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Mission List & Card Refresh' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Mission List & Card Refresh' (Protocol in workflow.md) [checkpoint: 8a86dca]
