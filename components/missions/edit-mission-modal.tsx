@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Trash2 } from 'lucide-react'
+import { SubtaskList } from './subtask-list'
 
 const MISSION_TYPES = [
   { value: 'feature', label: 'Feature' },
@@ -164,6 +165,10 @@ export function EditMissionModal({
               value={formData.project_parent || ''}
               onChange={(e) => setFormData({ ...formData, project_parent: e.target.value })}
             />
+          </div>
+
+          <div className="border-t pt-4">
+            <SubtaskList missionId={mission.id} />
           </div>
 
           <DialogFooter className="flex-col sm:flex-row gap-2 pt-4">

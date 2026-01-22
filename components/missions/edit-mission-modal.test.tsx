@@ -2,6 +2,19 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { expect, test, vi, beforeAll } from 'vitest'
 import { EditMissionModal } from './edit-mission-modal'
 
+// Mock Supabase
+vi.mock('@/lib/supabase/client', () => ({
+  createClient: vi.fn(() => ({
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({
+        eq: vi.fn(() => ({
+          order: vi.fn(() => Promise.resolve({ data: [], error: null })),
+        })),
+      })),
+    })),
+  })),
+}))
+
 beforeAll(() => {
   global.ResizeObserver = class {
     observe = vi.fn()
@@ -52,6 +65,9 @@ test('renders edit mission modal with existing data', async () => {
   
   const estimationInput = screen.getByLabelText(/estimation/i) as HTMLInputElement
   expect(estimationInput.value).toBe(mockMission.estimation.toString())
+  
+  // Check for subtasks section
+  expect(screen.getByText(/sous-tâches/i)).toBeDefined()
   
   // Submit form
   const submitBtn = screen.getByRole('button', { name: /enregistrer/i })
