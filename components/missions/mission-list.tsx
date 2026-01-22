@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { SubtaskList } from './subtask-list'
 import { MissionActions } from './mission-actions'
+import { DeleteMissionDialog } from './delete-mission-dialog'
 
 interface Mission {
   id: string
@@ -19,6 +20,8 @@ interface Mission {
 export function MissionList() {
   const [missions, setMissions] = useState<Mission[]>([])
   const [loading, setLoading] = useState(true)
+  const [missionToDelete, setMissionToDelete] = useState<Mission | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
   const supabase = createClient()
 
   useEffect(() => {
@@ -72,10 +75,10 @@ export function MissionList() {
                 </div>
                 <MissionActions 
                   onEdit={() => console.log('Edit', mission.id)} 
-                  onDelete={() => console.log('Delete', mission.id)} 
+                  onDelete={() => setMissionToDelete(mission)} 
                 />
               </CardHeader>
-              <CardContent>
+              <CardContent className={deletingId === mission.id ? 'opacity-50 pointer-events-none' : ''}>
                 <div className="text-xs text-muted-foreground mb-2 capitalize">
                   {mission.type} {mission.project_parent && `• ${mission.project_parent}`}
                 </div>
@@ -88,6 +91,17 @@ export function MissionList() {
           ))}
         </div>
       )}
+
+      <DeleteMissionDialog
+        open={!!missionToDelete}
+        onOpenChange={(open) => !open && setMissionToDelete(null)}
+        onConfirm={() => {
+          if (missionToDelete) {
+            console.log('Confirmed delete for', missionToDelete.id)
+            setMissionToDelete(null)
+          }
+        }}
+      />
     </div>
   )
 }
