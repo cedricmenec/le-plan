@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { SubtaskList } from './subtask-list'
+import { MissionActions } from './mission-actions'
 
 interface Mission {
   id: string
@@ -60,13 +61,19 @@ export function MissionList() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {missions.map((mission) => (
             <Card key={mission.id}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {mission.title}
-                </CardTitle>
-                <Badge variant={mission.status === 'done' ? 'default' : 'secondary'}>
-                  {mission.status}
-                </Badge>
+              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+                <div className="flex flex-col space-y-1">
+                  <CardTitle className="text-sm font-medium">
+                    {mission.title}
+                  </CardTitle>
+                  <Badge className="w-fit" variant={mission.status === 'done' ? 'default' : 'secondary'}>
+                    {mission.status}
+                  </Badge>
+                </div>
+                <MissionActions 
+                  onEdit={() => console.log('Edit', mission.id)} 
+                  onDelete={() => console.log('Delete', mission.id)} 
+                />
               </CardHeader>
               <CardContent>
                 <div className="text-xs text-muted-foreground mb-2 capitalize">
