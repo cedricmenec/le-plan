@@ -6,15 +6,10 @@ This plan covers the implementation of update and delete operations for missions
 - [x] Task: Verify Database Cascade Deletes 08620e5
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure & Database Verification' (Protocol in workflow.md) eb92bb8
 
-## Phase 2: Actions Menu & UI Components
+## Phase 2: Actions Menu & UI Components [checkpoint: 58388f6]
 - [x] Task: Implement Mission Actions Dropdown d4ab45b
-    - [ ] Write tests for `MissionActions` component (Edit/Delete options).
-    - [ ] Create `MissionActions` component using Shadcn `DropdownMenu`.
-    - [ ] Integrate `MissionActions` into the `MissionList` cards.
-- [ ] Task: Implement Delete Confirmation Dialog
-    - [ ] Write tests for `DeleteMissionDialog`.
-    - [ ] Create `DeleteMissionDialog` using Shadcn `AlertDialog`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Actions Menu & UI Components' (Protocol in workflow.md)
+- [x] Task: Implement Delete Confirmation Dialog 7340b75
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Actions Menu & UI Components' (Protocol in workflow.md) 58388f6
 
 ## Phase 3: Mission Update Logic & Modal
 - [ ] Task: Implement Mission Edit Modal
