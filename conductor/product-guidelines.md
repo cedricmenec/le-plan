@@ -13,3 +13,6 @@
 ## 3. Principes de Navigation
 *   **Rapidité d'exécution :** Chaque action fréquente (ajouter une tâche, modifier une durée) doit être réalisable en un minimum de clics.
 *   **Contexte Permanent :** L'utilisateur doit toujours savoir dans quelle vue temporelle (Semaine/Trimestre) il se trouve.
+
+## 4. Suppression de Données
+* **Demande de confirmation :** Chaque action menant à la suppression de données doit faire l'objet d'une confirmation par une dialogue de confirmation.

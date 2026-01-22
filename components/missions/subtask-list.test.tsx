@@ -29,4 +29,9 @@ test('renders subtask list', async () => {
   
   expect(subtask1).toBeDefined()
   expect(subtask2).toBeDefined()
+  
+  // Check for delete buttons (Trash2 icon usually renders as an svg, we can check for buttons)
+  const deleteButtons = screen.getAllByRole('button')
+  // We expect at least 3 buttons: 2 deletes (one for each subtask) + 1 add button
+  expect(deleteButtons.length).toBeGreaterThanOrEqual(3)
 })
