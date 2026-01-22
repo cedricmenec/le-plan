@@ -11,16 +11,10 @@ This plan covers the implementation of update and delete operations for missions
 - [x] Task: Implement Delete Confirmation Dialog 7340b75
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Actions Menu & UI Components' (Protocol in workflow.md) 58388f6
 
-## Phase 3: Mission Update Logic & Modal
-- [ ] Task: Implement Mission Edit Modal
-    - [ ] Write tests for `EditMissionModal` (form rendering with existing data).
-    - [ ] Create `EditMissionModal` using Shadcn `Dialog`.
-    - [ ] Include all fields: Title, Type, Estimation, Confidence, Project Parent, and Status.
-- [ ] Task: Implement Update Logic
-    - [ ] Write tests for mission update action/logic.
-    - [ ] Implement Supabase update call in the modal submission handler.
-    - [ ] Add loading states to the modal and card during saving.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Mission Update Logic & Modal' (Protocol in workflow.md)
+## Phase 3: Mission Update Logic & Modal [checkpoint: 96b5028]
+- [x] Task: Implement Mission Edit Modal 3bfe798
+- [x] Task: Implement Update Logic 3bfe798
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Mission Update Logic & Modal' (Protocol in workflow.md) 96b5028
 
 ## Phase 4: Subtask Management in Edit Modal
 - [ ] Task: Integrate Subtask Editing in Modal
