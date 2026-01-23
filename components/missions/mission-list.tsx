@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { MissionActions } from './mission-actions'
 import { DeleteMissionDialog } from './delete-mission-dialog'
 import { EditMissionModal } from './edit-mission-modal'
+import { Database } from '@/types/database.types'
 import { 
   Smartphone, 
   BookOpen, 
@@ -18,15 +19,7 @@ import {
   ArrowRight
 } from 'lucide-react'
 
-interface Mission {
-  id: string
-  title: string
-  type: string
-  estimation: number
-  confidence: number
-  status: string
-  project_parent?: string
-}
+type Mission = Database['public']['Tables']['missions']['Row']
 
 const TYPE_ICONS: Record<string, any> = {
   feature: Smartphone,
@@ -136,7 +129,8 @@ export function MissionList() {
           {missions.map((mission) => {
             const Icon = TYPE_ICONS[mission.type] || TYPE_ICONS.other
             const colorClass = TYPE_COLORS[mission.type] || TYPE_COLORS.other
-            const isHighConfidence = mission.confidence >= 80
+            const confidence = mission.confidence || 0
+            const isHighConfidence = confidence >= 80
             
             // Mock progress calculation for UI fidelity
             const progress = mission.status === 'done' ? 100 : Math.min(Math.max(20, (mission.id.charCodeAt(0) % 80)), 90)
@@ -161,7 +155,7 @@ export function MissionList() {
                           : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-100 dark:border-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                       }`}>
                         {isHighConfidence ? <ShieldCheck className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
-                        <span className="text-[11px] font-bold">{mission.confidence}%</span>
+                        <span className="text-[11px] font-bold">{confidence}%</span>
                       </div>
                       
                       <MissionActions 

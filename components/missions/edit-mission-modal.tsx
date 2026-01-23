@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Trash2 } from 'lucide-react'
 import { SubtaskList } from './subtask-list'
+import { Database } from '@/types/database.types'
 
 const MISSION_TYPES = [
   { value: 'feature', label: 'Feature' },
@@ -29,15 +30,7 @@ const MISSION_STATUSES = [
   { value: 'done', label: 'Terminé' },
 ]
 
-interface Mission {
-  id: string
-  title: string
-  type: string
-  estimation: number
-  confidence: number
-  project_parent?: string
-  status: string
-}
+type Mission = Database['public']['Tables']['missions']['Row']
 
 interface EditMissionModalProps {
   mission: Mission
