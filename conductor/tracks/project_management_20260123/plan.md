@@ -2,7 +2,7 @@
 
 This plan covers the implementation of the Project entity, its database schema, and the management interface (listing, creation, edition, and deletion with constraints).
 
-## Phase 1: Foundation & Schema
+## Phase 1: Foundation & Schema [checkpoint: 2f0a9d2]
 - [x] Task: Update Database Schema 58b5c20
     - [x] Create `projects` table in Supabase (id, created_at, user_id, name, label, description, status, color).
     - [x] Add `project_id` foreign key to `missions` table.
@@ -10,7 +10,7 @@ This plan covers the implementation of the Project entity, its database schema, 
 - [x] Task: Update Types and Client 86f7c2f
     - [x] Update Database types (run supabase gen types or manual update).
     - [x] Add project-related helper functions in Supabase client if necessary.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Schema' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Schema' (Protocol in workflow.md)
 
 ## Phase 2: Core Components & Data Fetching
 - [ ] Task: Implement Project Service/Actions
