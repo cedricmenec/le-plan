@@ -1,13 +1,11 @@
 'use client'
 
 import { useRef, useEffect, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
 import { MissionActions } from './mission-actions'
 import { Database } from '@/types/database.types'
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { 
@@ -19,13 +17,14 @@ import {
   ShieldCheck, 
   AlertTriangle,
   ArrowRight,
-  StickyNote
+  StickyNote,
+  LucideIcon
 } from 'lucide-react'
 
 export type Mission = Database['public']['Tables']['missions']['Row']
 export type MissionWithProject = Mission & { projects: { name: string } | null }
 
-const TYPE_ICONS: Record<string, any> = {
+const TYPE_ICONS: Record<string, LucideIcon> = {
   feature: Smartphone,
   study: BookOpen,
   support: Wrench,

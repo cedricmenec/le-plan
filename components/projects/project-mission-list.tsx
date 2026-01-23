@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Database } from '@/types/database.types'
 import { MissionList } from '@/components/missions/mission-list'
 import { ProjectDashboard } from './project-dashboard'
 import { createClient } from '@/lib/supabase/client'
@@ -16,8 +15,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-
-type Mission = Database['public']['Tables']['missions']['Row']
 
 interface ProjectMissionListProps {
   projectId: string
@@ -41,7 +38,7 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
     if (error) {
       console.error('Erreur lors du chargement des missions:', error)
     } else {
-      // @ts-ignore - Supabase join types
+      // @ts-expect-error - Supabase join types
       setMissions(data || [])
     }
     setLoading(false)
@@ -73,7 +70,7 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
         
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">Filtrer:</span>
-          <Select value={filter} onValueChange={(v: any) => setFilter(v)}>
+          <Select value={filter} onValueChange={(v: 'active' | 'all') => setFilter(v)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue />
             </SelectTrigger>
@@ -93,7 +90,7 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
           <p className="text-muted-foreground animate-pulse">Chargement des missions...</p>
         ) : (
           <MissionList 
-            // @ts-ignore - types are compatible enough for this use
+            // @ts-expect-error - types are compatible enough for this use
             initialMissions={filteredMissions} 
             onUpdate={fetchMissions}
           />

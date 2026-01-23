@@ -1,8 +1,0 @@
-{
-  "track_id": "project_detail_refactor_20260123",
-  "type": "refactor",
-  "status": "new",
-  "created_at": "2026-01-23T23:57:00Z",
-  "updated_at": "2026-01-23T23:57:00Z",
-  "description": "Je souhaite que les cards de la liste des missions de la page de détail d\'un Project soit les mêmes card que celles de la page \"Missions\". Je souhaite donc utiliser le composant \"MissionCard\". D\'autre part, il y a un bug lorsque dans la sidebar le menu \"Projects\" est selectionné l\'élément de menu n\'est pas highlight pour réfléter le changement de menu."
-}

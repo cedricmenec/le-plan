@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Badge } from '@/components/ui/badge'
 import { MissionCard, MissionWithProject } from './mission-card'
 import { DeleteMissionDialog } from './delete-mission-dialog'
 import { EditMissionModal } from './edit-mission-modal'
@@ -36,7 +35,7 @@ export function MissionList({ initialMissions, onUpdate }: MissionListProps) {
     if (error) {
       console.error('Erreur lors du chargement des missions:', error)
     } else {
-      // @ts-ignore - Supabase join types can be complex to map strictly without generated helpers
+      // @ts-expect-error - Supabase join types can be complex to map strictly without generated helpers
       setMissions(data || [])
     }
     setLoading(false)
@@ -159,4 +158,3 @@ export function MissionList({ initialMissions, onUpdate }: MissionListProps) {
           </TooltipProvider>
         )
       }
-      
