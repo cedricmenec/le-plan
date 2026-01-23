@@ -7,9 +7,9 @@ This plan covers the implementation of the Project entity, its database schema, 
     - [x] Create `projects` table in Supabase (id, created_at, user_id, name, label, description, status, color).
     - [x] Add `project_id` foreign key to `missions` table.
     - [x] Update RLS policies for the `projects` table.
-- [ ] Task: Update Types and Client
-    - [ ] Update Database types (run supabase gen types or manual update).
-    - [ ] Add project-related helper functions in Supabase client if necessary.
+- [x] Task: Update Types and Client 86f7c2f
+    - [x] Update Database types (run supabase gen types or manual update).
+    - [x] Add project-related helper functions in Supabase client if necessary.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Schema' (Protocol in workflow.md)
 
 ## Phase 2: Core Components & Data Fetching
