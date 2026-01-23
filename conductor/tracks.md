@@ -28,6 +28,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Améliorer la gestion des Missions : Ajouter un champs 'goal' (Main Goal) et un champs 'notes'.
+## [x] Track: Améliorer la gestion des Missions : Ajouter un champs 'goal' (Main Goal) et un champs 'notes'.
 - **ID**: `mission_fields_20260123`
 - **Link**: [conductor/tracks/mission_fields_20260123](tracks/mission_fields_20260123/)
