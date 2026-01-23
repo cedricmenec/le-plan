@@ -16,13 +16,27 @@ vi.mock('../actions', () => ({
   }))
 }))
 
+const mockSupabase = {
+  from: vi.fn(() => ({
+    select: vi.fn(() => ({
+      eq: vi.fn(() => ({
+        order: vi.fn(() => Promise.resolve({ data: [], error: null }))
+      }))
+    }))
+  })),
+  auth: {
+    getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-1' } }, error: null }))
+  }
+}
+
 // Mock Supabase server client
 vi.mock('@/lib/supabase/server', () => ({
-  createClient: vi.fn(() => Promise.resolve({
-    auth: {
-      getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-1' } }, error: null }))
-    }
-  }))
+  createClient: vi.fn(() => Promise.resolve(mockSupabase))
+}))
+
+// Mock Supabase client client
+vi.mock('@/lib/supabase/client', () => ({
+  createClient: vi.fn(() => mockSupabase)
 }))
 
 // Mock next/navigation
@@ -42,5 +56,5 @@ test('renders project detail page with dashboard', async () => {
   
   // Dashboard stats
   expect(screen.getByText('8 jours')).toBeDefined()
-  expect(screen.getByText('Missions actives')).toBeDefined()
+  expect(screen.getAllByText('Missions actives').length).toBeGreaterThanOrEqual(1)
 })
