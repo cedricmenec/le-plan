@@ -2,7 +2,7 @@
 
 This plan covers the implementation of the project detail page, including breadcrumbs, dashboard statistics, and a filtered mission list.
 
-## Phase 1: Foundation & Navigation
+## Phase 1: Foundation & Navigation [checkpoint: a9633a2]
 - [x] Task: Create `Breadcrumb` UI component (915540c)
     - [ ] Define the `Breadcrumb` component using `shadcn/ui` patterns or a custom implementation if not available in the library.
     - [ ] Write unit tests for the `Breadcrumb` component to ensure it renders links and labels correctly.
