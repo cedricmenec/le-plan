@@ -169,7 +169,7 @@ Le projet consiste à développer une **application Web** personnelle de visibil
     *   Système de navigation par breadcrumbs (Inclus).
     *   Indicateurs de charge totale et d'avancement pour les stakeholders (PI/Release planning).
     *   Facilitation de la priorisation des missions au sein d'un même projet.
-*   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge et score de confiance.
+*   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge, score de confiance, **objectif principal (Main Goal)** et **notes complémentaires**.
 *   **Sous-tâches (Inclus) :** Décomposition des missions en actions simples avec suivi d'état (checkbox).
 *   **Authentification (Inclus) :** Sécurisation des données par utilisateur via Supabase Auth.
 *   **Vues Temporelles :**
