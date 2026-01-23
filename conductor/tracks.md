@@ -19,9 +19,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Main Layout & Active Mission Listfourni.**
 - **ID**: `main_layout_20260122`
 - **Link**: [conductor/archive/main_layout_20260122](archive/main_layout_20260122/)
-
----
-
-## [x] Track: Implémenter la gestion des projets (Projects) : création, modification, suppression.
-- **ID**: `project_management_20260123`
-- **Link**: [conductor/tracks/project_management_20260123](tracks/project_management_20260123/)
