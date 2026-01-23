@@ -3,17 +3,18 @@ import { expect, test, vi, beforeAll } from 'vitest'
 import { EditMissionModal } from './edit-mission-modal'
 
 // Mock Supabase
-vi.mock('@/lib/supabase/client', () => ({
-  createClient: vi.fn(() => ({
-    from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          order: vi.fn(() => Promise.resolve({ data: [], error: null })),
-        })),
-      })),
+vi.mock('@/lib/supabase/client', () => {
+  const chain = {
+    select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
+    order: vi.fn().mockResolvedValue({ data: [], error: null }),
+  }
+  return {
+    createClient: vi.fn(() => ({
+      from: vi.fn(() => chain),
     })),
-  })),
-}))
+  }
+})
 
 beforeAll(() => {
   global.ResizeObserver = class {

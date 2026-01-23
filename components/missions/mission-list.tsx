@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 
 type Mission = Database['public']['Tables']['missions']['Row']
+type MissionWithProject = Mission & { projects: { name: string } | null }
 
 const TYPE_ICONS: Record<string, any> = {
   feature: Smartphone,
@@ -38,7 +39,7 @@ const TYPE_COLORS: Record<string, string> = {
 }
 
 export function MissionList() {
-  const [missions, setMissions] = useState<Mission[]>([])
+  const [missions, setMissions] = useState<MissionWithProject[]>([])
   const [loading, setLoading] = useState(true)
   const [missionToDelete, setMissionToDelete] = useState<Mission | null>(null)
   const [missionToEdit, setMissionToEdit] = useState<Mission | null>(null)
@@ -49,12 +50,13 @@ export function MissionList() {
   async function fetchMissions() {
     const { data, error } = await supabase
       .from('missions')
-      .select('*')
+      .select('*, projects(name)')
       .order('created_at', { ascending: false })
 
     if (error) {
       console.error('Erreur lors du chargement des missions:', error)
     } else {
+      // @ts-ignore - Supabase join types can be complex to map strictly without generated helpers
       setMissions(data || [])
     }
     setLoading(false)
@@ -131,6 +133,7 @@ export function MissionList() {
             const colorClass = TYPE_COLORS[mission.type] || TYPE_COLORS.other
             const confidence = mission.confidence || 0
             const isHighConfidence = confidence >= 80
+            const projectName = mission.projects?.name || mission.project_parent
             
             // Mock progress calculation for UI fidelity
             const progress = mission.status === 'done' ? 100 : Math.min(Math.max(20, (mission.id.charCodeAt(0) % 80)), 90)
@@ -170,9 +173,9 @@ export function MissionList() {
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide ${colorClass}`}>
                         {mission.type}
                       </span>
-                      {mission.project_parent && (
+                      {projectName && (
                         <span className="text-[11px] text-slate-400 font-medium">
-                          {mission.project_parent}
+                          {projectName}
                         </span>
                       )}
                     </div>

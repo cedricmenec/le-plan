@@ -23,10 +23,10 @@ beforeAll(() => {
 // Mock Supabase
 vi.mock('@/lib/supabase/client', () => {
   const missionsFirst = [
-    { id: '1', title: 'Mission 1', type: 'feature', estimation: 2, status: 'todo' },
+    { id: '1', title: 'Mission 1', type: 'feature', estimation: 2, status: 'todo', projects: { name: 'Projet Test' } },
   ]
   const missionsAfter = [
-    { id: '3', title: 'Nouvelle mission', type: 'feature', estimation: 1, status: 'todo' },
+    { id: '3', title: 'Nouvelle mission', type: 'feature', estimation: 1, status: 'todo', projects: null },
     ...missionsFirst,
   ]
 

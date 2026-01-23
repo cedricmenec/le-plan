@@ -1,11 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Database } from '@/types/database.types'
+
+type Project = Database['public']['Tables']['projects']['Row']
 
 const MISSION_TYPES = [
   { value: 'feature', label: 'Feature' },
@@ -21,7 +24,21 @@ interface MissionFormProps {
 
 export function MissionForm({ onSuccess }: MissionFormProps) {
   const [loading, setLoading] = useState(false)
+  const [projects, setProjects] = useState<Project[]>([])
   const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchProjects() {
+      const { data } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('status', 'active')
+        .order('name')
+      
+      setProjects(data || [])
+    }
+    fetchProjects()
+  }, [supabase])
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -35,7 +52,8 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
     const type = formData.get('type') as string
     const estimation = parseFloat(formData.get('estimation') as string)
     const confidence = parseFloat(formData.get('confidence') as string)
-    const project_parent = formData.get('project_parent') as string
+    const project_id_raw = formData.get('project_id') as string
+    const project_id = project_id_raw === 'none' ? null : project_id_raw
 
     try {
       const { data: { user } } = await supabase.auth.getUser()
@@ -52,7 +70,7 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
           type,
           estimation,
           confidence,
-          project_parent,
+          project_id,
           user_id: user.id,
         })
 
@@ -105,8 +123,20 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="project_parent">Projet Parent (Optionnel)</Label>
-        <Input id="project_parent" name="project_parent" placeholder="Ex: Produit A" />
+        <Label htmlFor="project_id">Projet (Optionnel)</Label>
+        <Select name="project_id">
+          <SelectTrigger id="project_id">
+            <SelectValue placeholder="Aucun projet" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">Aucun projet</SelectItem>
+            {projects.map((p) => (
+              <SelectItem key={p.id} value={p.id}>
+                {p.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <Button type="submit" className="w-full" disabled={loading}>

@@ -1,5 +1,3 @@
-'use client'
-
 import { useState, useEffect } from 'react'
 import {
   Dialog,
@@ -15,6 +13,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Trash2 } from 'lucide-react'
 import { SubtaskList } from './subtask-list'
 import { Database } from '@/types/database.types'
+import { createClient } from '@/lib/supabase/client'
+
+type Project = Database['public']['Tables']['projects']['Row']
+type Mission = Database['public']['Tables']['missions']['Row']
 
 const MISSION_TYPES = [
   { value: 'feature', label: 'Feature' },
@@ -29,8 +31,6 @@ const MISSION_STATUSES = [
   { value: 'in_progress', label: 'En cours' },
   { value: 'done', label: 'Terminé' },
 ]
-
-type Mission = Database['public']['Tables']['missions']['Row']
 
 interface EditMissionModalProps {
   mission: Mission
@@ -50,6 +50,21 @@ export function EditMissionModal({
   loading,
 }: EditMissionModalProps) {
   const [formData, setFormData] = useState<Partial<Mission>>({})
+  const [projects, setProjects] = useState<Project[]>([])
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchProjects() {
+      const { data } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('status', 'active')
+        .order('name')
+      
+      setProjects(data || [])
+    }
+    fetchProjects()
+  }, [supabase])
 
   useEffect(() => {
     if (open && mission) {
@@ -58,7 +73,7 @@ export function EditMissionModal({
         type: mission.type,
         estimation: mission.estimation,
         confidence: mission.confidence,
-        project_parent: mission.project_parent || '',
+        project_id: mission.project_id,
         status: mission.status,
       })
     }
@@ -66,6 +81,7 @@ export function EditMissionModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    // Map 'none' back to null if needed, but if using state it's already handled
     onSubmit(formData)
   }
 
@@ -152,12 +168,23 @@ export function EditMissionModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-project">Projet Parent (Optionnel)</Label>
-            <Input
-              id="edit-project"
-              value={formData.project_parent || ''}
-              onChange={(e) => setFormData({ ...formData, project_parent: e.target.value })}
-            />
+            <Label htmlFor="edit-project">Projet (Optionnel)</Label>
+            <Select
+              value={formData.project_id || 'none'}
+              onValueChange={(value) => setFormData({ ...formData, project_id: value === 'none' ? null : value })}
+            >
+              <SelectTrigger id="edit-project">
+                <SelectValue placeholder="Aucun projet" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Aucun projet</SelectItem>
+                {projects.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="border-t pt-4">
