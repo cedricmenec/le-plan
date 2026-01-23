@@ -19,6 +19,18 @@ export async function getProjects() {
   return data
 }
 
+export async function getProject(id: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*, missions(*)')
+    .eq('id', id)
+    .single()
+
+  if (error) throw error
+  return data
+}
+
 export async function createProject(project: Omit<InsertProject, 'id' | 'created_at' | 'user_id'>) {
   const supabase = await createClient()
   
