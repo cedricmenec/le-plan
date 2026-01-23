@@ -27,7 +27,7 @@ This plan covers the implementation of the project detail page, including breadc
     - [ ] Verify that statistics update correctly based on the fetched mission data.
 - [ ] Task: Conductor - User Manual Verification 'Data & Dashboard' (Protocol in workflow.md)
 
-## Phase 3: Filtered Mission List
+## Phase 3: Filtered Mission List [checkpoint: 3f21129]
 - [x] Task: Implement Mission Filtering Toggle (fbeccba)
     - [x] Add a "Show non-started missions" toggle (Switch or Checkbox) above the mission list. (fbeccba)
     - [x] Write tests for the toggle's state management. (fbeccba)
