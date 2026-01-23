@@ -8,7 +8,11 @@ vi.mock('../actions', () => ({
     id: '1',
     name: 'Test Project',
     label: 'TP',
-    description: 'Test Description'
+    description: 'Test Description',
+    missions: [
+      { id: 'm1', status: 'in_progress', estimation: 5 },
+      { id: 'm2', status: 'todo', estimation: 3 }
+    ]
   }))
 }))
 
@@ -27,7 +31,7 @@ vi.mock('next/navigation', () => ({
   notFound: vi.fn()
 }))
 
-test('renders project detail page', async () => {
+test('renders project detail page with dashboard', async () => {
   // In Vitest, we can just call the async component function
   const page = await ProjectDetailPage({ params: Promise.resolve({ id: '1' }) })
   render(page)
@@ -35,4 +39,8 @@ test('renders project detail page', async () => {
   expect(screen.getAllByText('Test Project').length).toBeGreaterThanOrEqual(1)
   expect(screen.getByText('TP')).toBeDefined()
   expect(screen.getByText('Test Description')).toBeDefined()
+  
+  // Dashboard stats
+  expect(screen.getByText('8 jours')).toBeDefined()
+  expect(screen.getByText('Missions actives')).toBeDefined()
 })
