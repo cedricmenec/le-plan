@@ -2,7 +2,7 @@
 
 This plan covers the reuse of the `MissionCard` component in the Project Detail page and fixing the sidebar navigation highlighting bug.
 
-## Phase 1: Sidebar Navigation Fix
+## Phase 1: Sidebar Navigation Fix [checkpoint: 6a03297]
 
 ### Task: Fix Sidebar Active State Logic
 - [x] Task: Write Tests for Sidebar Active State logic d091844
@@ -10,7 +10,7 @@ This plan covers the reuse of the `MissionCard` component in the Project Detail 
 - [x] Task: Implement Sidebar Active State Fix d091844
     - [x] Update `components/layout/sidebar.tsx` to use a robust path matching logic (e.g., checking if `pathname.startsWith(href)`).
 - [x] Task: Verify Sidebar Tests Pass d091844
-- [ ] Task: Conductor - User Manual Verification 'Sidebar Navigation Fix' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Sidebar Navigation Fix' (Protocol in workflow.md)
 
 ## Phase 2: MissionCard Integration
 
