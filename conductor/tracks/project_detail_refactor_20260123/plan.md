@@ -12,7 +12,7 @@ This plan covers the reuse of the `MissionCard` component in the Project Detail 
 - [x] Task: Verify Sidebar Tests Pass d091844
 - [x] Task: Conductor - User Manual Verification 'Sidebar Navigation Fix' (Protocol in workflow.md)
 
-## Phase 2: MissionCard Integration
+## Phase 2: MissionCard Integration [checkpoint: a24117a]
 
 ### Task: Refactor Project Detail Mission List
 - [x] Task: Write Tests for Project Detail Mission List 2b32f35
@@ -20,7 +20,7 @@ This plan covers the reuse of the `MissionCard` component in the Project Detail 
 - [x] Task: Implement MissionCard in Project Detail 2b32f35
     - [x] Modify `app/projects/[id]/page.tsx` (and potentially `components/projects/project-mission-list.tsx`) to use the standard `MissionCard`.
 - [x] Task: Verify Project Detail Tests Pass 2b32f35
-- [ ] Task: Conductor - User Manual Verification 'MissionCard Integration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'MissionCard Integration' (Protocol in workflow.md)
 
 ## Phase 3: Final Verification & Cleanup
 
