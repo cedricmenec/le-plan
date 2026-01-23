@@ -10,8 +10,12 @@ vi.mock('./project-card', () => ({
 }))
 
 // Mock Dialog/Form components if used?
-vi.mock('./project-form-dialog', () => ({
-  ProjectFormDialog: () => <button>Add Project</button>
+vi.mock('./add-project-dialog', () => ({
+  AddProjectDialog: () => <button>Add Project</button>
+}))
+
+vi.mock('./edit-project-modal', () => ({
+  EditProjectModal: () => <div>Edit Modal</div>
 }))
 
 test('renders grid header and empty state', () => {

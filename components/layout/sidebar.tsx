@@ -38,8 +38,8 @@ export function Sidebar() {
           <span>Missions</span>
         </Link>
         <Link 
-          href="#" 
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 font-medium transition-colors cursor-not-allowed opacity-60"
+          href="/projects" 
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 font-medium transition-colors"
         >
           <FolderOpen className="h-5 w-5" />
           <span>Projects</span>
