@@ -15,10 +15,10 @@ This plan covers the implementation of the Project entity, its database schema, 
 ## Phase 2: Core Components & Data Fetching
 - [x] Task: Implement Project Service/Actions 2259027
     - [x] Create server actions for `getProjects`, `createProject`, `updateProject`, and `deleteProject`.
-- [ ] Task: Create ProjectCard Component
-    - [ ] Implement UI for `ProjectCard` with name, label, color indicator, and task statistics.
-    - [ ] Add the "three-dots" horizontal menu for Edit/Delete actions.
-    - [ ] Implement the disabled Delete button logic with tooltip.
+- [x] Task: Create ProjectCard Component e0e0a59
+    - [x] Implement UI for `ProjectCard` with name, label, color indicator, and task statistics.
+    - [x] Add the "three-dots" horizontal menu for Edit/Delete actions.
+    - [x] Implement the disabled Delete button logic with tooltip.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Components & Data Fetching' (Protocol in workflow.md)
 
 ## Phase 3: Project Management Page & CRUD UI
