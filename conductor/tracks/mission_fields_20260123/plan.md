@@ -18,7 +18,7 @@ Update the mission form to allow users to input and edit the new fields.
 - [x] Task: Verify that `add-mission-dialog.tsx` and `edit-mission-modal.tsx` correctly pass down data and handle submission.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Form Updates' (Protocol in workflow.md)
 
-## Phase 3: UI Display Updates
+## Phase 3: UI Display Updates [checkpoint: 3388071]
 Display the "Main Goal" and "Notes" tooltip in the mission list view.
 
 - [x] Task: Write failing tests for mission display (in `mission-list.tsx` or equivalent) to show the `goal` and `notes` icon.
@@ -29,6 +29,6 @@ Display the "Main Goal" and "Notes" tooltip in the mission list view.
 ## Phase 4: Final Polish and Verification
 Final verification of the end-to-end flow.
 
-- [ ] Task: Run full test suite to ensure no regressions.
-- [ ] Task: Verify mobile responsiveness for the new UI elements.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Polish and Verification' (Protocol in workflow.md)
+- [x] Task: Run full test suite to ensure no regressions.
+- [x] Task: Verify mobile responsiveness for the new UI elements.
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Final Polish and Verification' (Protocol in workflow.md)
