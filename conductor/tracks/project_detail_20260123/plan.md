@@ -9,7 +9,7 @@ This plan covers the implementation of the project detail page, including breadc
 - [x] Task: Implement Project Detail Page Route (546b4a2)
     - [ ] Create the page at `app/projects/[id]/page.tsx`.
     - [ ] Write tests to verify the page renders and fetches project data based on the ID.
-- [ ] Task: Integrate Breadcrumbs into Project Detail Page
+- [x] Task: Integrate Breadcrumbs into Project Detail Page (546b4a2)
     - [ ] Add the `Breadcrumb` component to the top of the project detail page.
     - [ ] Verify that it displays `Projects > [Project Name]`.
 - [ ] Task: Conductor - User Manual Verification 'Foundation & Navigation' (Protocol in workflow.md)
