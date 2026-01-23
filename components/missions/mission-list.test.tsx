@@ -82,6 +82,27 @@ test('renders mission list with missions', async () => {
   expect(screen.queryByText(/Nouvelle mission/i)).toBeNull()
 })
 
+test('renders mission goal and notes icon when present', async () => {
+  const missions = [
+    { 
+      id: '1', 
+      title: 'Mission with goal', 
+      type: 'feature', 
+      goal: 'This is the main goal', 
+      notes: 'Some notes',
+      estimation: 2, 
+      status: 'todo', 
+      projects: null,
+      confidence: 100
+    },
+  ]
+  // @ts-ignore
+  render(<MissionList initialMissions={missions} />)
+
+  expect(screen.getByText(/This is the main goal/i)).toBeDefined()
+  expect(screen.getByTestId('notes-icon')).toBeDefined()
+})
+
 test('re-fetches missions when a mission is created (missions:created)', async () => {
   render(<MissionList />)
 

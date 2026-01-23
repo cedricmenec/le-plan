@@ -21,10 +21,10 @@ Update the mission form to allow users to input and edit the new fields.
 ## Phase 3: UI Display Updates
 Display the "Main Goal" and "Notes" tooltip in the mission list view.
 
-- [ ] Task: Write failing tests for mission display (in `mission-list.tsx` or equivalent) to show the `goal` and `notes` icon.
-- [ ] Task: Update the UI to display the "Main Goal" below the mission title.
-- [ ] Task: Integrate `shadcn/ui` Tooltip to display "Notes" when hovering over the new icon.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Display Updates' (Protocol in workflow.md)
+- [x] Task: Write failing tests for mission display (in `mission-list.tsx` or equivalent) to show the `goal` and `notes` icon.
+- [x] Task: Update the UI to display the "Main Goal" below the mission title.
+- [x] Task: Integrate `shadcn/ui` Tooltip to display "Notes" when hovering over the new icon.
+- [x] Task: Conductor - User Manual Verification 'Phase 3: UI Display Updates' (Protocol in workflow.md)
 
 ## Phase 4: Final Polish and Verification
 Final verification of the end-to-end flow.
