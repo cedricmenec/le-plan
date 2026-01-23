@@ -34,10 +34,10 @@ This plan covers the implementation of the Project entity, its database schema, 
     - [x] Ensure the "Projects" link in the sidebar correctly navigates to `/projects`.
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Project Management Page & CRUD UI' (Protocol in workflow.md)
 
-## Phase 4: Integration & Refinement
-- [ ] Task: Update Mission Form
-    - [ ] Allow associating a mission with a project during creation/edition.
-- [ ] Task: Final Polish & UX
-    - [ ] Add toast notifications for all CRUD operations.
-    - [ ] Ensure responsive behavior for the project grid.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Integration & Refinement' (Protocol in workflow.md)
+## Phase 4: Integration & Refinement [checkpoint: 0d586d1]
+- [x] Task: Update Mission Form 0d586d1
+    - [x] Allow associating a mission with a project during creation/edition.
+- [x] Task: Final Polish & UX 0d586d1
+    - [x] Add toast notifications for all CRUD operations.
+    - [x] Ensure responsive behavior for the project grid.
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Integration & Refinement' (Protocol in workflow.md)
