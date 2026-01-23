@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 import { Trash2 } from 'lucide-react'
 import { SubtaskList } from './subtask-list'
 import { Database } from '@/types/database.types'
@@ -71,6 +72,8 @@ export function EditMissionModal({
       setFormData({
         title: mission.title,
         type: mission.type,
+        goal: mission.goal,
+        notes: mission.notes,
         estimation: mission.estimation,
         confidence: mission.confidence,
         project_id: mission.project_id,
@@ -139,6 +142,26 @@ export function EditMissionModal({
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="edit-goal">Main Goal</Label>
+            <Textarea
+              id="edit-goal"
+              value={formData.goal || ''}
+              onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
+              placeholder="Objectif principal"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="edit-notes">Notes</Label>
+            <Textarea
+              id="edit-notes"
+              value={formData.notes || ''}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              placeholder="Notes complémentaires"
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">

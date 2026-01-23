@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 import { Database } from '@/types/database.types'
 
 type Project = Database['public']['Tables']['projects']['Row']
@@ -50,6 +51,8 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
     const formData = new FormData(form)
     const title = formData.get('title') as string
     const type = formData.get('type') as string
+    const goal = formData.get('goal') as string
+    const notes = formData.get('notes') as string
     const estimation = parseFloat(formData.get('estimation') as string)
     const confidence = parseFloat(formData.get('confidence') as string)
     const project_id_raw = formData.get('project_id') as string
@@ -68,6 +71,8 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
         .insert({
           title,
           type,
+          goal,
+          notes,
           estimation,
           confidence,
           project_id,
@@ -109,6 +114,16 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
             ))}
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="goal">Main Goal</Label>
+        <Textarea id="goal" name="goal" placeholder="Objectif principal de la mission" />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="notes">Notes</Label>
+        <Textarea id="notes" name="notes" placeholder="Notes complémentaires" />
       </div>
 
       <div className="grid grid-cols-2 gap-4">

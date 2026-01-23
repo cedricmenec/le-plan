@@ -38,10 +38,15 @@ const mockMission = {
   id: '1',
   title: 'Mission Test',
   type: 'feature',
+  goal: 'Test Goal',
+  notes: 'Test Notes',
   estimation: 2,
   confidence: 80,
   project_parent: 'Projet A',
-  status: 'todo'
+  status: 'todo',
+  created_at: '2021-01-01',
+  user_id: 'user-1',
+  project_id: null
 }
 
 test('renders edit mission modal with existing data', async () => {
@@ -66,7 +71,13 @@ test('renders edit mission modal with existing data', async () => {
   
   const estimationInput = screen.getByLabelText(/estimation/i) as HTMLInputElement
   expect(estimationInput.value).toBe(mockMission.estimation.toString())
-  
+
+  const goalInput = screen.getByLabelText(/main goal/i) as HTMLInputElement
+  expect(goalInput.value).toBe(mockMission.goal)
+
+  const notesInput = screen.getByLabelText(/notes/i) as HTMLInputElement
+  expect(notesInput.value).toBe(mockMission.notes)
+
   // Check for subtasks section
   expect(screen.getByText(/sous-tâches/i)).toBeDefined()
   

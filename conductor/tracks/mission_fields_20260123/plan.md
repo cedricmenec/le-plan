@@ -12,10 +12,10 @@ Add the new columns to the Supabase schema and ensure TypeScript reflects these 
 ## Phase 2: Form Updates
 Update the mission form to allow users to input and edit the new fields.
 
-- [ ] Task: Write failing tests for `mission-form.tsx` to include "Main Goal" and "Notes" fields.
-- [ ] Task: Update `mission-form.tsx` to include the new `textarea` fields for `goal` and `notes`.
-- [ ] Task: Update Zod schema (if used) and form submission logic to handle the new fields.
-- [ ] Task: Verify that `add-mission-dialog.tsx` and `edit-mission-modal.tsx` correctly pass down data and handle submission.
+- [x] Task: Write failing tests for `mission-form.tsx` to include "Main Goal" and "Notes" fields.
+- [x] Task: Update `mission-form.tsx` to include the new `textarea` fields for `goal` and `notes`.
+- [x] Task: Update Zod schema (if used) and form submission logic to handle the new fields.
+- [x] Task: Verify that `add-mission-dialog.tsx` and `edit-mission-modal.tsx` correctly pass down data and handle submission.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Form Updates' (Protocol in workflow.md)
 
 ## Phase 3: UI Display Updates
