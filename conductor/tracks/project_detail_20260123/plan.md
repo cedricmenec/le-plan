@@ -14,7 +14,7 @@ This plan covers the implementation of the project detail page, including breadc
     - [ ] Verify that it displays `Projects > [Project Name]`.
 - [ ] Task: Conductor - User Manual Verification 'Foundation & Navigation' (Protocol in workflow.md)
 
-## Phase 2: Data & Dashboard
+## Phase 2: Data & Dashboard [checkpoint: bf9ce1d]
 - [x] Task: Update Data Fetching for Project Missions (546b4a2)
     - [x] Implement a Supabase query to fetch missions for a specific project ID, including their status and estimations. (546b4a2)
     - [x] Write tests to ensure the data fetching logic correctly filters by project and retrieves necessary fields. (546b4a2)
