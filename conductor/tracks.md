@@ -22,6 +22,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Implémenter la gestion des projets (Projects) : création, modification, suppression.
+## [x] Track: Implémenter la gestion des projets (Projects) : création, modification, suppression.
 - **ID**: `project_management_20260123`
 - **Link**: [conductor/tracks/project_management_20260123](tracks/project_management_20260123/)
