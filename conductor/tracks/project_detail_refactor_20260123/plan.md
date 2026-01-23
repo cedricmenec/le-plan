@@ -15,11 +15,11 @@ This plan covers the reuse of the `MissionCard` component in the Project Detail 
 ## Phase 2: MissionCard Integration
 
 ### Task: Refactor Project Detail Mission List
-- [ ] Task: Write Tests for Project Detail Mission List
-    - [ ] Update `app/projects/[id]/page.test.tsx` to verify that `MissionCard` components are rendered.
-- [ ] Task: Implement MissionCard in Project Detail
-    - [ ] Modify `app/projects/[id]/page.tsx` (and potentially `components/projects/project-mission-list.tsx`) to use the standard `MissionCard`.
-- [ ] Task: Verify Project Detail Tests Pass
+- [x] Task: Write Tests for Project Detail Mission List 2b32f35
+    - [x] Update `app/projects/[id]/page.test.tsx` to verify that `MissionCard` components are rendered.
+- [x] Task: Implement MissionCard in Project Detail 2b32f35
+    - [x] Modify `app/projects/[id]/page.tsx` (and potentially `components/projects/project-mission-list.tsx`) to use the standard `MissionCard`.
+- [x] Task: Verify Project Detail Tests Pass 2b32f35
 - [ ] Task: Conductor - User Manual Verification 'MissionCard Integration' (Protocol in workflow.md)
 
 ## Phase 3: Final Verification & Cleanup
