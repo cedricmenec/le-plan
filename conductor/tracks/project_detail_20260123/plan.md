@@ -28,14 +28,14 @@ This plan covers the implementation of the project detail page, including breadc
 - [ ] Task: Conductor - User Manual Verification 'Data & Dashboard' (Protocol in workflow.md)
 
 ## Phase 3: Filtered Mission List
-- [ ] Task: Implement Mission Filtering Toggle
-    - [ ] Add a "Show non-started missions" toggle (Switch or Checkbox) above the mission list.
-    - [ ] Write tests for the toggle's state management.
-- [ ] Task: Adapt Mission List for Project Detail View
-    - [ ] Integrate a mission list component that filters based on the toggle state.
-    - [ ] Filter logic:
+- [x] Task: Implement Mission Filtering Toggle (fbeccba)
+    - [x] Add a "Show non-started missions" toggle (Switch or Checkbox) above the mission list. (fbeccba)
+    - [x] Write tests for the toggle's state management. (fbeccba)
+- [x] Task: Adapt Mission List for Project Detail View (fbeccba)
+    - [x] Integrate a mission list component that filters based on the toggle state. (fbeccba)
+    - [x] Filter logic:
         - Toggle OFF: Show only `In Progress`.
         - Toggle ON: Show `In Progress` and `Not Started`.
         - Always exclude `Completed`.
-    - [ ] Write integration tests for the filtering logic.
+    - [x] Write integration tests for the filtering logic. (fbeccba)
 - [ ] Task: Conductor - User Manual Verification 'Filtered Mission List' (Protocol in workflow.md)
