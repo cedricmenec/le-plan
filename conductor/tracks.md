@@ -19,3 +19,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Main Layout & Active Mission Listfourni.**
 - **ID**: `main_layout_20260122`
 - **Link**: [conductor/archive/main_layout_20260122](archive/main_layout_20260122/)
+
+---
+
+## [x] Track: Project Detail View with Dashboard & Breadcrumbs
+*Link: [./tracks/project_detail_20260123/](./tracks/project_detail_20260123/)*
