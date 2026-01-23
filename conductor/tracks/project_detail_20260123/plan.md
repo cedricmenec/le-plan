@@ -22,7 +22,7 @@ This plan covers the implementation of the project detail page, including breadc
     - [ ] Implement a `ProjectDashboard` component that displays Metric Cards for task counts (by status) and remaining workload.
     - [ ] Logic: Remaining workload = Sum of `estimated_days` for missions with status NOT 'Completed'.
     - [ ] Write unit tests for the dashboard logic and rendering.
-- [ ] Task: Integrate Dashboard into Project Detail Page
+- [x] Task: Integrate Dashboard into Project Detail Page (6457e5c)
     - [ ] Place the `ProjectDashboard` below the breadcrumbs.
     - [ ] Verify that statistics update correctly based on the fetched mission data.
 - [ ] Task: Conductor - User Manual Verification 'Data & Dashboard' (Protocol in workflow.md)
