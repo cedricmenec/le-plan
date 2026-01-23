@@ -100,8 +100,14 @@ Le produit doit :
 * **Mission** (objet central)
 
   * plusieurs types (feature, étude, support, documentation, etc.)
-  * rattachement optionnel à un produit ou un projet
+  * rattachement optionnel à un projet
   * décomposable en sous-tâches
+
+* **Projet**
+
+  * regroupement logique de missions partageant un objectif commun
+  * permet de consolider la charge et la visibilité pour des stakeholders spécifiques
+  * attributs simples (Nom, Description)
 
 * **Charge de travail**
 
@@ -157,7 +163,11 @@ Le projet consiste à développer une **application Web** personnelle de visibil
 
 ## 3. Fonctionnalités Clés (MVP)
 *   **Tableau de Bord de Charge (Inclus) :** Interface de type Dashboard avec barre de navigation latérale, header d'actions rapides et grille de missions active.
-*   **Gestion des Missions (Inclus) :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge et score de confiance.
+*   **Gestion des Projets :** Création, modification et vue détaillée des projets.
+    *   Visualisation de toutes les missions d'un projet, quel que soit leur état.
+    *   Indicateurs de charge totale et d'avancement pour les stakeholders (PI/Release planning).
+    *   Facilitation de la priorisation des missions au sein d'un même projet.
+*   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge et score de confiance.
 *   **Sous-tâches (Inclus) :** Décomposition des missions en actions simples avec suivi d'état (checkbox).
 *   **Authentification (Inclus) :** Sécurisation des données par utilisateur via Supabase Auth.
 *   **Vues Temporelles :**
