@@ -3,10 +3,10 @@
 This plan covers the implementation of the Project entity, its database schema, and the management interface (listing, creation, edition, and deletion with constraints).
 
 ## Phase 1: Foundation & Schema
-- [~] Task: Update Database Schema
-    - [ ] Create `projects` table in Supabase (id, created_at, user_id, name, label, description, status, color).
-    - [ ] Add `project_id` foreign key to `missions` table.
-    - [ ] Update RLS policies for the `projects` table.
+- [x] Task: Update Database Schema 58b5c20
+    - [x] Create `projects` table in Supabase (id, created_at, user_id, name, label, description, status, color).
+    - [x] Add `project_id` foreign key to `missions` table.
+    - [x] Update RLS policies for the `projects` table.
 - [ ] Task: Update Types and Client
     - [ ] Update Database types (run supabase gen types or manual update).
     - [ ] Add project-related helper functions in Supabase client if necessary.
