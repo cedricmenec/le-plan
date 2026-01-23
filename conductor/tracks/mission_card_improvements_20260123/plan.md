@@ -14,7 +14,8 @@ This plan covers the refactoring of the mission card into a standalone component
 - [x] Task: Goal Hover Style - Add Tailwind classes to change the goal text color on hover. [0f45511]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Enhanced Goal Interaction' (Protocol in workflow.md)
 
-## Phase 3: Notes Icon & Tooltip Polish
-- [ ] Task: Notes Icon - Ensure the `StickyNote` icon is correctly positioned and visible only when `notes` exist (already partially implemented in `MissionList`).
-- [ ] Task: Notes Tooltip - Verify the `Tooltip` for notes is using consistent styling and handles long text correctly with `whitespace-pre-wrap`.
+## Phase 3: Notes Icon & Tooltip Polish [checkpoint: 00e2487]
+- [x] Task: Notes Icon - Ensure the `StickyNote` icon is correctly positioned and visible only when `notes` exist (already partially implemented in `MissionList`). [2cef0a8]
+- [x] Task: Notes Tooltip - Verify the `Tooltip` for notes is using consistent styling and handles long text correctly with `whitespace-pre-wrap`. [2cef0a8]
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Notes Icon & Tooltip Polish' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Notes Icon & Tooltip Polish' (Protocol in workflow.md)
