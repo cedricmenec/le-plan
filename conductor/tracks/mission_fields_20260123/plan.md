@@ -2,12 +2,12 @@
 
 This plan outlines the steps to add "Main Goal" and "Notes" fields to the Mission entity, covering database changes, type updates, and UI modifications in both forms and list views.
 
-## Phase 1: Database and Types
+## Phase 1: Database and Types [checkpoint: 61dfc5c]
 Add the new columns to the Supabase schema and ensure TypeScript reflects these changes.
 
 - [x] Task: Create Supabase migration to add `goal` and `notes` columns to the `missions` table. e9da76a
 - [x] Task: Update TypeScript database types in `types/database.types.ts`. cddf5e4
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Database and Types' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Database and Types' (Protocol in workflow.md)
 
 ## Phase 2: Form Updates
 Update the mission form to allow users to input and edit the new fields.
