@@ -25,6 +25,6 @@ This plan covers the reuse of the `MissionCard` component in the Project Detail 
 ## Phase 3: Final Verification & Cleanup
 
 ### Task: Global Verification
-- [ ] Task: Run all project tests to ensure no regressions
-- [ ] Task: Final Linting and Type Checking
-- [ ] Task: Conductor - User Manual Verification 'Global Integration' (Protocol in workflow.md)
+- [x] Task: Run all project tests to ensure no regressions
+- [x] Task: Final Linting and Type Checking
+- [x] Task: Conductor - User Manual Verification 'Global Integration' (Protocol in workflow.md)
