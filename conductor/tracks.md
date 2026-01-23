@@ -36,5 +36,4 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## [x] Track: Project Detail Refactor & Sidebar Navigation Fix
 - **ID**: `project_detail_refactor_20260123`
-- **Link**: [./tracks/project_detail_refactor_20260123/](./tracks/project_detail_refactor_20260123/)
-
+- **Link**: [conductor/archive/project_detail_refactor_20260123](archive/project_detail_refactor_20260123/)
