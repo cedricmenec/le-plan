@@ -2,10 +2,10 @@
 
 This plan covers the refactoring of the mission card into a standalone component and the enhancement of "notes" and "goals" fields with tooltips and hover interactions.
 
-## Phase 1: Preparation & Refactoring
+## Phase 1: Preparation & Refactoring [checkpoint: db7c16b]
 - [x] Task: Create `MissionCard` component - Extract the mission card logic from `MissionList.tsx` into a new `components/missions/mission-card.tsx` file. [2cef0a8]
 - [x] Task: Update `MissionList` - Replace the inline rendering logic with the new `MissionCard` component. [2cef0a8]
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Preparation & Refactoring' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Preparation & Refactoring' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Preparation & Refactoring' (Protocol in workflow.md)
 
 ## Phase 2: Enhanced Goal Interaction
