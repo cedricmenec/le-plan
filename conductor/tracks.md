@@ -14,3 +14,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 - **ID**: `mission_crud_20260122`
 - **Link**: [conductor/archive/mission_crud_20260122](archive/mission_crud_20260122/)
 
+---
+
+## [x] Track: Main Layout & Active Mission Listfourni.**
+- **ID**: `main_layout_20260122`
+- **Link**: [conductor/archive/main_layout_20260122](archive/main_layout_20260122/)
