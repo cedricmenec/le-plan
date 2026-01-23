@@ -26,12 +26,12 @@ This plan covers the implementation of the Project entity, its database schema, 
     - [x] Create `app/projects/page.tsx`.
     - [x] Implement the grid layout for `ProjectCard`s.
     - [x] Add "Add Project" button and logic.
-- [ ] Task: Implement ProjectForm (Create/Edit)
-    - [ ] Create a reusable `ProjectForm` component.
-    - [ ] Implement predefined color palette selection.
-    - [ ] Integrate with `AddProjectDialog` and `EditProjectModal`.
-- [ ] Task: Update Sidebar
-    - [ ] Ensure the "Projects" link in the sidebar correctly navigates to `/projects`.
+- [x] Task: Implement ProjectForm (Create/Edit) 99c4076
+    - [x] Create a reusable `ProjectForm` component.
+    - [x] Implement predefined color palette selection.
+    - [x] Integrate with `AddProjectDialog` and `EditProjectModal`.
+- [x] Task: Update Sidebar 99c4076
+    - [x] Ensure the "Projects" link in the sidebar correctly navigates to `/projects`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Project Management Page & CRUD UI' (Protocol in workflow.md)
 
 ## Phase 4: Integration & Refinement
