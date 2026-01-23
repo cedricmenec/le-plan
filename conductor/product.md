@@ -164,7 +164,9 @@ Le projet consiste à développer une **application Web** personnelle de visibil
 ## 3. Fonctionnalités Clés (MVP)
 *   **Tableau de Bord de Charge (Inclus) :** Interface de type Dashboard avec barre de navigation latérale, header d'actions rapides et grille de missions active.
 *   **Gestion des Projets :** Création, modification et vue détaillée des projets.
-    *   Visualisation de toutes les missions d'un projet, quel que soit leur état.
+    *   **Vue détaillée (Inclus) :** Visualisation des missions d'un projet avec filtrage (actives vs toutes non-terminées).
+    *   **Dashboard de projet (Inclus) :** Indicateurs de charge totale (jours restants) et décompte des tâches par statut (À faire, En cours).
+    *   Système de navigation par breadcrumbs (Inclus).
     *   Indicateurs de charge totale et d'avancement pour les stakeholders (PI/Release planning).
     *   Facilitation de la priorisation des missions au sein d'un même projet.
 *   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge et score de confiance.
