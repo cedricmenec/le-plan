@@ -1,5 +1,6 @@
 'use client'
 
+import { useRef, useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { MissionActions } from './mission-actions'
 import { Database } from '@/types/database.types'
@@ -55,6 +56,9 @@ export function MissionCard({
   isUpdating, 
   isDeleting 
 }: MissionCardProps) {
+  const [isTruncated, setIsTruncated] = useState(false)
+  const goalRef = useRef<HTMLParagraphElement>(null)
+  
   const Icon = TYPE_ICONS[mission.type] || TYPE_ICONS.other
   const colorClass = TYPE_COLORS[mission.type] || TYPE_COLORS.other
   const confidence = mission.confidence || 0
@@ -63,6 +67,29 @@ export function MissionCard({
   
   // Mock progress calculation for UI fidelity
   const progress = mission.status === 'done' ? 100 : Math.min(Math.max(20, (mission.id.charCodeAt(0) % 80)), 90)
+
+  useEffect(() => {
+    const checkTruncation = () => {
+      if (goalRef.current) {
+        setIsTruncated(goalRef.current.scrollHeight > goalRef.current.clientHeight)
+      }
+    }
+
+    checkTruncation()
+    window.addEventListener('resize', checkTruncation)
+    return () => window.removeEventListener('resize', checkTruncation)
+  }, [mission.goal])
+
+  const goalContent = (
+    <p 
+      ref={goalRef}
+      className={`mt-2 text-sm text-slate-500 dark:text-slate-400 line-clamp-2 transition-colors duration-200 ${
+        isTruncated ? 'hover:text-slate-700 dark:hover:text-slate-200 cursor-help' : ''
+      }`}
+    >
+      {mission.goal}
+    </p>
+  )
 
   return (
     <div 
@@ -121,9 +148,18 @@ export function MissionCard({
             {mission.title}
           </h4>
           {mission.goal && (
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
-              {mission.goal}
-            </p>
+            isTruncated ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  {goalContent}
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs break-words">
+                  <p className="text-xs">{mission.goal}</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              goalContent
+            )
           )}
         </div>
       </div>
