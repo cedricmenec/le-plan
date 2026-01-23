@@ -3,10 +3,12 @@
 import { LayoutDashboard, Flag, FolderOpen, History, Settings, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils'
 
 export function Sidebar() {
   const router = useRouter()
+  const pathname = usePathname()
   const supabase = createClient()
 
   const handleLogout = async () => {
@@ -14,6 +16,20 @@ export function Sidebar() {
     router.refresh()
     router.push('/login')
   }
+
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return pathname === '/'
+    }
+    return pathname.startsWith(href)
+  }
+
+  const navItems = [
+    { href: '/', label: 'Missions', icon: Flag },
+    { href: '/projects', label: 'Projects', icon: FolderOpen },
+    { href: '#', label: 'History', icon: History, disabled: true },
+    { href: '#', label: 'Settings', icon: Settings, disabled: true },
+  ]
 
   return (
     <aside className="w-64 bg-white dark:bg-[#15202b] border-r border-slate-200 dark:border-slate-800 hidden md:flex flex-col flex-shrink-0 z-20">
@@ -30,34 +46,27 @@ export function Sidebar() {
       </div>
       
       <nav className="flex-1 px-4 space-y-1">
-        <Link 
-          href="/" 
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary font-medium group transition-colors"
-        >
-          <Flag className="h-5 w-5" />
-          <span>Missions</span>
-        </Link>
-        <Link 
-          href="/projects" 
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 font-medium transition-colors"
-        >
-          <FolderOpen className="h-5 w-5" />
-          <span>Projects</span>
-        </Link>
-        <Link 
-          href="#" 
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 font-medium transition-colors cursor-not-allowed opacity-60"
-        >
-          <History className="h-5 w-5" />
-          <span>History</span>
-        </Link>
-        <Link 
-          href="#" 
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 font-medium transition-colors cursor-not-allowed opacity-60"
-        >
-          <Settings className="h-5 w-5" />
-          <span>Settings</span>
-        </Link>
+        {navItems.map((item) => {
+          const active = isActive(item.href)
+          const Icon = item.icon
+          
+          return (
+            <Link 
+              key={item.label}
+              href={item.href} 
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-colors",
+                active 
+                  ? "bg-primary/10 text-primary" 
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100",
+                item.disabled && "cursor-not-allowed opacity-60"
+              )}
+            >
+              <Icon className="h-5 w-5" />
+              <span>{item.label}</span>
+            </Link>
+          )
+        })}
       </nav>
 
       <div className="p-4 border-t border-slate-200 dark:border-slate-800">
