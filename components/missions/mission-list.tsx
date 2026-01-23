@@ -38,9 +38,14 @@ const TYPE_COLORS: Record<string, string> = {
   other: 'bg-slate-50 dark:bg-slate-900/20 text-slate-600 dark:text-slate-400',
 }
 
-export function MissionList() {
-  const [missions, setMissions] = useState<MissionWithProject[]>([])
-  const [loading, setLoading] = useState(true)
+interface MissionListProps {
+  initialMissions?: MissionWithProject[]
+  onUpdate?: () => void
+}
+
+export function MissionList({ initialMissions, onUpdate }: MissionListProps) {
+  const [missions, setMissions] = useState<MissionWithProject[]>(initialMissions || [])
+  const [loading, setLoading] = useState(!initialMissions)
   const [missionToDelete, setMissionToDelete] = useState<Mission | null>(null)
   const [missionToEdit, setMissionToEdit] = useState<Mission | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -63,7 +68,12 @@ export function MissionList() {
   }
 
   useEffect(() => {
-    fetchMissions()
+    if (initialMissions) {
+      setMissions(initialMissions)
+      setLoading(false)
+    } else {
+      fetchMissions()
+    }
 
     const onCreated = () => {
       setLoading(true)
@@ -72,7 +82,7 @@ export function MissionList() {
 
     window.addEventListener('missions:created', onCreated)
     return () => window.removeEventListener('missions:created', onCreated)
-  }, [supabase])
+  }, [supabase, initialMissions])
 
   const handleUpdate = async (data: Partial<Mission>) => {
     if (!missionToEdit) return
@@ -88,7 +98,11 @@ export function MissionList() {
         alert('Erreur lors de la mise à jour')
       } else {
         setMissionToEdit(null)
-        fetchMissions()
+        if (onUpdate) {
+            onUpdate()
+        } else {
+            fetchMissions()
+        }
       }
     } finally {
       setUpdatingId(null)
@@ -111,7 +125,11 @@ export function MissionList() {
       if (error) {
         alert('Erreur lors de la suppression')
       } else {
-        fetchMissions()
+        if (onUpdate) {
+            onUpdate()
+        } else {
+            fetchMissions()
+        }
       }
     } finally {
       setDeletingId(null)

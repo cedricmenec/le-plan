@@ -2,7 +2,7 @@ import { getProject } from '../actions'
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
-import { ProjectDashboard } from '@/components/projects/project-dashboard'
+import { ProjectMissionList } from '@/components/projects/project-mission-list'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -26,7 +26,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
       return notFound()
     }
 
-    const missions = project.missions || []
+    const initialMissions = project.missions || []
 
     return (
       <div className="w-full max-w-[1600px] mx-auto p-6 md:p-10 space-y-8">
@@ -51,14 +51,10 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        <ProjectDashboard missions={missions} />
-
-        {/* Placeholder for Mission List */}
-        <div className="grid gap-6">
-          <div className="h-80 border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground">
-            Mission List Placeholder
-          </div>
-        </div>
+        <ProjectMissionList 
+          projectId={id} 
+          initialMissions={initialMissions} 
+        />
       </div>
     )
   } catch (error) {
