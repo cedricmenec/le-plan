@@ -2,7 +2,7 @@
 
 import { Database } from '@/types/database.types'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { MoreHorizontal, Edit2, Trash2, CheckSquare } from 'lucide-react'
+import { MoreHorizontal, Edit2, Trash2, CheckSquare, Eye } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 type Project = Database['public']['Tables']['projects']['Row']
 
@@ -23,8 +24,11 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, missionCount, activeTaskCount, onEdit, onDelete }: ProjectCardProps) {
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+    <Card className="hover:shadow-md transition-shadow relative overflow-hidden group">
+      <Link href={`/projects/${project.id}`} className="absolute inset-0 z-0">
+        <span className="sr-only">Voir le détail du projet {project.name}</span>
+      </Link>
+      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 relative z-10">
         <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
                 <div 
@@ -50,6 +54,12 @@ export function ProjectCard({ project, missionCount, activeTaskCount, onEdit, on
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link href={`/projects/${project.id}`}>
+                <Eye className="mr-2 h-4 w-4" />
+                Voir le détail
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onEdit(project)}>
               <Edit2 className="mr-2 h-4 w-4" />
               Modifier
@@ -71,7 +81,7 @@ export function ProjectCard({ project, missionCount, activeTaskCount, onEdit, on
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative z-10 pointer-events-none">
         {project.description && (
           <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
             {project.description}
