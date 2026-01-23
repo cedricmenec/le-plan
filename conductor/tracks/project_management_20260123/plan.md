@@ -13,8 +13,8 @@ This plan covers the implementation of the Project entity, its database schema, 
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Schema' (Protocol in workflow.md)
 
 ## Phase 2: Core Components & Data Fetching
-- [ ] Task: Implement Project Service/Actions
-    - [ ] Create server actions for `getProjects`, `createProject`, `updateProject`, and `deleteProject`.
+- [x] Task: Implement Project Service/Actions 2259027
+    - [x] Create server actions for `getProjects`, `createProject`, `updateProject`, and `deleteProject`.
 - [ ] Task: Create ProjectCard Component
     - [ ] Implement UI for `ProjectCard` with name, label, color indicator, and task statistics.
     - [ ] Add the "three-dots" horizontal menu for Edit/Delete actions.
