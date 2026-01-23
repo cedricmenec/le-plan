@@ -8,11 +8,11 @@ This plan covers the refactoring of the mission card into a standalone component
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Preparation & Refactoring' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Preparation & Refactoring' (Protocol in workflow.md)
 
-## Phase 2: Enhanced Goal Interaction
+## Phase 2: Enhanced Goal Interaction [checkpoint: 31cc5d4]
 - [x] Task: Implement Truncation Detection - Add logic (e.g., using a ref and `scrollHeight` vs `clientHeight`) to detect if the goal text is truncated. [0f45511]
 - [x] Task: Goal Tooltip - Wrap the goal text in a `Tooltip` that only activates when truncation is detected. [0f45511]
 - [x] Task: Goal Hover Style - Add Tailwind classes to change the goal text color on hover. [0f45511]
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Enhanced Goal Interaction' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Enhanced Goal Interaction' (Protocol in workflow.md)
 
 ## Phase 3: Notes Icon & Tooltip Polish
 - [ ] Task: Notes Icon - Ensure the `StickyNote` icon is correctly positioned and visible only when `notes` exist (already partially implemented in `MissionList`).
