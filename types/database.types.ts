@@ -49,6 +49,8 @@ export type Database = {
           user_id: string
           title: string
           type: string
+          goal: string | null
+          notes: string | null
           estimation: number
           confidence: number | null
           project_parent: string | null
@@ -61,6 +63,8 @@ export type Database = {
           user_id?: string
           title: string
           type: string
+          goal?: string | null
+          notes?: string | null
           estimation?: number
           confidence?: number | null
           project_parent?: string | null
@@ -73,6 +77,8 @@ export type Database = {
           user_id?: string
           title?: string
           type?: string
+          goal?: string | null
+          notes?: string | null
           estimation?: number
           confidence?: number | null
           project_parent?: string | null
