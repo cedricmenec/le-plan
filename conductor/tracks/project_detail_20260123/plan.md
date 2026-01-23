@@ -15,10 +15,10 @@ This plan covers the implementation of the project detail page, including breadc
 - [ ] Task: Conductor - User Manual Verification 'Foundation & Navigation' (Protocol in workflow.md)
 
 ## Phase 2: Data & Dashboard
-- [ ] Task: Update Data Fetching for Project Missions
-    - [ ] Implement a Supabase query to fetch missions for a specific project ID, including their status and estimations.
-    - [ ] Write tests to ensure the data fetching logic correctly filters by project and retrieves necessary fields.
-- [ ] Task: Create Dashboard Statistic Cards
+- [x] Task: Update Data Fetching for Project Missions (546b4a2)
+    - [x] Implement a Supabase query to fetch missions for a specific project ID, including their status and estimations. (546b4a2)
+    - [x] Write tests to ensure the data fetching logic correctly filters by project and retrieves necessary fields. (546b4a2)
+- [x] Task: Create Dashboard Statistic Cards (e3b77a6)
     - [ ] Implement a `ProjectDashboard` component that displays Metric Cards for task counts (by status) and remaining workload.
     - [ ] Logic: Remaining workload = Sum of `estimated_days` for missions with status NOT 'Completed'.
     - [ ] Write unit tests for the dashboard logic and rendering.
