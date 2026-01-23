@@ -1,0 +1,8 @@
+{
+  "track_id": "mission_fields_20260123",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-23T21:54:00Z",
+  "updated_at": "2026-01-23T21:54:00Z",
+  "description": "Améliorer la gestion des Missions : Ajouter un champs 'goal' (Main Goal) et un champs 'notes'."
+}
