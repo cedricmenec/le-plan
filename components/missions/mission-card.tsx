@@ -1,0 +1,153 @@
+'use client'
+
+import { Badge } from '@/components/ui/badge'
+import { MissionActions } from './mission-actions'
+import { Database } from '@/types/database.types'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { 
+  Smartphone, 
+  BookOpen, 
+  Wrench, 
+  FileText, 
+  MoreHorizontal, 
+  ShieldCheck, 
+  AlertTriangle,
+  ArrowRight,
+  StickyNote
+} from 'lucide-react'
+
+export type Mission = Database['public']['Tables']['missions']['Row']
+export type MissionWithProject = Mission & { projects: { name: string } | null }
+
+const TYPE_ICONS: Record<string, any> = {
+  feature: Smartphone,
+  study: BookOpen,
+  support: Wrench,
+  docs: FileText,
+  other: MoreHorizontal,
+}
+
+const TYPE_COLORS: Record<string, string> = {
+  feature: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400',
+  study: 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400',
+  support: 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400',
+  docs: 'bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400',
+  other: 'bg-slate-50 dark:bg-slate-900/20 text-slate-600 dark:text-slate-400',
+}
+
+interface MissionCardProps {
+  mission: MissionWithProject
+  onEdit: () => void
+  onDelete: () => void
+  isUpdating?: boolean
+  isDeleting?: boolean
+}
+
+export function MissionCard({ 
+  mission, 
+  onEdit, 
+  onDelete, 
+  isUpdating, 
+  isDeleting 
+}: MissionCardProps) {
+  const Icon = TYPE_ICONS[mission.type] || TYPE_ICONS.other
+  const colorClass = TYPE_COLORS[mission.type] || TYPE_COLORS.other
+  const confidence = mission.confidence || 0
+  const isHighConfidence = confidence >= 80
+  const projectName = mission.projects?.name || mission.project_parent
+  
+  // Mock progress calculation for UI fidelity
+  const progress = mission.status === 'done' ? 100 : Math.min(Math.max(20, (mission.id.charCodeAt(0) % 80)), 90)
+
+  return (
+    <div 
+      className={`group bg-white dark:bg-[#15202b] rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between ${
+        (isDeleting || isUpdating) ? 'opacity-50 pointer-events-none' : ''
+      }`}
+    >
+      <div>
+        <div className="flex justify-between items-start mb-3">
+          <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${colorClass}`}>
+            <Icon className="h-6 w-6" />
+          </div>
+          
+          <div className="flex items-center gap-4">
+            {mission.notes && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button data-testid="notes-icon" className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+                    <StickyNote className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs break-words">
+                  <p className="text-xs whitespace-pre-wrap">{mission.notes}</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+
+            <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md border ${
+              isHighConfidence 
+                ? 'bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-900/30 text-green-700 dark:text-green-300'
+                : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-100 dark:border-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+            }`}>
+              {isHighConfidence ? <ShieldCheck className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
+              <span className="text-[11px] font-bold">{confidence}%</span>
+            </div>
+            
+            <MissionActions 
+              onEdit={onEdit} 
+              onDelete={onDelete} 
+            />
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide ${colorClass}`}>
+              {mission.type}
+            </span>
+            {projectName && (
+              <span className="text-[11px] text-slate-400 font-medium">
+                {projectName}
+              </span>
+            )}
+          </div>
+          <h4 className="text-base font-semibold text-slate-900 dark:text-white leading-snug">
+            {mission.title}
+          </h4>
+          {mission.goal && (
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
+              {mission.goal}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="space-y-2 mt-auto">
+        <div className="flex justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400">
+          <span>Avancement</span>
+          <span>{mission.estimation} j</span>
+        </div>
+        <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+          <div 
+            className={`h-full rounded-full transition-all duration-500 ${
+              mission.status === 'done' ? 'bg-green-500' : 'bg-primary'
+            }`}
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <div className="pt-3 flex justify-between items-center text-[11px] text-slate-400 border-t border-slate-50 dark:border-slate-800/50 mt-4">
+          <span>Statut: {mission.status}</span>
+          <button className="text-primary font-semibold flex items-center gap-1 hover:underline">
+            Détails <ArrowRight className="h-3 w-3" />
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}

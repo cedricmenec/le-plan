@@ -1,0 +1,8 @@
+{
+  "track_id": "mission_card_improvements_20260123",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-23T22:24:00Z",
+  "updated_at": "2026-01-23T22:24:00Z",
+  "description": "Améliorer le composant \"MissionCard\" pour prendre en compte le champs \"notes\" (icon + infotips). D'autre part, le champs \"goals\" est actuellement affiché sur 2 ligne, ce qui est parfait, mais je souhaite qu'au survole de ce champs \"goals\", un info tips affiche l'ensemble de l'objectif."
+}
