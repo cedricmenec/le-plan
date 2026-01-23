@@ -21,7 +21,7 @@ This plan covers the implementation of the Project entity, its database schema, 
     - [x] Implement the disabled Delete button logic with tooltip.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Core Components & Data Fetching' (Protocol in workflow.md)
 
-## Phase 3: Project Management Page & CRUD UI
+## Phase 3: Project Management Page & CRUD UI [checkpoint: 8c69425]
 - [x] Task: Implement Projects Page b0e40ce
     - [x] Create `app/projects/page.tsx`.
     - [x] Implement the grid layout for `ProjectCard`s.
@@ -32,7 +32,7 @@ This plan covers the implementation of the Project entity, its database schema, 
     - [x] Integrate with `AddProjectDialog` and `EditProjectModal`.
 - [x] Task: Update Sidebar 99c4076
     - [x] Ensure the "Projects" link in the sidebar correctly navigates to `/projects`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Project Management Page & CRUD UI' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Project Management Page & CRUD UI' (Protocol in workflow.md)
 
 ## Phase 4: Integration & Refinement
 - [ ] Task: Update Mission Form
