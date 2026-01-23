@@ -23,7 +23,7 @@ export async function getProject(id: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('projects')
-    .select('*, missions(*)')
+    .select('*, missions(*, projects(name))')
     .eq('id', id)
     .single()
 

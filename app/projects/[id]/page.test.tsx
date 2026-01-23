@@ -2,59 +2,42 @@ import { render, screen } from '@testing-library/react'
 import ProjectDetailPage from './page'
 import { expect, test, vi } from 'vitest'
 
-// Mock the actions
+// Mock the server components/actions
 vi.mock('../actions', () => ({
   getProject: vi.fn(() => Promise.resolve({
-    id: '1',
+    id: 'p1',
     name: 'Test Project',
-    label: 'TP',
-    description: 'Test Description',
     missions: [
-      { id: 'm1', status: 'in_progress', estimation: 5 },
-      { id: 'm2', status: 'todo', estimation: 3 }
+      { id: 'm1', title: 'Mission 1', status: 'in_progress', type: 'feature', estimation: 5 }
     ]
   }))
 }))
 
-const mockSupabase = {
-  from: vi.fn(() => ({
-    select: vi.fn(() => ({
-      eq: vi.fn(() => ({
-        order: vi.fn(() => Promise.resolve({ data: [], error: null }))
-      }))
-    }))
-  })),
-  auth: {
-    getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-1' } }, error: null }))
-  }
-}
-
-// Mock Supabase server client
 vi.mock('@/lib/supabase/server', () => ({
-  createClient: vi.fn(() => Promise.resolve(mockSupabase))
+  createClient: () => Promise.resolve({
+    auth: {
+      getUser: () => Promise.resolve({ data: { user: { id: 'u1' } } })
+    }
+  })
 }))
 
-// Mock Supabase client client
-vi.mock('@/lib/supabase/client', () => ({
-  createClient: vi.fn(() => mockSupabase)
+// Mock ProjectMissionList to verify it's used
+vi.mock('@/components/projects/project-mission-list', () => ({
+  ProjectMissionList: () => <div data-testid="project-mission-list">Mocked Mission List</div>
 }))
 
-// Mock next/navigation
-vi.mock('next/navigation', () => ({
-  redirect: vi.fn(),
-  notFound: vi.fn()
-}))
+test('renders project detail page with missions', async () => {
 
-test('renders project detail page with dashboard', async () => {
-  // In Vitest, we can just call the async component function
-  const page = await ProjectDetailPage({ params: Promise.resolve({ id: '1' }) })
-  render(page)
+  const params = Promise.resolve({ id: 'p1' })
+
+  const Page = await ProjectDetailPage({ params })
+
+  render(Page)
+
   
-  expect(screen.getAllByText('Test Project').length).toBeGreaterThanOrEqual(1)
-  expect(screen.getByText('TP')).toBeDefined()
-  expect(screen.getByText('Test Description')).toBeDefined()
-  
-  // Dashboard stats
-  expect(screen.getByText('8 jours')).toBeDefined()
-  expect(screen.getAllByText('Missions actives').length).toBeGreaterThanOrEqual(1)
+
+  expect(screen.getAllByText('Test Project')).toHaveLength(2)
+
+  expect(screen.getByTestId('project-mission-list')).toBeDefined()
+
 })

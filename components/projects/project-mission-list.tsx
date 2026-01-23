@@ -5,6 +5,7 @@ import { Database } from '@/types/database.types'
 import { MissionList } from '@/components/missions/mission-list'
 import { ProjectDashboard } from './project-dashboard'
 import { createClient } from '@/lib/supabase/client'
+import { MissionWithProject } from '@/components/missions/mission-card'
 import {
   Select,
   SelectContent,
@@ -20,11 +21,11 @@ type Mission = Database['public']['Tables']['missions']['Row']
 
 interface ProjectMissionListProps {
   projectId: string
-  initialMissions: Mission[]
+  initialMissions: MissionWithProject[]
 }
 
 export function ProjectMissionList({ projectId, initialMissions }: ProjectMissionListProps) {
-  const [missions, setMissions] = useState<Mission[]>(initialMissions)
+  const [missions, setMissions] = useState<MissionWithProject[]>(initialMissions)
   const [filter, setFilter] = useState<'active' | 'all'>('active')
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
@@ -33,13 +34,14 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
     setLoading(true)
     const { data, error } = await supabase
       .from('missions')
-      .select('*')
+      .select('*, projects(name)')
       .eq('project_id', projectId)
       .order('created_at', { ascending: false })
 
     if (error) {
       console.error('Erreur lors du chargement des missions:', error)
     } else {
+      // @ts-ignore - Supabase join types
       setMissions(data || [])
     }
     setLoading(false)
