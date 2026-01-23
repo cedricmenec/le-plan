@@ -1,0 +1,8 @@
+{
+  "track_id": "project_detail_20260123",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-23T21:02:00Z",
+  "updated_at": "2026-01-23T21:02:00Z",
+  "description": "Implemente la vue de détail d\'un projet (Project). Cette vue permet de visualiser les détails d\'un projet, mais également la liste des missions rattachées à ce projet. La liste des missions n\'affiche par défaut que les missions actives (démarrée et non terminée). Il est possible via un filtre d\'activer également les missions non démarrée. En plus des informations relative au projet, la page affiche également une zone type \"dashboard\" permettant d\'avoir des statistiques sur le projet : nombre de tâches (par statut de tâche), nombre de jour restant estimé pour toutes les tâches active et non démarrée afin d\'avoir une estimation de la charge de travail estimative restante sur ce projet."
+}
