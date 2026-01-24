@@ -70,7 +70,7 @@ Aider l’utilisateur à :
 
 * planifier ses missions à l’échelle hebdomadaire
 * suivre l’avancement avec un effort minimal
-* décomposer les missions en sous-tâches si nécessaire
+* décomposer les missions en tâches si nécessaire
 * gérer à la fois des travaux cadrés et des sujets flous / exploratoires
 
 📌 L’usage quotidien doit rester limité à :
@@ -101,7 +101,7 @@ Le produit doit :
 
   * plusieurs types (feature, étude, support, documentation, etc.)
   * rattachement optionnel à un projet
-  * décomposable en sous-tâches
+  * décomposable en tâches
 
 * **Projet**
 
@@ -170,7 +170,7 @@ Le projet consiste à développer une **application Web** personnelle de visibil
     *   Indicateurs de charge totale et d'avancement pour les stakeholders (PI/Release planning).
     *   Facilitation de la priorisation des missions au sein d'un même projet.
 *   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge, score de confiance, **objectif principal (Main Goal)** et **notes complémentaires**.
-*   **Sous-tâches (Inclus) :** Décomposition des missions en actions simples avec suivi d'état (checkbox).
+*   **Tâches (Inclus) :** Décomposition des missions en actions simples avec suivi d'état (checkbox), réordonnancement par drag & drop et édition in-line.
 *   **Authentification (Inclus) :** Sécurisation des données par utilisateur via Supabase Auth.
 *   **Vues Temporelles :**
     *   *Vue Hebdomadaire* pour le pilotage tactique.
