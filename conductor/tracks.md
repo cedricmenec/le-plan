@@ -66,4 +66,12 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## [x] Track: Retirer la liste des tâches de la dialog d'édition d'une Mission.
 - **ID**: `remove_tasks_from_edit_dialog_20260124`
-- **Link**: [conductor/archive/remove_tasks_from_edit_dialog_20260124](archive/remove_tasks_from_edit_dialog_20260124/)
+- [conductor/archive/remove_tasks_from_edit_dialog_20260124](archive/remove_tasks_from_edit_dialog_20260124/)
+
+---
+
+---
+
+## [x] Track: Mission Card UI Polish
+- **ID**: `mission_card_ui_polish_20260124`
+- **Link**: [conductor/archive/mission_card_ui_polish_20260124](archive/mission_card_ui_polish_20260124/)

@@ -1,0 +1,8 @@
+{
+  "track_id": "mission_card_ui_polish_20260124",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-24T23:21:00Z",
+  "updated_at": "2026-01-24T23:21:00Z",
+  "description": "Dans le composant \"MissionCard\" faire les modification suivantes : - Retirer la section \"Avancement\" avec la barre de progression. - Donner une coup de \"polish\" à l\'UI de ce composant en t'inspirant de l\'image fournie. @.gemini-clipboard\clipboard-1769296595722.png - Ne plus afficher le type de la mission dans un badge de couleur."
+}
