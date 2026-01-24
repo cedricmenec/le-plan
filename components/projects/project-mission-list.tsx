@@ -38,7 +38,6 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
     if (error) {
       console.error('Erreur lors du chargement des missions:', error)
     } else {
-      // @ts-expect-error - Supabase join types
       setMissions(data || [])
     }
     setLoading(false)
@@ -90,7 +89,6 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
           <p className="text-muted-foreground animate-pulse">Chargement des missions...</p>
         ) : (
           <MissionList 
-            // @ts-expect-error - types are compatible enough for this use
             initialMissions={filteredMissions} 
             onUpdate={fetchMissions}
           />

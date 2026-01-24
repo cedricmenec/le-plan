@@ -35,7 +35,6 @@ export function MissionList({ initialMissions, onUpdate }: MissionListProps) {
     if (error) {
       console.error('Erreur lors du chargement des missions:', error)
     } else {
-      // @ts-expect-error - Supabase join types can be complex to map strictly without generated helpers
       setMissions(data || [])
     }
     setLoading(false)

@@ -108,6 +108,7 @@ export type Database = {
           mission_id: string
           title: string
           is_completed: boolean
+          position: number
         }
         Insert: {
           id?: string
@@ -115,6 +116,7 @@ export type Database = {
           mission_id: string
           title: string
           is_completed?: boolean
+          position?: number
         }
         Update: {
           id?: string
@@ -122,6 +124,7 @@ export type Database = {
           mission_id?: string
           title?: string
           is_completed?: boolean
+          position?: number
         }
         Relationships: [
           {
