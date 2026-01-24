@@ -50,12 +50,18 @@ describe('MissionCard', () => {
     )
 
     expect(screen.getByText('Test Mission')).toBeDefined()
-    expect(screen.getByText('feature')).toBeDefined()
-    expect(screen.getByText('Project A')).toBeDefined()
+    expect(screen.getByText(/FEATURE/i)).toBeDefined()
+    expect(screen.getByText(/PROJECT A/i)).toBeDefined()
     expect(screen.getByText('Test Goal')).toBeDefined()
     expect(screen.getByTestId('notes-icon')).toBeDefined()
     
-    const detailsLink = screen.getByRole('link', { name: /détails/i })
+    // Check for status badge and footer status
+    expect(screen.getAllByText(/TODO/i).length).toBeGreaterThanOrEqual(2)
+
+    // Ensure "Avancement" is NOT there
+    expect(screen.queryByText(/avancement/i)).toBeNull()
+    
+    const detailsLink = screen.getByRole('link', { name: /DÉTAILS/i })
     expect(detailsLink.getAttribute('href')).toBe('/missions/1')
   })
 

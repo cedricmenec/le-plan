@@ -66,8 +66,11 @@ export function MissionCard({
   const isHighConfidence = confidence >= 80
   const projectName = mission.projects?.name || mission.project_parent
   
-  // Mock progress calculation for UI fidelity
-  const progress = mission.status === 'done' ? 100 : Math.min(Math.max(20, (mission.id.charCodeAt(0) % 80)), 90)
+  const statusDisplay = {
+    todo: 'TODO',
+    in_progress: 'ACTIVE',
+    done: 'DONE'
+  }[mission.status as keyof typeof statusDisplay] || mission.status.toUpperCase()
 
   useEffect(() => {
     const checkTruncation = () => {
@@ -100,8 +103,14 @@ export function MissionCard({
     >
       <div>
         <div className="flex justify-between items-start mb-3">
-          <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${colorClass}`}>
-            <Icon className="h-6 w-6" />
+          <div className="flex items-center gap-3">
+            <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${colorClass}`}>
+              <Icon className="h-6 w-6" />
+            </div>
+            
+            <div className="px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-bold tracking-wider">
+              {statusDisplay}
+            </div>
           </div>
           
           <div className="flex items-center gap-4">
@@ -135,17 +144,10 @@ export function MissionCard({
         </div>
 
         <div className="mb-4">
-          <div className="flex flex-wrap items-center gap-2 mb-2">
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide ${colorClass}`}>
-              {mission.type}
-            </span>
-            {projectName && (
-              <span className="text-[11px] text-slate-400 font-medium">
-                {projectName}
-              </span>
-            )}
+          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
+            {mission.type} {projectName && `• ${projectName}`}
           </div>
-          <h4 className="text-base font-semibold text-slate-900 dark:text-white leading-snug">
+          <h4 className="text-base font-bold text-slate-900 dark:text-white leading-snug">
             {mission.title}
           </h4>
           {mission.goal && (
@@ -166,21 +168,9 @@ export function MissionCard({
       </div>
 
       <div className="space-y-2 mt-auto">
-        <div className="flex justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400">
-          <span>Avancement</span>
-          <span>{mission.estimation} j</span>
-        </div>
-        <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-          <div 
-            className={`h-full rounded-full transition-all duration-500 ${
-              mission.status === 'done' ? 'bg-green-500' : 'bg-primary'
-            }`}
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        <div className="pt-3 flex justify-between items-center text-[11px] text-slate-400 border-t border-slate-50 dark:border-slate-800/50 mt-4">
-          <div className="flex items-center gap-2">
-            <span>Statut: {mission.status}</span>
+        <div className="pt-3 flex justify-between items-center text-[11px] border-t border-slate-50 dark:border-slate-800/50 mt-4">
+          <div className="flex items-center gap-2 text-slate-400">
+            <span className="font-bold tracking-wider">STATUT: {mission.status.toUpperCase()}</span>
             {mission.estimated_delivery_date && (
               <>
                 <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
@@ -189,12 +179,14 @@ export function MissionCard({
                 </span>
               </>
             )}
+            <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+            <span>{mission.estimation} J</span>
           </div>
           <Link 
             href={`/missions/${mission.id}`}
-            className="text-primary font-semibold flex items-center gap-1 hover:underline"
+            className="text-primary font-bold flex items-center gap-1 hover:underline tracking-wider"
           >
-            Détails <ArrowRight className="h-3 w-3" />
+            DÉTAILS <ArrowRight className="h-3 w-3" />
           </Link>
         </div>
       </div>
