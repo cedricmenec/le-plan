@@ -5,9 +5,26 @@ import { createClient } from '@/lib/supabase/client'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, GripVertical } from 'lucide-react'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
-import { updateTask } from '@/app/missions/actions'
+import { updateTask, reorderTasks } from '@/app/missions/actions'
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 interface Task {
   id: string
@@ -20,10 +37,87 @@ interface TaskListProps {
   missionId: string
 }
 
+interface SortableTaskItemProps {
+  task: Task
+  onUpdate: (id: string, updates: Partial<Task>) => Promise<void>
+  onDelete: (id: string) => Promise<void>
+}
+
+function SortableTaskItem({ task, onUpdate, onDelete }: SortableTaskItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: task.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : undefined,
+    opacity: isDragging ? 0.5 : undefined,
+  }
+
+  return (
+    <div 
+      ref={setNodeRef} 
+      style={style}
+      className="flex items-center justify-between group py-1 border-b border-slate-50 dark:border-slate-800/50 last:border-0 bg-white dark:bg-slate-950"
+    >
+      <div className="flex items-center space-x-3 flex-1 min-w-0">
+        <div 
+          {...attributes} 
+          {...listeners} 
+          className="cursor-grab active:cursor-grabbing p-1 -ml-1 text-slate-300 hover:text-slate-500 dark:text-slate-700 dark:hover:text-slate-500 transition-colors"
+        >
+          <GripVertical className="h-4 w-4" />
+        </div>
+        <Checkbox 
+          id={task.id} 
+          checked={task.is_completed} 
+          onCheckedChange={() => onUpdate(task.id, { is_completed: !task.is_completed })}
+          className="h-5 w-5"
+        />
+        <InlineEditableField
+          value={task.title}
+          onSave={async (newTitle) => {
+            await onUpdate(task.id, { title: newTitle })
+          }}
+          trigger="doubleClick"
+          displayClassName={task.is_completed ? 'line-through text-muted-foreground' : 'text-slate-700 dark:text-slate-200'}
+          className="flex-1"
+        />
+      </div>
+      <Button
+        type="button"
+        size="icon"
+        variant="ghost"
+        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity ml-2"
+        onClick={() => onDelete(task.id)}
+      >
+        <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+      </Button>
+    </div>
+  )
+}
+
 export function TaskList({ missionId }: TaskListProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [newTitle, setNewTitle] = useState('')
   const supabase = createClient()
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5, // Avoid accidental drags when clicking
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   useEffect(() => {
     async function fetchTasks() {
@@ -59,7 +153,6 @@ export function TaskList({ missionId }: TaskListProps) {
   }
 
   async function handleUpdateTask(id: string, updates: Partial<Task>) {
-    // Optimistic update
     const previousTasks = [...tasks]
     setTasks(tasks.map(t => t.id === id ? { ...t, ...updates } : t))
 
@@ -82,6 +175,33 @@ export function TaskList({ missionId }: TaskListProps) {
     }
   }
 
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+
+    if (over && active.id !== over.id) {
+      const oldIndex = tasks.findIndex((t) => t.id === active.id)
+      const newIndex = tasks.findIndex((t) => t.id === over.id)
+
+      const newTasks = arrayMove(tasks, oldIndex, newIndex)
+      
+      // Update local state optimistically
+      setTasks(newTasks)
+
+      // Prepare positions for database update
+      const updates = newTasks.map((task, index) => ({
+        id: task.id,
+        position: index,
+      }))
+
+      try {
+        await reorderTasks(missionId, updates)
+      } catch (error) {
+        console.error('Error reordering tasks:', error)
+        // Optionally revert on error, but reordering errors are rare and state might be complex to revert perfectly
+      }
+    }
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-4">
@@ -91,38 +211,27 @@ export function TaskList({ missionId }: TaskListProps) {
         </span>
       </div>
       
-      <div className="space-y-3">
-        {tasks.map((task) => (
-          <div key={task.id} className="flex items-center justify-between group py-1 border-b border-slate-50 dark:border-slate-800/50 last:border-0">
-            <div className="flex items-center space-x-3 flex-1 min-w-0">
-              <Checkbox 
-                id={task.id} 
-                checked={task.is_completed} 
-                onCheckedChange={() => handleUpdateTask(task.id, { is_completed: !task.is_completed })}
-                className="h-5 w-5"
+      <DndContext 
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext 
+          items={tasks.map(t => t.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="space-y-3">
+            {tasks.map((task) => (
+              <SortableTaskItem 
+                key={task.id} 
+                task={task} 
+                onUpdate={handleUpdateTask} 
+                onDelete={deleteTask} 
               />
-              <InlineEditableField
-                value={task.title}
-                onSave={async (newTitle) => {
-                  await handleUpdateTask(task.id, { title: newTitle })
-                }}
-                trigger="doubleClick"
-                displayClassName={task.is_completed ? 'line-through text-muted-foreground' : 'text-slate-700 dark:text-slate-200'}
-                className="flex-1"
-              />
-            </div>
-            <Button
-              type="button"
-              size="icon"
-              variant="ghost"
-              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity ml-2"
-              onClick={() => deleteTask(task.id)}
-            >
-              <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-            </Button>
+            ))}
           </div>
-        ))}
-      </div>
+        </SortableContext>
+      </DndContext>
 
       <div className="flex items-center space-x-2 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
         <Input 
