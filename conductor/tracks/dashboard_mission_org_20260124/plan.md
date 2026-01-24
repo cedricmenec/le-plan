@@ -28,10 +28,11 @@ Improve the project detail and mission list pages by splitting missions into "Ac
     - [x] Update `components/projects/project-dashboard.test.tsx` to verify the split rendering. (58bbd33)
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Project Dashboard Integration' (Protocol in workflow.md) (b3b4150)
 
-## Phase 4: Mission List Integration
+## Phase 4: Mission List Integration [checkpoint: 98c1fce]
 
-- [ ] Task: Update the main Missions page (`app/missions/page.tsx`).
-    - [ ] Apply the same split layout (Active Grid vs. Not Started Condensed List).
-    - [ ] Ensure `CondensedMissionRow` displays the Project Name in this view.
-    - [ ] Update `components/missions/mission-list.test.tsx` (if applicable) or add integration tests for the page.
+- [x] Task: Update the main Missions page (`app/missions/page.tsx`). (58bbd33)
+    - [x] Apply the same split layout (Active Grid vs. Not Started Condensed List). (58bbd33)
+    - [x] Ensure `CondensedMissionRow` displays the Project Name in this view. (58bbd33)
+    - [x] Update `components/missions/mission-list.test.tsx` (if applicable) or add integration tests for the page. (58bbd33)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Mission List Integration' (Protocol in workflow.md) (98c1fce)
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Mission List Integration' (Protocol in workflow.md)
