@@ -166,10 +166,11 @@ Le projet consiste à développer une **application Web** personnelle de visibil
 *   **Gestion des Projets :** Création, modification et vue détaillée des projets.
     *   **Vue détaillée (Inclus) :** Visualisation des missions d'un projet avec filtrage (actives vs toutes non-terminées).
     *   **Dashboard de projet (Inclus) :** Indicateurs de charge totale (jours restants) et décompte des tâches par statut (À faire, En cours).
-    *   Système de navigation par breadcrumbs (Inclus).
     *   Indicateurs de charge totale et d'avancement pour les stakeholders (PI/Release planning).
-    *   Facilitation de la priorisation des missions au sein d'un même projet.
-*   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge, score de confiance, **objectif principal (Main Goal)** et **notes complémentaires**.
+    *   Facilitation de la priorisation des missions par un **tri automatique par date de livraison estimée**.
+    *   Système de navigation par breadcrumbs (Inclus).
+*   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge, score de confiance, **objectif principal (Main Goal)**, **notes complémentaires**, ainsi que des **dates de livraison estimées et souhaitées**.
+*   **Indicateurs de Délai (Inclus) :** Affichage de la durée restante approximative (jours, semaines, mois) basée sur la date de livraison estimée pour faciliter la visibilité immédiate des échéances.
 *   **Tâches (Inclus) :** Décomposition des missions en actions simples avec suivi d'état (checkbox), réordonnancement par drag & drop et édition in-line.
 *   **Authentification (Inclus) :** Sécurisation des données par utilisateur via Supabase Auth.
 *   **Vues Temporelles :**
