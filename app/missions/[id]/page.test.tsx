@@ -38,5 +38,10 @@ test('renders mission detail page', async () => {
 
   expect(screen.getAllByText('Test Mission')).toHaveLength(2)
   expect(screen.getByText('Test Goal')).toBeDefined()
+  expect(screen.getByText('Test Notes')).toBeDefined()
+  expect(screen.getByText('feature')).toBeDefined()
+  expect(screen.getByText('in_progress')).toBeDefined()
+  expect(screen.getByText('5 j')).toBeDefined()
+  expect(screen.getByText('80%')).toBeDefined()
   expect(screen.getByTestId('subtask-list')).toBeDefined()
 })
