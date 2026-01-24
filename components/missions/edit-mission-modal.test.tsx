@@ -72,7 +72,12 @@ test('renders edit mission modal with existing data', async () => {
   const estimationInput = screen.getByLabelText(/estimation/i) as HTMLInputElement
   expect(estimationInput.value).toBe(mockMission.estimation.toString())
 
-  const goalInput = screen.getByLabelText(/main goal/i) as HTMLInputElement
+  const estimatedDateInput = screen.getByLabelText(/Date de Livraison Estimée/i) as HTMLInputElement
+  const desiredDateInput = screen.getByLabelText(/Date de livraison souhaitée/i) as HTMLInputElement
+  expect(estimatedDateInput).toBeDefined()
+  expect(desiredDateInput).toBeDefined()
+
+  const goalInput = screen.getByLabelText(/main goal/i) as HTMLTextAreaElement
   expect(goalInput.value).toBe(mockMission.goal)
 
   const notesInput = screen.getByLabelText(/notes/i) as HTMLInputElement

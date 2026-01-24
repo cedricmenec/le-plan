@@ -43,10 +43,14 @@ test('getMission fetches a mission', async () => {
   expect(mission.title).toBe('Test Mission')
 })
 
-test('updateMission updates a mission', async () => {
-  const mission = await updateMission('m1', { title: 'Updated Mission' })
-  expect(mission.id).toBe('m1')
-  expect(mission.title).toBe('Updated Mission')
+test('updateMission updates a mission with delivery dates', async () => {
+  const updates = { 
+    title: 'Updated Mission',
+    estimated_delivery_date: '2026-06-01',
+    desired_delivery_date: '2026-06-15'
+  }
+  await updateMission('m1', updates)
+  expect(mockUpdate).toHaveBeenCalledWith(updates)
 })
 
 test('updateTask updates a task', async () => {

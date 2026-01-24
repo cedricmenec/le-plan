@@ -29,6 +29,8 @@ test('renders mission form with basic fields', () => {
   expect(screen.getByLabelText(/projet/i)).toBeDefined()
   expect(screen.getByLabelText(/main goal/i)).toBeDefined()
   expect(screen.getByLabelText(/notes/i)).toBeDefined()
+  expect(screen.getByLabelText(/Date de Livraison Estimée/i)).toBeDefined()
+  expect(screen.getByLabelText(/Date de livraison souhaitée/i)).toBeDefined()
 })
 
 test('submitting the form calls onSuccess and resets fields', async () => {

@@ -26,6 +26,7 @@ interface MissionFormProps {
 export function MissionForm({ onSuccess }: MissionFormProps) {
   const [loading, setLoading] = useState(false)
   const [projects, setProjects] = useState<Project[]>([])
+  const [dateWarning, setDateWarning] = useState<string | null>(null)
   const supabase = createClient()
 
   useEffect(() => {
@@ -43,8 +44,8 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setLoading(true)
-
+    setDateWarning(null)
+    
     // Capture the form element synchronously — React's synthetic event is released after awaits
     const form = event.currentTarget as HTMLFormElement
 
@@ -53,10 +54,38 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
     const type = formData.get('type') as string
     const goal = formData.get('goal') as string
     const notes = formData.get('notes') as string
+    const estimated_delivery_date = formData.get('estimated_delivery_date') as string || null
+    const desired_delivery_date = formData.get('desired_delivery_date') as string || null
     const estimation = parseFloat(formData.get('estimation') as string)
     const confidence = parseFloat(formData.get('confidence') as string)
     const project_id_raw = formData.get('project_id') as string
     const project_id = project_id_raw === 'none' ? null : project_id_raw
+
+    // Basic date validation
+    if (estimated_delivery_date) {
+      const d = new Date(estimated_delivery_date)
+      if (isNaN(d.getTime())) {
+        alert('Date de livraison estimée invalide (format attendu: YYYY-MM-DD)')
+        return
+      }
+      
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      if (d < today) {
+        setDateWarning("Attention: La date de livraison estimée est dans le passé.")
+      }
+    }
+
+    if (desired_delivery_date) {
+      const d = new Date(desired_delivery_date)
+      if (isNaN(d.getTime())) {
+        alert('Date de livraison souhaitée invalide (format attendu: YYYY-MM-DD)')
+        return
+      }
+    }
+
+    setLoading(true)
+
 
     try {
       const { data: { user } } = await supabase.auth.getUser()
@@ -77,6 +106,8 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
           confidence,
           project_id,
           user_id: user.id,
+          estimated_delivery_date,
+          desired_delivery_date,
         })
 
       if (error) {
@@ -125,6 +156,33 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
         <Label htmlFor="notes">Notes</Label>
         <Textarea id="notes" name="notes" placeholder="Notes complémentaires" />
       </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="estimated_delivery_date">Date de Livraison Estimée</Label>
+          <Input 
+            id="estimated_delivery_date" 
+            name="estimated_delivery_date" 
+            type="text" 
+            placeholder="YYYY-MM-DD" 
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="desired_delivery_date">Date de livraison souhaitée</Label>
+          <Input 
+            id="desired_delivery_date" 
+            name="desired_delivery_date" 
+            type="text" 
+            placeholder="YYYY-MM-DD" 
+          />
+        </div>
+      </div>
+
+      {dateWarning && (
+        <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+          {dateWarning}
+        </p>
+      )}
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">

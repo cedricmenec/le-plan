@@ -78,12 +78,32 @@ export function EditMissionModal({
         confidence: mission.confidence,
         project_id: mission.project_id,
         status: mission.status,
+        estimated_delivery_date: mission.estimated_delivery_date,
+        desired_delivery_date: mission.desired_delivery_date,
       })
     }
   }, [open, mission])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Basic date validation
+    if (formData.estimated_delivery_date) {
+      const d = new Date(formData.estimated_delivery_date)
+      if (isNaN(d.getTime())) {
+        alert('Date de livraison estimée invalide (format attendu: YYYY-MM-DD)')
+        return
+      }
+    }
+
+    if (formData.desired_delivery_date) {
+      const d = new Date(formData.desired_delivery_date)
+      if (isNaN(d.getTime())) {
+        alert('Date de livraison souhaitée invalide (format attendu: YYYY-MM-DD)')
+        return
+      }
+    }
+
     // Map 'none' back to null if needed, but if using state it's already handled
     onSubmit(formData)
   }
@@ -162,6 +182,27 @@ export function EditMissionModal({
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               placeholder="Notes complémentaires"
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-estimated-date">Date de Livraison Estimée</Label>
+              <Input
+                id="edit-estimated-date"
+                value={formData.estimated_delivery_date || ''}
+                onChange={(e) => setFormData({ ...formData, estimated_delivery_date: e.target.value })}
+                placeholder="YYYY-MM-DD"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-desired-date">Date de livraison souhaitée</Label>
+              <Input
+                id="edit-desired-date"
+                value={formData.desired_delivery_date || ''}
+                onChange={(e) => setFormData({ ...formData, desired_delivery_date: e.target.value })}
+                placeholder="YYYY-MM-DD"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
