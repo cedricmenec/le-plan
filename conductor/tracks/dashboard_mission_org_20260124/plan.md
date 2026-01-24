@@ -1,0 +1,37 @@
+# Implementation Plan: Project Dashboard Mission Organization
+
+Improve the project detail and mission list pages by splitting missions into "Active" (grid) and "Not Started" (condensed list) sections with specific sorting logic.
+
+## Phase 1: Data Logic & Filtering
+
+- [x] Task: Update mission fetching/sorting logic. (71421ee)
+    - [x] Update (or create a helper) to sort missions by `estimated_delivery_date` (ASC) then `created_at` (DESC). (71421ee)
+    - [x] Add unit tests for this sorting logic in `lib/utils.test.ts` or a new utility file. (71421ee)
+    - [ ] Add unit tests for this sorting logic in `lib/utils.test.ts` or a new utility file.
+- [ ] Task: Conductor - User Manual Verification 'Phase 1: Data Logic & Filtering' (Protocol in workflow.md)
+
+## Phase 2: Condensed UI Components
+
+- [ ] Task: Create the `CondensedMissionList` and `CondensedMissionRow` components.
+    - [ ] Create `components/missions/condensed-mission-row.tsx` with Title, Type, Estimation, and Quick Actions.
+    - [ ] Add support for optional Project Name display in `CondensedMissionRow`.
+    - [ ] Create `components/missions/condensed-mission-list.tsx` to wrap the rows.
+    - [ ] Write unit tests for `CondensedMissionRow` (checking display logic for project name and actions).
+- [ ] Task: Conductor - User Manual Verification 'Phase 2: Condensed UI Components' (Protocol in workflow.md)
+
+## Phase 3: Project Dashboard Integration
+
+- [ ] Task: Refactor `ProjectDashboard` to use the new layout.
+    - [ ] Split missions into `in_progress` and `todo` arrays.
+    - [ ] Render `in_progress` missions using the existing grid (max 3 cols).
+    - [ ] Render `todo` missions using the new `CondensedMissionList`.
+    - [ ] Update `components/projects/project-dashboard.test.tsx` to verify the split rendering.
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: Project Dashboard Integration' (Protocol in workflow.md)
+
+## Phase 4: Mission List Integration
+
+- [ ] Task: Update the main Missions page (`app/missions/page.tsx`).
+    - [ ] Apply the same split layout (Active Grid vs. Not Started Condensed List).
+    - [ ] Ensure `CondensedMissionRow` displays the Project Name in this view.
+    - [ ] Update `components/missions/mission-list.test.tsx` (if applicable) or add integration tests for the page.
+- [ ] Task: Conductor - User Manual Verification 'Phase 4: Mission List Integration' (Protocol in workflow.md)
