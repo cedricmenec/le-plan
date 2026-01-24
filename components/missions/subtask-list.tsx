@@ -73,37 +73,47 @@ export function SubtaskList({ missionId }: SubtaskListProps) {
   }
 
   return (
-    <div className="mt-4 space-y-2">
-      <div className="text-sm font-medium mb-2">Sous-tâches</div>
-      {subtasks.map((subtask) => (
-        <div key={subtask.id} className="flex items-center justify-between group">
-          <div className="flex items-center space-x-2">
-            <Checkbox 
-              id={subtask.id} 
-              checked={subtask.is_completed} 
-              onCheckedChange={() => toggleSubtask(subtask.id, subtask.is_completed)}
-            />
-            <label 
-              htmlFor={subtask.id}
-              className={`text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${subtask.is_completed ? 'line-through text-muted-foreground' : ''}`}
+    <div className="space-y-4">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Sous-tâches</h3>
+        <span className="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full font-medium">
+          {subtasks.filter(s => s.is_completed).length} / {subtasks.length}
+        </span>
+      </div>
+      
+      <div className="space-y-3">
+        {subtasks.map((subtask) => (
+          <div key={subtask.id} className="flex items-center justify-between group py-1 border-b border-slate-50 dark:border-slate-800/50 last:border-0">
+            <div className="flex items-center space-x-3">
+              <Checkbox 
+                id={subtask.id} 
+                checked={subtask.is_completed} 
+                onCheckedChange={() => toggleSubtask(subtask.id, subtask.is_completed)}
+                className="h-5 w-5"
+              />
+              <label 
+                htmlFor={subtask.id}
+                className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 transition-all ${subtask.is_completed ? 'line-through text-muted-foreground' : 'text-slate-700 dark:text-slate-200'}`}
+              >
+                {subtask.title}
+              </label>
+            </div>
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={() => deleteSubtask(subtask.id)}
             >
-              {subtask.title}
-            </label>
+              <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+            </Button>
           </div>
-          <Button
-            type="button"
-            size="icon"
-            variant="ghost"
-            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={() => deleteSubtask(subtask.id)}
-          >
-            <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
-          </Button>
-        </div>
-      ))}
-      <div className="flex items-center space-x-2 mt-2">
+        ))}
+      </div>
+
+      <div className="flex items-center space-x-2 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
         <Input 
-          className="h-8 text-xs" 
+          className="h-9 text-sm" 
           placeholder="Ajouter une sous-tâche..." 
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
@@ -114,7 +124,13 @@ export function SubtaskList({ missionId }: SubtaskListProps) {
             }
           }}
         />
-        <Button type="button" size="icon" variant="ghost" className="h-8 w-8" onClick={addSubtask}>
+        <Button 
+          type="button" 
+          size="icon" 
+          variant="secondary" 
+          className="h-9 w-9 shrink-0" 
+          onClick={addSubtask}
+        >
           <Plus className="h-4 w-4" />
         </Button>
       </div>
