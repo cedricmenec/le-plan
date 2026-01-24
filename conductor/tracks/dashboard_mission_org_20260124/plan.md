@@ -10,14 +10,14 @@ Improve the project detail and mission list pages by splitting missions into "Ac
     - [x] Add unit tests for this sorting logic in `lib/utils.test.ts` or a new utility file.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Data Logic & Filtering' (Protocol in workflow.md) (c4b181b)
 
-## Phase 2: Condensed UI Components
+## Phase 2: Condensed UI Components [checkpoint: 0d7bb95]
 
-- [ ] Task: Create the `CondensedMissionList` and `CondensedMissionRow` components.
-    - [ ] Create `components/missions/condensed-mission-row.tsx` with Title, Type, Estimation, and Quick Actions.
-    - [ ] Add support for optional Project Name display in `CondensedMissionRow`.
-    - [ ] Create `components/missions/condensed-mission-list.tsx` to wrap the rows.
-    - [ ] Write unit tests for `CondensedMissionRow` (checking display logic for project name and actions).
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Condensed UI Components' (Protocol in workflow.md)
+- [x] Task: Create the `CondensedMissionList` and `CondensedMissionRow` components. (9ef44a0)
+    - [x] Create `components/missions/condensed-mission-row.tsx` with Title, Type, Estimation, and Quick Actions. (9ef44a0)
+    - [x] Add support for optional Project Name display in `CondensedMissionRow`. (9ef44a0)
+    - [x] Create `components/missions/condensed-mission-list.tsx` to wrap the rows. (9ef44a0)
+    - [x] Write unit tests for `CondensedMissionRow` (checking display logic for project name and actions). (9ef44a0)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Condensed UI Components' (Protocol in workflow.md) (0d7bb95)
 
 ## Phase 3: Project Dashboard Integration
 
