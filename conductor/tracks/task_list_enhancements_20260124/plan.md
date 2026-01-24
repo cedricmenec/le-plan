@@ -15,16 +15,16 @@ This plan covers the renaming of the `SubtaskList` component to `TaskList`, the 
     - [x] Install `@dnd-kit/core`, `@dnd-kit/sortable`, and `@dnd-kit/utilities`.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure and Renaming' (Protocol in workflow.md) (78c06e0)
 
-## Phase 2: Inline Editing
+## Phase 2: Inline Editing [checkpoint: 916c03c]
 
-- [ ] Task: Implement Inline Editing in `TaskList` item
-    - [ ] Write tests for double-click to edit, Enter to save, and Escape to cancel.
-    - [ ] Implement the `InlineEditableField` (or reuse if existing) within the task item.
-    - [ ] Add visual "pending" state (e.g., subtle color change) during save.
-- [ ] Task: Server Action for Renaming
-    - [ ] Create/Update server action to persist title changes.
-    - [ ] Integrate optimistic UI update in the component.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Inline Editing' (Protocol in workflow.md)
+- [x] Task: Implement Inline Editing in `TaskList` item
+    - [x] Write tests for double-click to edit, Enter to save, and Escape to cancel.
+    - [x] Implement the `InlineEditableField` (or reuse if existing) within the task item.
+    - [x] Add visual "pending" state (e.g., subtle color change) during save.
+- [x] Task: Server Action for Renaming
+    - [x] Create/Update server action to persist title changes.
+    - [x] Integrate optimistic UI update in the component.
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Inline Editing' (Protocol in workflow.md) (916c03c)
 
 ## Phase 3: Drag & Drop Reordering
 
