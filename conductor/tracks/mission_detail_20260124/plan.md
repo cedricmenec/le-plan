@@ -14,7 +14,7 @@ Goal: Setup the URL structure and the basic layout of the page.
 ## Phase 2: Inline Editing & Metadata
 Goal: Enable fluid editing of mission fields directly on the page.
 
-- [ ] Task: Create `InlineEditableField` component or pattern to handle text, textarea, and select inputs.
+- [~] Task: Create `InlineEditableField` component or pattern to handle text, textarea, and select inputs.
 - [ ] Task: Implement inline editing for Title, Goal, and Notes fields.
 - [ ] Task: Implement inline editing for Metadata fields (Project, Status, Type, Estimation, Confidence).
 - [ ] Task: Add loading and success/error feedback (Toasts) for auto-saving operations.
