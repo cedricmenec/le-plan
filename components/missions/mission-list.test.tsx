@@ -30,28 +30,33 @@ vi.mock('@/lib/supabase/client', () => {
     ...missionsFirst,
   ]
 
-  const orderMock = vi.fn()
-    // initial fetches (first test, second test initial) return the same baseline
-    .mockImplementationOnce(() => Promise.resolve({ data: missionsFirst, error: null }))
-    .mockImplementationOnce(() => Promise.resolve({ data: missionsFirst, error: null }))
-    // subsequent fetches (after a create) return the updated list
-    .mockImplementation(() => Promise.resolve({ data: missionsAfter, error: null }))
-
-  const deleteMock = vi.fn().mockResolvedValue({ error: null })
+  // Track state across calls
+  let callCount = 0;
 
   const mockFrom = vi.fn((table) => {
     if (table === 'missions') {
-      return {
-        select: vi.fn(() => ({
-          order: orderMock,
-        })),
+      const chain = {
+        select: vi.fn(() => chain),
+        order: vi.fn(() => {
+          // We return the chain, but we need to track when the final promise should resolve
+          // For simplicity, we'll return a proxy or just make the chain thenable
+          return {
+            ...chain,
+            then: (onfulfilled: any) => {
+              callCount++;
+              const data = callCount <= 4 ? missionsFirst : missionsAfter;
+              return Promise.resolve({ data, error: null }).then(onfulfilled);
+            }
+          };
+        }),
         delete: vi.fn(() => ({
-          eq: deleteMock
+          eq: vi.fn().mockResolvedValue({ error: null })
         })),
         update: vi.fn(() => ({
           eq: vi.fn().mockResolvedValue({ error: null })
         }))
       }
+      return chain
     }
     if (table === 'subtasks') {
       return {

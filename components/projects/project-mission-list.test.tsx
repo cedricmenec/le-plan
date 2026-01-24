@@ -38,17 +38,51 @@ const mockMissions: Mission[] = [
 ]
 
 // Mock supabase client
-vi.mock('@/lib/supabase/client', () => ({
-  createClient: vi.fn(() => ({
-    from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          order: vi.fn(() => Promise.resolve({ data: mockMissions, error: null }))
+vi.mock('@/lib/supabase/client', () => {
+  const mockMissions = [
+    {
+      id: '1',
+      title: 'Mission In Progress',
+      status: 'in_progress',
+      estimation: 5,
+      user_id: 'u1',
+      created_at: '',
+      type: 'feature',
+      confidence: 100,
+      project_parent: null,
+      project_id: 'p1'
+    },
+    {
+      id: '2',
+      title: 'Mission Todo',
+      status: 'todo',
+      estimation: 3,
+      user_id: 'u1',
+      created_at: '',
+      type: 'feature',
+      confidence: 100,
+      project_parent: null,
+      project_id: 'p1'
+    }
+  ]
+  const result = Promise.resolve({ data: mockMissions, error: null })
+  const chain: any = {
+    order: vi.fn(() => ({
+      ...chain,
+      then: (onfulfilled: any) => result.then(onfulfilled),
+      catch: (onrejected: any) => result.catch(onrejected),
+    }))
+  }
+  return {
+    createClient: vi.fn(() => ({
+      from: vi.fn(() => ({
+        select: vi.fn(() => ({
+          eq: vi.fn(() => chain)
         }))
       }))
     }))
-  }))
-}))
+  }
+})
 
 test('filters missions correctly based on toggle', async () => {
   render(<ProjectMissionList projectId="p1" initialMissions={mockMissions} />)
