@@ -64,6 +64,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Delivery Dates for Missions**
+## [x] Track: Delivery Dates for Missions
 - **ID**: `mission_delivery_dates_20260124`
-*Link: [./tracks/mission_delivery_dates_20260124/](./tracks/mission_delivery_dates_20260124/)*
+- **Link**: [conductor/archive/mission_delivery_dates_20260124](archive/mission_delivery_dates_20260124/)

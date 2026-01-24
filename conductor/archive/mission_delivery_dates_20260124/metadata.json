@@ -1,0 +1,8 @@
+{
+  "track_id": "mission_delivery_dates_20260124",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-24T18:00:00Z",
+  "updated_at": "2026-01-24T18:00:00Z",
+  "description": "Ajoute à la Mission un nouveau champs \"Date de Livraison Estimée\" et \"Date de livraison souhaitée\". Affichage de la durée restante dans la MissionCard et dans la vue de détail avec une logique d'approximation."
+}
