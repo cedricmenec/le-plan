@@ -39,8 +39,8 @@ export function Sidebar() {
             <LayoutDashboard className="h-5 w-5" />
           </div>
           <div>
-            <h1 className="text-base font-bold leading-tight text-slate-900 dark:text-white">Workload</h1>
-            <p className="text-slate-400 text-xs font-normal">Productivity Tool</p>
+            <h1 className="text-base font-bold leading-tight text-slate-900 dark:text-white">Le Plan</h1>
+            <p className="text-slate-400 text-xs font-normal">Peaceful Efficiency</p>
           </div>
         </div>
       </div>
