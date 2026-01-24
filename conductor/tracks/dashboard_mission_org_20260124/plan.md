@@ -2,13 +2,13 @@
 
 Improve the project detail and mission list pages by splitting missions into "Active" (grid) and "Not Started" (condensed list) sections with specific sorting logic.
 
-## Phase 1: Data Logic & Filtering
+## Phase 1: Data Logic & Filtering [checkpoint: c4b181b]
 
 - [x] Task: Update mission fetching/sorting logic. (71421ee)
-    - [x] Update (or create a helper) to sort missions by `estimated_delivery_date` (ASC) then `created_at` (DESC). (71421ee)
-    - [x] Add unit tests for this sorting logic in `lib/utils.test.ts` or a new utility file. (71421ee)
-    - [ ] Add unit tests for this sorting logic in `lib/utils.test.ts` or a new utility file.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Data Logic & Filtering' (Protocol in workflow.md)
+    - [x] Update (or create a helper) to sort missions by `estimated_delivery_date` (ASC) then `created_at` (DESC).
+    - [x] Add unit tests for this sorting logic in `lib/utils.test.ts` or a new utility file.
+    - [x] Add unit tests for this sorting logic in `lib/utils.test.ts` or a new utility file.
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Data Logic & Filtering' (Protocol in workflow.md) (c4b181b)
 
 ## Phase 2: Condensed UI Components
 
