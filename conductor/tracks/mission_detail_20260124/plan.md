@@ -25,5 +25,5 @@ Goal: Ensure robust subtask management and final UI polish.
 
 - [x] Task: Integrate `SubtaskList` into the right column of the detail page. (7663e33)
 - [x] Task: Refactor/Enhance `SubtaskList` if necessary to ensure it fits the detail page layout perfectly. (55058de)
-- [~] Task: Final UI polish (spacing, shadows, transitions) according to Product Guidelines.
+- [x] Task: Final UI polish (spacing, shadows, transitions) according to Product Guidelines. (e05457a)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Subtask Integration & Refinement' (Protocol in workflow.md)
