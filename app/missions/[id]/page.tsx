@@ -1,8 +1,9 @@
-import { getMission } from '../actions'
+import { getMission, updateMission } from '../actions'
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { SubtaskList } from '@/components/missions/subtask-list'
+import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -32,6 +33,11 @@ export default async function MissionDetailPage({ params }: PageProps) {
     return notFound()
   }
 
+  const handleUpdate = async (field: string, value: any) => {
+    'use server'
+    await updateMission(id, { [field]: value })
+  }
+
   const breadcrumbItems = mission.projects 
     ? [
         { label: 'Projects', href: '/projects' },
@@ -58,21 +64,44 @@ export default async function MissionDetailPage({ params }: PageProps) {
                 {mission.status}
               </span>
             </div>
-            <h1 className="text-4xl font-bold tracking-tight">{mission.title}</h1>
+            
+            <InlineEditableField
+              value={mission.title}
+              onSave={async (val) => {
+                'use server'
+                await updateMission(id, { title: val })
+              }}
+              displayClassName="text-4xl font-bold tracking-tight h-auto py-1"
+              className="text-4xl"
+            />
             
             <div className="space-y-2">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Objectif</h3>
-              <p className="text-lg text-slate-700 dark:text-slate-300">
-                {mission.goal || <span className="italic text-muted-foreground">Aucun objectif défini</span>}
-              </p>
+              <InlineEditableField
+                value={mission.goal}
+                onSave={async (val) => {
+                  'use server'
+                  await updateMission(id, { goal: val })
+                }}
+                type="textarea"
+                displayClassName="text-lg text-slate-700 dark:text-slate-300 min-h-[3rem]"
+                placeholder="Décrire l'objectif principal..."
+              />
             </div>
 
             <div className="space-y-2">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Notes</h3>
               <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-100 dark:border-slate-800">
-                <p className="text-sm whitespace-pre-wrap text-slate-600 dark:text-slate-400">
-                  {mission.notes || <span className="italic text-muted-foreground">Aucune note</span>}
-                </p>
+                <InlineEditableField
+                  value={mission.notes}
+                  onSave={async (val) => {
+                    'use server'
+                    await updateMission(id, { notes: val })
+                  }}
+                  type="textarea"
+                  displayClassName="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap min-h-[4rem]"
+                  placeholder="Ajouter des notes complémentaires..."
+                />
               </div>
             </div>
           </div>
