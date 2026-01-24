@@ -11,14 +11,14 @@ Goal: Setup the URL structure and the basic layout of the page.
 - [x] Task: Update `MissionCard` component to link the "Détails" button to the new route. (882c25e)
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Routing & Basic Structure' (Protocol in workflow.md) (4f26760)
 
-## Phase 2: Inline Editing & Metadata
+## Phase 2: Inline Editing & Metadata [checkpoint: d4ea651]
 Goal: Enable fluid editing of mission fields directly on the page.
 
 - [x] Task: Create `InlineEditableField` component or pattern to handle text, textarea, and select inputs. (5c6eeed)
 - [x] Task: Implement inline editing for Title, Goal, and Notes fields. (d800050)
 - [x] Task: Implement inline editing for Metadata fields (Project, Status, Type, Estimation, Confidence). (cc0986e)
 - [x] Task: Add loading and success/error feedback (Toasts) for auto-saving operations. (c7322f4)
-- [~] Task: Conductor - User Manual Verification 'Phase 2: Inline Editing & Metadata' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Inline Editing & Metadata' (Protocol in workflow.md) (d4ea651)
 
 ## Phase 3: Subtask Integration & Refinement
 Goal: Ensure robust subtask management and final UI polish.
