@@ -85,13 +85,13 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
       <ProjectDashboard missions={missions} />
 
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold tracking-tight">Missions du projet</h2>
         {loading && missions.length === 0 ? (
           <p className="text-muted-foreground animate-pulse">Chargement des missions...</p>
         ) : (
           <MissionList 
             initialMissions={filteredMissions} 
             onUpdate={fetchMissions}
+            layout="split"
           />
         )}
       </div>

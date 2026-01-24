@@ -147,3 +147,33 @@ test('handles mission deletion', async () => {
   // Ideally, we would export the mock or spy on it, but for this integration test, 
   // seeing the dialog close and no error is a good sign.
 })
+
+test('renders split layout correctly', () => {
+  const missions = [
+    { 
+      id: '1', 
+      title: 'Active Mission', 
+      type: 'feature', 
+      status: 'in_progress', 
+      estimation: 2, 
+      created_at: '2026-01-24T10:00:00Z',
+      projects: null 
+    },
+    { 
+      id: '2', 
+      title: 'Todo Mission', 
+      type: 'study', 
+      status: 'todo', 
+      estimation: 1, 
+      created_at: '2026-01-24T11:00:00Z',
+      projects: null 
+    },
+  ]
+  // @ts-ignore
+  render(<MissionList initialMissions={missions} layout="split" />)
+
+  expect(screen.getByText('Missions actives')).toBeDefined()
+  expect(screen.getByText('Missions non commencées')).toBeDefined()
+  expect(screen.getByText('Active Mission')).toBeDefined()
+  expect(screen.getByText('Todo Mission')).toBeDefined()
+})

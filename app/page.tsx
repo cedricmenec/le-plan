@@ -17,7 +17,7 @@ export default async function Home() {
   return (
     <div className="w-full max-w-[1600px] mx-auto p-6 md:p-10 space-y-8">
       <DashboardHeader />
-      <MissionList />
+      <MissionList layout="split" showProjectName={true} />
     </div>
   )
 }
