@@ -61,3 +61,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Offrir la possibilité dans le composant "SubtaskList" de facilement réordonner, par drag and drop, l'ordre des tâches. Renommer le composant en "TaskList" plutôt que "SubtaskList". Offrir la possibilité de renommer une tâche (édition in-line)
 - **ID**: `task_list_enhancements_20260124`
 - **Link**: [conductor/archive/task_list_enhancements_20260124](archive/task_list_enhancements_20260124/)
+
+---
+
+- [x] **Track: Delivery Dates for Missions**
+- **ID**: `mission_delivery_dates_20260124`
+*Link: [./tracks/mission_delivery_dates_20260124/](./tracks/mission_delivery_dates_20260124/)*
