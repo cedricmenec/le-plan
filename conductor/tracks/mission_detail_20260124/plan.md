@@ -17,7 +17,7 @@ Goal: Enable fluid editing of mission fields directly on the page.
 - [x] Task: Create `InlineEditableField` component or pattern to handle text, textarea, and select inputs. (5c6eeed)
 - [x] Task: Implement inline editing for Title, Goal, and Notes fields. (d800050)
 - [x] Task: Implement inline editing for Metadata fields (Project, Status, Type, Estimation, Confidence). (cc0986e)
-- [~] Task: Add loading and success/error feedback (Toasts) for auto-saving operations.
+- [x] Task: Add loading and success/error feedback (Toasts) for auto-saving operations. (c7322f4)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Inline Editing & Metadata' (Protocol in workflow.md)
 
 ## Phase 3: Subtask Integration & Refinement
