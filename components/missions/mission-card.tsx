@@ -87,7 +87,7 @@ export function MissionCard({
   const goalContent = (
     <p 
       ref={goalRef}
-      className={`mt-2 text-sm text-slate-500 dark:text-slate-400 line-clamp-2 transition-colors duration-200 ${
+      className={`mt-2 text-sm text-slate-500 dark:text-slate-400 line-clamp-3 transition-colors duration-200 ${
         isTruncated ? 'hover:text-slate-700 dark:hover:text-slate-200 cursor-help' : ''
       }`}
     >
@@ -184,9 +184,9 @@ export function MissionCard({
           </div>
           <Link 
             href={`/missions/${mission.id}`}
-            className="text-primary font-bold flex items-center gap-1 hover:underline tracking-wider"
+            className="text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1 hover:underline tracking-wider"
           >
-            DÉTAILS <ArrowRight className="h-3 w-3" />
+            DETAILS <ArrowRight className="h-3 w-3" />
           </Link>
         </div>
       </div>

@@ -61,7 +61,7 @@ describe('MissionCard', () => {
     // Ensure "Avancement" is NOT there
     expect(screen.queryByText(/avancement/i)).toBeNull()
     
-    const detailsLink = screen.getByRole('link', { name: /DÉTAILS/i })
+    const detailsLink = screen.getByRole('link', { name: /DETAILS/i })
     expect(detailsLink.getAttribute('href')).toBe('/missions/1')
   })
 
@@ -136,6 +136,7 @@ describe('MissionCard', () => {
 
     const goalElement = screen.getByText(missionWithLongGoal.goal)
     expect(goalElement).toBeDefined()
+    expect(goalElement.className).toContain('line-clamp-3')
     expect(goalElement.className).toContain('cursor-help')
 
     if (originalScrollHeight) Object.defineProperty(HTMLElement.prototype, 'scrollHeight', originalScrollHeight)
