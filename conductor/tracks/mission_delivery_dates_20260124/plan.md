@@ -14,12 +14,12 @@ This plan implements two new optional fields for missions: `estimated_delivery_d
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Domain Logic & Helpers' (Protocol in workflow.md) a9f4b47
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Domain Logic & Helpers' (Protocol in workflow.md)
 
-## Phase 3: Forms & Actions
-- [ ] Task: Update `MissionForm` to include manual text inputs for the new dates.
-- [ ] Task: Add validation logic to `MissionForm` (valid date format, past date warning).
-- [ ] Task: Update `missions/actions.ts` to handle the new fields in `upsertMission`.
-- [ ] Task: Update mission action tests to verify saving the new dates.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Forms & Actions' (Protocol in workflow.md)
+## Phase 3: Forms & Actions [checkpoint: 29d4661]
+- [x] Task: Update `MissionForm` to include manual text inputs for the new dates. 29d4661
+- [x] Task: Add validation logic to `MissionForm` (valid date format, past date warning). 29d4661
+- [x] Task: Update `missions/actions.ts` to handle the new fields in `upsertMission`. 29d4661
+- [x] Task: Update mission action tests to verify saving the new dates. 29d4661
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Forms & Actions' (Protocol in workflow.md) 29d4661
 
 ## Phase 4: UI Integration & Sorting
 - [ ] Task: Update `MissionCard` to display the relative duration if `estimated_delivery_date` exists.
