@@ -2,7 +2,7 @@
 
 This plan covers the renaming of the `SubtaskList` component to `TaskList`, the integration of drag-and-drop reordering using `@dnd-kit`, and the implementation of inline editing for task titles.
 
-## Phase 1: Infrastructure and Renaming
+## Phase 1: Infrastructure and Renaming [checkpoint: 78c06e0]
 
 - [x] Task: Database Schema Update - Add `position` to `subtasks`
     - [x] Create a new Supabase migration to add `position` column (INT, default 0) to `subtasks` table.
@@ -13,7 +13,7 @@ This plan covers the renaming of the `SubtaskList` component to `TaskList`, the 
     - [x] Update all imports and component references in the codebase.
 - [x] Task: Install Dependencies
     - [x] Install `@dnd-kit/core`, `@dnd-kit/sortable`, and `@dnd-kit/utilities`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure and Renaming' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure and Renaming' (Protocol in workflow.md) (78c06e0)
 
 ## Phase 2: Inline Editing
 
