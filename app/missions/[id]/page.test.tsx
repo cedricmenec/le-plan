@@ -33,9 +33,9 @@ vi.mock('@/lib/supabase/server', () => ({
   })
 }))
 
-// Mock SubtaskList component
-vi.mock('@/components/missions/subtask-list', () => ({
-  SubtaskList: () => <div data-testid="subtask-list">Mocked Subtask List</div>
+// Mock TaskList component
+vi.mock('@/components/missions/task-list', () => ({
+  TaskList: () => <div data-testid="task-list">Mocked Task List</div>
 }))
 
 test('renders mission detail page with project breadcrumbs', async () => {
@@ -59,5 +59,5 @@ test('renders mission detail page', async () => {
   expect(screen.getByText('En cours')).toBeDefined()
   expect(screen.getByText('5')).toBeDefined()
   expect(screen.getByText('80')).toBeDefined()
-  expect(screen.getByTestId('subtask-list')).toBeDefined()
+  expect(screen.getByTestId('task-list')).toBeDefined()
 })

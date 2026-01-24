@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { expect, test, vi } from 'vitest'
-import { SubtaskList } from './subtask-list'
+import { TaskList } from './task-list'
 
 // Mock Supabase
 vi.mock('@/lib/supabase/client', () => ({
@@ -22,7 +22,7 @@ vi.mock('@/lib/supabase/client', () => ({
 }))
 
 test('renders subtask list', async () => {
-  render(<SubtaskList missionId="1" />)
+  render(<TaskList missionId="1" />)
   
   const subtask1 = await screen.findByText(/Subtask 1/i)
   const subtask2 = await screen.findByText(/Subtask 2/i)

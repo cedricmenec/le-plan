@@ -3,7 +3,7 @@ import { getProjects } from '../../projects/actions'
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
-import { SubtaskList } from '@/components/missions/subtask-list'
+import { TaskList } from '@/components/missions/task-list'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 
 import { 
@@ -211,7 +211,7 @@ export default async function MissionDetailPage({ params }: PageProps) {
         </div>
 
         <div className="bg-white dark:bg-[#15202b] rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-md h-fit sticky top-10">
-          <SubtaskList missionId={mission.id} />
+          <TaskList missionId={mission.id} />
         </div>
       </div>
     </div>
