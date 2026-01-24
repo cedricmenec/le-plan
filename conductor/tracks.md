@@ -37,3 +37,21 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Project Detail Refactor & Sidebar Navigation Fix
 - **ID**: `project_detail_refactor_20260123`
 - **Link**: [conductor/archive/project_detail_refactor_20260123](archive/project_detail_refactor_20260123/)
+
+---
+
+## [x] Track: Mission Card Improvements & Notes Tooltip
+- **ID**: `mission_card_improvements_20260123`
+- **Link**: [conductor/archive/mission_card_improvements_20260123](archive/mission_card_improvements_20260123/)
+
+---
+
+## [x] Track: Project Management (Create & Edit Projects)
+- **ID**: `project_management_20260123`
+- **Link**: [conductor/archive/project_management_20260123](archive/project_management_20260123/)
+
+---
+
+## [~] Track: Page de détail d'une Mission (Édition Inline & Sous-tâches)
+- **ID**: `mission_detail_20260124`
+- **Link**: [conductor/tracks/mission_detail_20260124/](tracks/mission_detail_20260124/)
