@@ -32,14 +32,20 @@ export default async function MissionDetailPage({ params }: PageProps) {
     return notFound()
   }
 
+  const breadcrumbItems = mission.projects 
+    ? [
+        { label: 'Projects', href: '/projects' },
+        { label: mission.projects.name, href: `/projects/${mission.project_id}` },
+        { label: mission.title }
+      ]
+    : [
+        { label: 'Missions', href: '/' },
+        { label: mission.title }
+      ]
+
   return (
     <div className="w-full max-w-[1600px] mx-auto p-6 md:p-10 space-y-8">
-      <Breadcrumb 
-        items={[
-          { label: 'Missions', href: '/' },
-          { label: mission.title }
-        ]} 
-      />
+      <Breadcrumb items={breadcrumbItems} />
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">

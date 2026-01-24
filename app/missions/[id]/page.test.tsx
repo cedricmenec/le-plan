@@ -31,6 +31,15 @@ vi.mock('@/components/missions/subtask-list', () => ({
   SubtaskList: () => <div data-testid="subtask-list">Mocked Subtask List</div>
 }))
 
+test('renders mission detail page with project breadcrumbs', async () => {
+  const params = Promise.resolve({ id: 'm1' })
+  const Page = await MissionDetailPage({ params })
+  render(Page)
+
+  expect(screen.getByText('Projects')).toBeDefined()
+  expect(screen.getAllByText('Test Project')).toHaveLength(2)
+})
+
 test('renders mission detail page', async () => {
   const params = Promise.resolve({ id: 'm1' })
   const Page = await MissionDetailPage({ params })
