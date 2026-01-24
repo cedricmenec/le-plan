@@ -24,6 +24,6 @@ Goal: Enable fluid editing of mission fields directly on the page.
 Goal: Ensure robust subtask management and final UI polish.
 
 - [x] Task: Integrate `SubtaskList` into the right column of the detail page. (7663e33)
-- [~] Task: Refactor/Enhance `SubtaskList` if necessary to ensure it fits the detail page layout perfectly.
+- [x] Task: Refactor/Enhance `SubtaskList` if necessary to ensure it fits the detail page layout perfectly. (55058de)
 - [ ] Task: Final UI polish (spacing, shadows, transitions) according to Product Guidelines.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Subtask Integration & Refinement' (Protocol in workflow.md)
