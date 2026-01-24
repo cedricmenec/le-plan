@@ -20,6 +20,7 @@ interface InlineEditableFieldProps {
   className?: string
   displayClassName?: string
   placeholder?: string
+  trigger?: 'click' | 'doubleClick'
 }
 
 export function InlineEditableField({
@@ -29,7 +30,8 @@ export function InlineEditableField({
   options,
   className,
   displayClassName,
-  placeholder = 'Cliquer pour éditer...'
+  placeholder = 'Cliquer pour éditer...',
+  trigger = 'click'
 }: InlineEditableFieldProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [currentValue, setCurrentValue] = useState(value ?? '')
@@ -132,9 +134,12 @@ export function InlineEditableField({
 
   const displayValue = options?.find(opt => opt.value === String(value))?.label || value
 
+  const handleTrigger = () => setIsEditing(true)
+
   return (
     <div 
-      onClick={() => setIsEditing(true)}
+      onClick={trigger === 'click' ? handleTrigger : undefined}
+      onDoubleClick={trigger === 'doubleClick' ? handleTrigger : undefined}
       className={cn(
         "cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded px-1 -mx-1 transition-colors min-h-[1.5rem] flex items-center",
         !value && "italic text-muted-foreground",

@@ -6,6 +6,8 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Plus, Trash2 } from 'lucide-react'
+import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
+import { updateTask } from '@/app/missions/actions'
 
 interface Task {
   id: string
@@ -56,14 +58,16 @@ export function TaskList({ missionId }: TaskListProps) {
     }
   }
 
-  async function toggleTask(id: string, is_completed: boolean) {
-    const { error } = await supabase
-      .from('subtasks')
-      .update({ is_completed: !is_completed })
-      .eq('id', id)
+  async function handleUpdateTask(id: string, updates: Partial<Task>) {
+    // Optimistic update
+    const previousTasks = [...tasks]
+    setTasks(tasks.map(t => t.id === id ? { ...t, ...updates } : t))
 
-    if (!error) {
-      setTasks(tasks.map(t => t.id === id ? { ...t, is_completed: !is_completed } : t))
+    try {
+      await updateTask(id, updates)
+    } catch (error) {
+      console.error('Error updating task:', error)
+      setTasks(previousTasks)
     }
   }
 
@@ -90,25 +94,28 @@ export function TaskList({ missionId }: TaskListProps) {
       <div className="space-y-3">
         {tasks.map((task) => (
           <div key={task.id} className="flex items-center justify-between group py-1 border-b border-slate-50 dark:border-slate-800/50 last:border-0">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 flex-1 min-w-0">
               <Checkbox 
                 id={task.id} 
                 checked={task.is_completed} 
-                onCheckedChange={() => toggleTask(task.id, task.is_completed)}
+                onCheckedChange={() => handleUpdateTask(task.id, { is_completed: !task.is_completed })}
                 className="h-5 w-5"
               />
-              <label 
-                htmlFor={task.id}
-                className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 transition-all ${task.is_completed ? 'line-through text-muted-foreground' : 'text-slate-700 dark:text-slate-200'}`}
-              >
-                {task.title}
-              </label>
+              <InlineEditableField
+                value={task.title}
+                onSave={async (newTitle) => {
+                  await handleUpdateTask(task.id, { title: newTitle })
+                }}
+                trigger="doubleClick"
+                displayClassName={task.is_completed ? 'line-through text-muted-foreground' : 'text-slate-700 dark:text-slate-200'}
+                className="flex-1"
+              />
             </div>
             <Button
               type="button"
               size="icon"
               variant="ghost"
-              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity ml-2"
               onClick={() => deleteTask(task.id)}
             >
               <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />

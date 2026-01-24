@@ -41,3 +41,52 @@ export async function updateMission(id: string, updates: Omit<UpdateMission, 'id
   }
   return data
 }
+
+export async function updateTask(id: string, updates: Database['public']['Tables']['subtasks']['Update']) {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const { data, error } = await supabase
+    .from('subtasks')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw error
+  
+  // Revalidate the mission detail page if we know the mission_id
+  if (data.mission_id) {
+    revalidatePath(`/missions/${data.mission_id}`)
+  }
+
+  return data
+}
+
+export async function reorderTasks(missionId: string, tasks: { id: string, position: number }[]) {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  // Bulk update positions
+  // Note: Supabase doesn't have a single call for different updates per row easily without a function
+  // But for short lists, we can do multiple updates or a single upsert if we have all data.
+  // Using upsert with only id and position might work if other fields are allowed to be missing or have defaults.
+  // Better to use a sequence of updates for safety in a transaction if possible, 
+  // but here we'll just loop for simplicity as typical subtask lists are small (< 20 items).
+  
+  for (const task of tasks) {
+    const { error } = await supabase
+      .from('subtasks')
+      .update({ position: task.position })
+      .eq('id', task.id)
+    
+    if (error) throw error
+  }
+
+  revalidatePath(`/missions/${missionId}`)
+}
+

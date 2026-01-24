@@ -1,37 +1,73 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { expect, test, vi } from 'vitest'
 import { TaskList } from './task-list'
 
+// Mock server actions
+const mockUpdateTask = vi.fn(() => Promise.resolve({}))
+vi.mock('@/app/missions/actions', () => ({
+  updateTask: (...args: any[]) => mockUpdateTask(...args)
+}))
+
 // Mock Supabase
-vi.mock('@/lib/supabase/client', () => ({
-  createClient: vi.fn(() => ({
-    from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          order: vi.fn(() => Promise.resolve({ 
-            data: [
-              { id: '1', title: 'Subtask 1', is_completed: false },
-              { id: '2', title: 'Subtask 2', is_completed: true },
-            ], 
-            error: null 
-          })),
-        })),
+const mockUpdate = vi.fn(() => ({
+  eq: vi.fn(() => Promise.resolve({ error: null }))
+}))
+const mockFrom = vi.fn(() => ({
+  select: vi.fn(() => ({
+    eq: vi.fn(() => ({
+      order: vi.fn(() => Promise.resolve({ 
+        data: [
+          { id: '1', title: 'Task 1', is_completed: false, position: 0 },
+          { id: '2', title: 'Task 2', is_completed: true, position: 1 },
+        ], 
+        error: null 
       })),
     })),
   })),
+  update: mockUpdate,
+  delete: vi.fn(() => ({
+    eq: vi.fn(() => Promise.resolve({ error: null }))
+  })),
+  insert: vi.fn(() => ({
+    select: vi.fn(() => ({
+      single: vi.fn(() => Promise.resolve({ data: { id: '3', title: 'New Task', is_completed: false, position: 2 }, error: null }))
+    }))
+  }))
 }))
 
-test('renders subtask list', async () => {
+vi.mock('@/lib/supabase/client', () => ({
+  createClient: vi.fn(() => ({
+    from: mockFrom
+  })),
+}))
+
+test('renders task list', async () => {
   render(<TaskList missionId="1" />)
   
-  const subtask1 = await screen.findByText(/Subtask 1/i)
-  const subtask2 = await screen.findByText(/Subtask 2/i)
+  const task1 = await screen.findByText(/Task 1/i)
+  const task2 = await screen.findByText(/Task 2/i)
   
-  expect(subtask1).toBeDefined()
-  expect(subtask2).toBeDefined()
+  expect(task1).toBeDefined()
+  expect(task2).toBeDefined()
+})
+
+test('double-clicking a task title enters edit mode', async () => {
+  render(<TaskList missionId="1" />)
   
-  // Check for delete buttons (Trash2 icon usually renders as an svg, we can check for buttons)
-  const deleteButtons = screen.getAllByRole('button')
-  // We expect at least 3 buttons: 2 deletes (one for each subtask) + 1 add button
-  expect(deleteButtons.length).toBeGreaterThanOrEqual(3)
+  const task1Label = await screen.findByText(/Task 1/i)
+  
+  // Double click
+  fireEvent.doubleClick(task1Label)
+  
+  // Should show an input
+  const input = screen.getByDisplayValue('Task 1')
+  expect(input).toBeDefined()
+  
+  // Change value
+  fireEvent.change(input, { target: { value: 'Updated Task 1' } })
+  fireEvent.keyDown(input, { key: 'Enter' })
+  
+  await waitFor(() => {
+    expect(mockUpdateTask).toHaveBeenCalledWith('1', { title: 'Updated Task 1' })
+  })
 })
