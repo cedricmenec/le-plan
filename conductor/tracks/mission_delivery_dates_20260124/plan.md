@@ -8,9 +8,10 @@ This plan implements two new optional fields for missions: `estimated_delivery_d
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Database & Types Update' (Protocol in workflow.md) 8f09a83
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Database & Types Update' (Protocol in workflow.md)
 
-## Phase 2: Domain Logic & Helpers
-- [ ] Task: Implement a utility function `formatRelativeDuration(date: Date): string` in `lib/utils.ts` to handle the approximation logic (days, weeks, 0.5 months).
-- [ ] Task: Write tests for `formatRelativeDuration` covering all approximation cases.
+## Phase 2: Domain Logic & Helpers [checkpoint: a9f4b47]
+- [x] Task: Implement a utility function `formatRelativeDuration(date: Date): string` in `lib/utils.ts` to handle the approximation logic (days, weeks, 0.5 months). a9f4b47
+- [x] Task: Write tests for `formatRelativeDuration` covering all approximation cases. a9f4b47
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Domain Logic & Helpers' (Protocol in workflow.md) a9f4b47
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Domain Logic & Helpers' (Protocol in workflow.md)
 
 ## Phase 3: Forms & Actions
