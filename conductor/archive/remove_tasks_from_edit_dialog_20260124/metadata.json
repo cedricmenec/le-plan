@@ -1,0 +1,8 @@
+{
+  "track_id": "remove_tasks_from_edit_dialog_20260124",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-01-24T20:03:00Z",
+  "updated_at": "2026-01-24T20:03:00Z",
+  "description": "Retirer la liste des tâches de la dialog d'édition d'une Mission."
+}
