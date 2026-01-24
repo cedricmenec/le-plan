@@ -9,7 +9,7 @@ Goal: Setup the URL structure and the basic layout of the page.
 - [x] Task: Implement two-column layout (Mission Info Left, Subtasks Right) and mobile responsiveness. (2085e89)
 - [x] Task: Implement breadcrumb navigation tailored to the mission's context (standalone vs project-linked). (6324d52)
 - [x] Task: Update `MissionCard` component to link the "Détails" button to the new route. (882c25e)
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Routing & Basic Structure' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 1: Routing & Basic Structure' (Protocol in workflow.md)
 
 ## Phase 2: Inline Editing & Metadata
 Goal: Enable fluid editing of mission fields directly on the page.
