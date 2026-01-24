@@ -42,6 +42,9 @@ test('renders mission card with basic info', () => {
   expect(screen.getByText('Project A')).toBeDefined()
   expect(screen.getByText('Test Goal')).toBeDefined()
   expect(screen.getByTestId('notes-icon')).toBeDefined()
+  
+  const detailsLink = screen.getByRole('link', { name: /détails/i })
+  expect(detailsLink.getAttribute('href')).toBe('/missions/1')
 })
 
 test('does not render notes icon when notes are empty', () => {

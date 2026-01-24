@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useRef, useEffect, useState } from 'react'
 import { MissionActions } from './mission-actions'
 import { Database } from '@/types/database.types'
@@ -178,9 +179,12 @@ export function MissionCard({
         </div>
         <div className="pt-3 flex justify-between items-center text-[11px] text-slate-400 border-t border-slate-50 dark:border-slate-800/50 mt-4">
           <span>Statut: {mission.status}</span>
-          <button className="text-primary font-semibold flex items-center gap-1 hover:underline">
+          <Link 
+            href={`/missions/${mission.id}`}
+            className="text-primary font-semibold flex items-center gap-1 hover:underline"
+          >
             Détails <ArrowRight className="h-3 w-3" />
-          </button>
+          </Link>
         </div>
       </div>
     </div>
