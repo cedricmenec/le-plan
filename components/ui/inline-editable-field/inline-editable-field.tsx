@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
+import { useToast } from '@/components/ui/use-toast'
 
 interface Option {
   label: string
@@ -34,6 +35,7 @@ export function InlineEditableField({
   const [currentValue, setCurrentValue] = useState(value ?? '')
   const [isSaving, setIsSaving] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const { toast } = useToast()
 
   useEffect(() => {
     setCurrentValue(value ?? '')
@@ -49,9 +51,19 @@ export function InlineEditableField({
     try {
       await onSave(currentValue)
       setIsEditing(false)
+      toast({
+        title: "Modifié",
+        description: "La modification a été enregistrée.",
+        duration: 2000,
+      })
     } catch (error) {
       console.error('Error saving field:', error)
-      // We could add error feedback here
+      toast({
+        title: "Erreur",
+        description: "Impossible d'enregistrer la modification.",
+        variant: "destructive",
+      })
+      setCurrentValue(value ?? '')
     } finally {
       setIsSaving(false)
     }
