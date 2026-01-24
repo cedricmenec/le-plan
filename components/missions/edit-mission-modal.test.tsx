@@ -79,7 +79,7 @@ test('renders edit mission modal with existing data', async () => {
   expect(notesInput.value).toBe(mockMission.notes)
 
   // Check for subtasks section
-  expect(screen.getByText(/sous-tâches/i)).toBeDefined()
+  expect(screen.getByText(/Tâches/i)).toBeDefined()
   
   // Submit form
   const submitBtn = screen.getByRole('button', { name: /enregistrer/i })

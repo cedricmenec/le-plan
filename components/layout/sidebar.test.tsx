@@ -25,8 +25,8 @@ vi.mock('@/lib/supabase/client', () => ({
 describe('Sidebar', () => {
   it('renders the branding', () => {
     render(<Sidebar />)
-    expect(screen.getByText('Workload')).toBeDefined()
-    expect(screen.getByText('Productivity Tool')).toBeDefined()
+    expect(screen.getByText('Le Plan')).toBeDefined()
+    expect(screen.getByText('Peaceful Efficiency')).toBeDefined()
   })
 
   it('renders navigation links', () => {
