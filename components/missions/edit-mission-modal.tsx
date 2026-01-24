@@ -12,7 +12,6 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Trash2 } from 'lucide-react'
-import { TaskList } from './task-list'
 import { Database } from '@/types/database.types'
 import { createClient } from '@/lib/supabase/client'
 
@@ -249,10 +248,6 @@ export function EditMissionModal({
                 ))}
               </SelectContent>
             </Select>
-          </div>
-
-          <div className="border-t pt-4">
-            <TaskList missionId={mission.id} />
           </div>
 
           <DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
