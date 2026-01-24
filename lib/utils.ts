@@ -11,16 +11,19 @@ export function formatRelativeDuration(date: Date | string | null): string {
   const targetDate = typeof date === 'string' ? new Date(date) : date
   const now = new Date()
   
-  // Set times to midnight for date-only comparison if we want pure days
-  // But for simple "days remaining", diff in ms is usually fine
-  const diffInMs = targetDate.getTime() - now.getTime()
-  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
+  // Create date-only versions for comparison
+  const targetDateOnly = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate())
+  const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  
+  const diffInMs = targetDateOnly.getTime() - nowDateOnly.getTime()
+  const diffInDays = Math.round(diffInMs / (1000 * 60 * 60 * 24))
   
   if (diffInDays < 0) {
-    // Check if it's actually today (same calendar day)
-    const isSameDay = targetDate.toDateString() === now.toDateString()
-    if (isSameDay) return '0 jours'
     return 'en retard'
+  }
+  
+  if (diffInDays === 0) {
+    return '0 jour'
   }
   
   if (diffInDays < 14) {
@@ -36,3 +39,4 @@ export function formatRelativeDuration(date: Date | string | null): string {
   const formattedMonths = months.toString().replace('.', ',')
   return `~ ${formattedMonths} mois`
 }
+
