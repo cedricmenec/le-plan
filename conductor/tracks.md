@@ -59,4 +59,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 ---
 
 ## [x] Track: Offrir la possibilité dans le composant "SubtaskList" de facilement réordonner, par drag and drop, l'ordre des tâches. Renommer le composant en "TaskList" plutôt que "SubtaskList". Offrir la possibilité de renommer une tâche (édition in-line)
-- **Link**: [./tracks/task_list_enhancements_20260124/](./tracks/task_list_enhancements_20260124/)*
+- **ID**: `task_list_enhancements_20260124`
+- **Link**: [conductor/archive/task_list_enhancements_20260124](archive/task_list_enhancements_20260124/)
