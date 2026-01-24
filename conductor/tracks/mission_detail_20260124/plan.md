@@ -20,10 +20,10 @@ Goal: Enable fluid editing of mission fields directly on the page.
 - [x] Task: Add loading and success/error feedback (Toasts) for auto-saving operations. (c7322f4)
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Inline Editing & Metadata' (Protocol in workflow.md) (d4ea651)
 
-## Phase 3: Subtask Integration & Refinement
+## Phase 3: Subtask Integration & Refinement [checkpoint: 836f2ce]
 Goal: Ensure robust subtask management and final UI polish.
 
 - [x] Task: Integrate `SubtaskList` into the right column of the detail page. (7663e33)
 - [x] Task: Refactor/Enhance `SubtaskList` if necessary to ensure it fits the detail page layout perfectly. (55058de)
 - [x] Task: Final UI polish (spacing, shadows, transitions) according to Product Guidelines. (e05457a)
-- [~] Task: Conductor - User Manual Verification 'Phase 3: Subtask Integration & Refinement' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Subtask Integration & Refinement' (Protocol in workflow.md) (836f2ce)
