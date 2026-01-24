@@ -67,8 +67,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Delivery Dates for Missions
 - **ID**: `mission_delivery_dates_20260124`
 - **Link**: [conductor/archive/mission_delivery_dates_20260124](archive/mission_delivery_dates_20260124/)
-
----
-
-## [x] Track: Project Dashboard Mission Organization
-- **Link:** [./tracks/dashboard_mission_org_20260124/](./tracks/dashboard_mission_org_20260124/)*

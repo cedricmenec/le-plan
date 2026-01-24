@@ -1,0 +1,8 @@
+{
+  "track_id": "dashboard_mission_org_20260124",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-24T17:32:00Z",
+  "updated_at": "2026-01-24T17:32:00Z",
+  "description": "Improve the project detail and mission list pages by splitting missions into 'Active' (grid) and 'Not Started' (condensed list) sections with specific sorting logic."
+}
