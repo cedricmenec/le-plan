@@ -52,6 +52,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Page de détail d'une Mission (Édition Inline & Sous-tâches)
+## [x] Track: Page de détail d'une Mission (Édition Inline & Sous-tâches)
 - **ID**: `mission_detail_20260124`
 - **Link**: [conductor/tracks/mission_detail_20260124/](tracks/mission_detail_20260124/)
