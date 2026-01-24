@@ -14,8 +14,15 @@ vi.mock('../actions', () => ({
     estimation: 5,
     confidence: 80,
     projects: { name: 'Test Project' },
+    project_id: 'p1',
     subtasks: []
   }))
+}))
+
+vi.mock('../../projects/actions', () => ({
+  getProjects: vi.fn(() => Promise.resolve([
+    { id: 'p1', name: 'Test Project' }
+  ]))
 }))
 
 vi.mock('@/lib/supabase/server', () => ({
@@ -48,9 +55,9 @@ test('renders mission detail page', async () => {
   expect(screen.getAllByText('Test Mission')).toHaveLength(2)
   expect(screen.getByText('Test Goal')).toBeDefined()
   expect(screen.getByText('Test Notes')).toBeDefined()
-  expect(screen.getByText('feature')).toBeDefined()
-  expect(screen.getByText('in_progress')).toBeDefined()
-  expect(screen.getByText('5 j')).toBeDefined()
-  expect(screen.getByText('80%')).toBeDefined()
+  expect(screen.getByText('Feature')).toBeDefined()
+  expect(screen.getByText('En cours')).toBeDefined()
+  expect(screen.getByText('5')).toBeDefined()
+  expect(screen.getByText('80')).toBeDefined()
   expect(screen.getByTestId('subtask-list')).toBeDefined()
 })

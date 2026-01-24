@@ -1,4 +1,5 @@
 import { getMission, updateMission } from '../actions'
+import { getProjects } from '../../projects/actions'
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
@@ -22,20 +23,19 @@ export default async function MissionDetailPage({ params }: PageProps) {
   }
 
   let mission;
+  let projects;
   try {
-    mission = await getMission(id)
+    [mission, projects] = await Promise.all([
+      getMission(id),
+      getProjects()
+    ])
   } catch (error) {
-    console.error('Error fetching mission:', error)
+    console.error('Error fetching data:', error)
     return notFound()
   }
 
   if (!mission) {
     return notFound()
-  }
-
-  const handleUpdate = async (field: string, value: any) => {
-    'use server'
-    await updateMission(id, { [field]: value })
   }
 
   const breadcrumbItems = mission.projects 
@@ -49,6 +49,22 @@ export default async function MissionDetailPage({ params }: PageProps) {
         { label: mission.title }
       ]
 
+  const missionTypes = [
+    { label: 'Feature', value: 'feature' },
+    { label: 'Étude', value: 'study' },
+    { label: 'Support', value: 'support' },
+    { label: 'Docs', value: 'docs' },
+    { label: 'Autre', value: 'other' },
+  ]
+
+  const missionStatuses = [
+    { label: 'À faire', value: 'todo' },
+    { label: 'En cours', value: 'in_progress' },
+    { label: 'Terminé', value: 'done' },
+  ]
+
+  const projectOptions = projects.map(p => ({ label: p.name, value: p.id }))
+
   return (
     <div className="w-full max-w-[1600px] mx-auto p-6 md:p-10 space-y-8">
       <Breadcrumb items={breadcrumbItems} />
@@ -57,12 +73,26 @@ export default async function MissionDetailPage({ params }: PageProps) {
         <div className="lg:col-span-2 space-y-8">
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400">
-                {mission.type}
-              </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide bg-slate-50 text-slate-600 dark:bg-slate-900/20 dark:text-slate-400">
-                {mission.status}
-              </span>
+              <InlineEditableField
+                value={mission.type}
+                type="select"
+                options={missionTypes}
+                onSave={async (val) => {
+                  'use server'
+                  await updateMission(id, { type: val })
+                }}
+                displayClassName="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400"
+              />
+              <InlineEditableField
+                value={mission.status}
+                type="select"
+                options={missionStatuses}
+                onSave={async (val) => {
+                  'use server'
+                  await updateMission(id, { status: val })
+                }}
+                displayClassName="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide bg-slate-50 text-slate-600 dark:bg-slate-900/20 dark:text-slate-400"
+              />
             </div>
             
             <InlineEditableField
@@ -109,15 +139,43 @@ export default async function MissionDetailPage({ params }: PageProps) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase">Estimation</p>
-              <p className="text-sm font-bold">{mission.estimation} j</p>
+              <InlineEditableField
+                value={mission.estimation}
+                type="number"
+                onSave={async (val) => {
+                  'use server'
+                  await updateMission(id, { estimation: val })
+                }}
+                displayClassName="text-sm font-bold"
+                placeholder="Estimation..."
+              />
             </div>
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase">Confiance</p>
-              <p className="text-sm font-bold">{mission.confidence}%</p>
+              <InlineEditableField
+                value={mission.confidence}
+                type="number"
+                onSave={async (val) => {
+                  'use server'
+                  await updateMission(id, { confidence: val })
+                }}
+                displayClassName="text-sm font-bold"
+                placeholder="Confiance %..."
+              />
             </div>
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase">Projet</p>
-              <p className="text-sm font-bold">{mission.projects?.name || 'Aucun'}</p>
+              <InlineEditableField
+                value={mission.project_id}
+                type="select"
+                options={projectOptions}
+                onSave={async (val) => {
+                  'use server'
+                  await updateMission(id, { project_id: val === 'none' ? null : val })
+                }}
+                displayClassName="text-sm font-bold"
+                placeholder="Assigner un projet..."
+              />
             </div>
           </div>
         </div>
