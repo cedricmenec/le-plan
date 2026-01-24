@@ -41,9 +41,10 @@ interface SortableTaskItemProps {
   task: Task
   onUpdate: (id: string, updates: Partial<Task>) => Promise<void>
   onDelete: (id: string) => Promise<void>
+  isPending?: boolean
 }
 
-function SortableTaskItem({ task, onUpdate, onDelete }: SortableTaskItemProps) {
+function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskItemProps) {
   const {
     attributes,
     listeners,
@@ -79,6 +80,7 @@ function SortableTaskItem({ task, onUpdate, onDelete }: SortableTaskItemProps) {
           checked={task.is_completed} 
           onCheckedChange={() => onUpdate(task.id, { is_completed: !task.is_completed })}
           className="h-5 w-5"
+          disabled={isPending}
         />
         <InlineEditableField
           value={task.title}
@@ -86,8 +88,9 @@ function SortableTaskItem({ task, onUpdate, onDelete }: SortableTaskItemProps) {
             await onUpdate(task.id, { title: newTitle })
           }}
           trigger="doubleClick"
-          displayClassName={task.is_completed ? 'line-through text-muted-foreground' : 'text-slate-700 dark:text-slate-200'}
           className="flex-1"
+          isExternalPending={isPending}
+          displayClassName={task.is_completed ? 'line-through text-muted-foreground' : 'text-slate-700 dark:text-slate-200'}
         />
       </div>
       <Button
@@ -96,6 +99,7 @@ function SortableTaskItem({ task, onUpdate, onDelete }: SortableTaskItemProps) {
         variant="ghost"
         className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity ml-2"
         onClick={() => onDelete(task.id)}
+        disabled={isPending}
       >
         <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
       </Button>
@@ -106,12 +110,13 @@ function SortableTaskItem({ task, onUpdate, onDelete }: SortableTaskItemProps) {
 export function TaskList({ missionId }: TaskListProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [newTitle, setNewTitle] = useState('')
+  const [pendingTaskIds, setPendingTaskIds] = useState<Set<string>>(new Set())
   const supabase = createClient()
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 5, // Avoid accidental drags when clicking
+        distance: 5,
       },
     }),
     useSensor(KeyboardSensor, {
@@ -179,15 +184,17 @@ export function TaskList({ missionId }: TaskListProps) {
     const { active, over } = event
 
     if (over && active.id !== over.id) {
+      const activeId = String(active.id)
       const oldIndex = tasks.findIndex((t) => t.id === active.id)
       const newIndex = tasks.findIndex((t) => t.id === over.id)
 
       const newTasks = arrayMove(tasks, oldIndex, newIndex)
       
-      // Update local state optimistically
       setTasks(newTasks)
+      
+      // Mark the moved task as pending
+      setPendingTaskIds(prev => new Set(prev).add(activeId))
 
-      // Prepare positions for database update
       const updates = newTasks.map((task, index) => ({
         id: task.id,
         position: index,
@@ -197,7 +204,13 @@ export function TaskList({ missionId }: TaskListProps) {
         await reorderTasks(missionId, updates)
       } catch (error) {
         console.error('Error reordering tasks:', error)
-        // Optionally revert on error, but reordering errors are rare and state might be complex to revert perfectly
+      } finally {
+        // Remove from pending
+        setPendingTaskIds(prev => {
+          const next = new Set(prev)
+          next.delete(activeId)
+          return next
+        })
       }
     }
   }
@@ -227,6 +240,7 @@ export function TaskList({ missionId }: TaskListProps) {
                 task={task} 
                 onUpdate={handleUpdateTask} 
                 onDelete={deleteTask} 
+                isPending={pendingTaskIds.has(task.id)}
               />
             ))}
           </div>

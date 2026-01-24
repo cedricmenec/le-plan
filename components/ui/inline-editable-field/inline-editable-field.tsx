@@ -21,6 +21,7 @@ interface InlineEditableFieldProps {
   displayClassName?: string
   placeholder?: string
   trigger?: 'click' | 'doubleClick'
+  isExternalPending?: boolean
 }
 
 export function InlineEditableField({
@@ -31,7 +32,8 @@ export function InlineEditableField({
   className,
   displayClassName,
   placeholder = 'Cliquer pour éditer...',
-  trigger = 'click'
+  trigger = 'click',
+  isExternalPending = false
 }: InlineEditableFieldProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [currentValue, setCurrentValue] = useState(value ?? '')
@@ -89,7 +91,6 @@ export function InlineEditableField({
             value={String(currentValue)} 
             onValueChange={(val) => {
               setCurrentValue(val)
-              // For select, we save immediately on change usually
             }}
             onOpenChange={(open) => {
                 if (!open) handleSave()
@@ -133,8 +134,8 @@ export function InlineEditableField({
   }
 
   const displayValue = options?.find(opt => opt.value === String(value))?.label || value
-
   const handleTrigger = () => setIsEditing(true)
+  const isPending = isSaving || isExternalPending
 
   return (
     <div 
@@ -143,7 +144,7 @@ export function InlineEditableField({
       className={cn(
         "cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded px-1 -mx-1 transition-colors min-h-[1.5rem] flex items-center",
         !value && "italic text-muted-foreground",
-        isSaving && "opacity-50 cursor-wait",
+        isPending && "text-muted-foreground/50 animate-pulse cursor-wait",
         displayClassName
       )}
     >

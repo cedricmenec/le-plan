@@ -1,8 +1,0 @@
-{
-  "track_id": "task_list_enhancements_20260124",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-01-24T14:45:00Z",
-  "updated_at": "2026-01-24T14:45:00Z",
-  "description": "Offrir la possibilité dans le composant \"SubtaskList\" de facilement réordonner, par drag and drop, l'ordre des tâches. Renommer le composant en \"TaskList\" plutôt que \"SubtaskList\". Offrir la possibilité de renommer une tâche (édition in-line)"
-}
