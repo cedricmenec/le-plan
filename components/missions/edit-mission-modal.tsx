@@ -68,6 +68,7 @@ export function EditMissionModal({
 
   useEffect(() => {
     if (open && mission) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         title: mission.title,
         type: mission.type,
