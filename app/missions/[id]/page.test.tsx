@@ -15,7 +15,9 @@ vi.mock('../actions', () => ({
     confidence: 80,
     projects: { name: 'Test Project' },
     project_id: 'p1',
-    subtasks: []
+    subtasks: [],
+    estimated_delivery_date: '2026-06-01',
+    desired_delivery_date: '2026-06-15'
   }))
 }))
 
@@ -24,6 +26,15 @@ vi.mock('../../projects/actions', () => ({
     { id: 'p1', name: 'Test Project' }
   ]))
 }))
+
+// Mock formatRelativeDuration to avoid complexity in this test
+vi.mock('@/lib/utils', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/utils')>()
+  return {
+    ...actual,
+    formatRelativeDuration: vi.fn((date) => `relative-${date}`)
+  }
+})
 
 vi.mock('@/lib/supabase/server', () => ({
   createClient: () => Promise.resolve({
@@ -59,5 +70,9 @@ test('renders mission detail page', async () => {
   expect(screen.getByText('En cours')).toBeDefined()
   expect(screen.getByText('5')).toBeDefined()
   expect(screen.getByText('80')).toBeDefined()
+  expect(screen.getByText('2026-06-01')).toBeDefined()
+  expect(screen.getByText('2026-06-15')).toBeDefined()
+  expect(screen.getByText('(relative-2026-06-01)')).toBeDefined()
+  expect(screen.getByText('(relative-2026-06-15)')).toBeDefined()
   expect(screen.getByTestId('task-list')).toBeDefined()
 })

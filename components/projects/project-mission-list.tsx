@@ -33,6 +33,7 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
       .from('missions')
       .select('*, projects(name)')
       .eq('project_id', projectId)
+      .order('estimated_delivery_date', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: false })
 
     if (error) {

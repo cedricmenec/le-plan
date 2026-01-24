@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRef, useEffect, useState } from 'react'
 import { MissionActions } from './mission-actions'
 import { Database } from '@/types/database.types'
+import { formatRelativeDuration } from '@/lib/utils'
 import {
   Tooltip,
   TooltipContent,
@@ -178,7 +179,17 @@ export function MissionCard({
           />
         </div>
         <div className="pt-3 flex justify-between items-center text-[11px] text-slate-400 border-t border-slate-50 dark:border-slate-800/50 mt-4">
-          <span>Statut: {mission.status}</span>
+          <div className="flex items-center gap-2">
+            <span>Statut: {mission.status}</span>
+            {mission.estimated_delivery_date && (
+              <>
+                <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+                <span className="font-medium text-slate-600 dark:text-slate-300">
+                  {formatRelativeDuration(mission.estimated_delivery_date)}
+                </span>
+              </>
+            )}
+          </div>
           <Link 
             href={`/missions/${mission.id}`}
             className="text-primary font-semibold flex items-center gap-1 hover:underline"

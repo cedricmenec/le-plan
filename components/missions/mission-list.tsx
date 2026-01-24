@@ -30,6 +30,7 @@ export function MissionList({ initialMissions, onUpdate }: MissionListProps) {
     const { data, error } = await supabase
       .from('missions')
       .select('*, projects(name)')
+      .order('estimated_delivery_date', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: false })
 
     if (error) {
