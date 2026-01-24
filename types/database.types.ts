@@ -56,6 +56,8 @@ export type Database = {
           project_parent: string | null
           project_id: string | null
           status: string
+          estimated_delivery_date: string | null
+          desired_delivery_date: string | null
         }
         Insert: {
           id?: string
@@ -70,6 +72,8 @@ export type Database = {
           project_parent?: string | null
           project_id?: string | null
           status?: string
+          estimated_delivery_date?: string | null
+          desired_delivery_date?: string | null
         }
         Update: {
           id?: string
@@ -84,6 +88,8 @@ export type Database = {
           project_parent?: string | null
           project_id?: string | null
           status?: string
+          estimated_delivery_date?: string | null
+          desired_delivery_date?: string | null
         }
         Relationships: [
           {
