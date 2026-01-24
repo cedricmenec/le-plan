@@ -40,3 +40,23 @@ export function formatRelativeDuration(date: Date | string | null): string {
   return `~ ${formattedMonths} mois`
 }
 
+export function sortMissions<T extends { estimated_delivery_date?: string | null; created_at: string }>(
+  missions: T[]
+): T[] {
+  return [...missions].sort((a, b) => {
+    // 1. Sort by Estimated Delivery Date (Ascending - soonest first)
+    if (a.estimated_delivery_date && b.estimated_delivery_date) {
+      if (a.estimated_delivery_date !== b.estimated_delivery_date) {
+        return a.estimated_delivery_date.localeCompare(b.estimated_delivery_date)
+      }
+    } else if (a.estimated_delivery_date) {
+      return -1 // a has a date, b doesn't -> a comes first
+    } else if (b.estimated_delivery_date) {
+      return 1 // b has a date, a doesn't -> b comes first
+    }
+
+    // 2. Sort by Creation Date (Descending - newest first)
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  })
+}
+

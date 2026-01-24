@@ -1,5 +1,5 @@
 import { expect, test, describe, vi, beforeEach, afterEach } from 'vitest'
-import { cn, formatRelativeDuration } from './utils'
+import { cn, formatRelativeDuration, sortMissions } from './utils'
 
 test('cn merges class names correctly', () => {
   expect(cn('c1', 'c2')).toBe('c1 c2')
@@ -65,5 +65,30 @@ describe('formatRelativeDuration', () => {
 
     const d75 = new Date('2026-04-09T12:00:00Z') // 75 days -> 2.5 mois
     expect(formatRelativeDuration(d75)).toBe('~ 2,5 mois')
+  })
+})
+
+describe('sortMissions', () => {
+  const missions = [
+    { id: '1', title: 'M1', created_at: '2026-01-20T10:00:00Z', estimated_delivery_date: '2026-02-01' },
+    { id: '2', title: 'M2', created_at: '2026-01-21T10:00:00Z', estimated_delivery_date: null },
+    { id: '3', title: 'M3', created_at: '2026-01-19T10:00:00Z', estimated_delivery_date: '2026-01-30' },
+    { id: '4', title: 'M4', created_at: '2026-01-22T10:00:00Z', estimated_delivery_date: null },
+  ]
+
+  test('sorts by delivery date ascending, then created_at descending', () => {
+    // @ts-ignore - limited fields for test
+    const sorted = sortMissions(missions)
+    
+    // Expected order:
+    // 1. M3 (2026-01-30)
+    // 2. M1 (2026-02-01)
+    // 3. M4 (No date, created 01-22)
+    // 4. M2 (No date, created 01-21)
+    
+    expect(sorted[0].id).toBe('3')
+    expect(sorted[1].id).toBe('1')
+    expect(sorted[2].id).toBe('4')
+    expect(sorted[3].id).toBe('2')
   })
 })
