@@ -19,14 +19,14 @@ Improve the project detail and mission list pages by splitting missions into "Ac
     - [x] Write unit tests for `CondensedMissionRow` (checking display logic for project name and actions). (9ef44a0)
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Condensed UI Components' (Protocol in workflow.md) (0d7bb95)
 
-## Phase 3: Project Dashboard Integration
+## Phase 3: Project Dashboard Integration [checkpoint: b3b4150]
 
-- [ ] Task: Refactor `ProjectDashboard` to use the new layout.
-    - [ ] Split missions into `in_progress` and `todo` arrays.
-    - [ ] Render `in_progress` missions using the existing grid (max 3 cols).
-    - [ ] Render `todo` missions using the new `CondensedMissionList`.
-    - [ ] Update `components/projects/project-dashboard.test.tsx` to verify the split rendering.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Project Dashboard Integration' (Protocol in workflow.md)
+- [x] Task: Refactor `ProjectDashboard` to use the new layout. (58bbd33)
+    - [x] Split missions into `in_progress` and `todo` arrays. (58bbd33)
+    - [x] Render `in_progress` missions using the existing grid (max 3 cols). (58bbd33)
+    - [x] Render `todo` missions using the new `CondensedMissionList`. (58bbd33)
+    - [x] Update `components/projects/project-dashboard.test.tsx` to verify the split rendering. (58bbd33)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Project Dashboard Integration' (Protocol in workflow.md) (b3b4150)
 
 ## Phase 4: Mission List Integration
 
