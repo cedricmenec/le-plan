@@ -64,6 +64,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [x] Track: Delivery Dates for Missions
-- **ID**: `mission_delivery_dates_20260124`
-- **Link**: [conductor/archive/mission_delivery_dates_20260124](archive/mission_delivery_dates_20260124/)
+## [x] **Track: Retirer la liste des tâches de la dialog d'édition d'une Mission.**
+*Link: [./tracks/remove_tasks_from_edit_dialog_20260124/](./tracks/remove_tasks_from_edit_dialog_20260124/)*
