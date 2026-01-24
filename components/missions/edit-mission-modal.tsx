@@ -115,6 +115,26 @@ export function EditMissionModal({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
+            <Label htmlFor="edit-project">Projet (Optionnel)</Label>
+            <Select
+              value={formData.project_id || 'none'}
+              onValueChange={(value) => setFormData({ ...formData, project_id: value === 'none' ? null : value })}
+            >
+              <SelectTrigger id="edit-project">
+                <SelectValue placeholder="Aucun projet" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Aucun projet</SelectItem>
+                {projects.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="edit-title">Titre</Label>
             <Input
               id="edit-title"
@@ -228,26 +248,6 @@ export function EditMissionModal({
                 required
               />
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="edit-project">Projet (Optionnel)</Label>
-            <Select
-              value={formData.project_id || 'none'}
-              onValueChange={(value) => setFormData({ ...formData, project_id: value === 'none' ? null : value })}
-            >
-              <SelectTrigger id="edit-project">
-                <SelectValue placeholder="Aucun projet" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">Aucun projet</SelectItem>
-                {projects.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>
-                    {p.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           <DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
