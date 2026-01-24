@@ -2,9 +2,10 @@
 
 This plan implements two new optional fields for missions: `estimated_delivery_date` and `desired_delivery_date`, including UI updates, sorting logic, and validation.
 
-## Phase 1: Database & Types Update
+## Phase 1: Database & Types Update [checkpoint: 8f09a83]
 - [x] Task: Create Supabase migration to add `estimated_delivery_date` and `desired_delivery_date` to `missions` table. 207ff4d
-- [ ] Task: Update Database Types and Mission interfaces.
+- [x] Task: Update Database Types and Mission interfaces. d9d68c2
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Database & Types Update' (Protocol in workflow.md) 8f09a83
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Database & Types Update' (Protocol in workflow.md)
 
 ## Phase 2: Domain Logic & Helpers
