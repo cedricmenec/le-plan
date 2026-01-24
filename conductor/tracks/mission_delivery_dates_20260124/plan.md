@@ -21,9 +21,9 @@ This plan implements two new optional fields for missions: `estimated_delivery_d
 - [x] Task: Update mission action tests to verify saving the new dates. 29d4661
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Forms & Actions' (Protocol in workflow.md) 29d4661
 
-## Phase 4: UI Integration & Sorting
-- [ ] Task: Update `MissionCard` to display the relative duration if `estimated_delivery_date` exists.
-- [ ] Task: Update Mission Detail page (`app/missions/[id]/page.tsx`) to display both dates.
-- [ ] Task: Modify the default sorting logic in `getMissions` or relevant data fetching hooks to sort by `estimated_delivery_date`.
-- [ ] Task: Update `MissionCard` and Detail view tests.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: UI Integration & Sorting' (Protocol in workflow.md)
+## Phase 4: UI Integration & Sorting [checkpoint: dac64a9]
+- [x] Task: Update `MissionCard` to display the relative duration if `estimated_delivery_date` exists. c3778e5
+- [x] Task: Update Mission Detail page (`app/missions/[id]/page.tsx`) to display both dates. c3778e5
+- [x] Task: Modify the default sorting logic in `getMissions` or relevant data fetching hooks to sort by `estimated_delivery_date`. c3778e5
+- [x] Task: Update `MissionCard` and Detail view tests. c3778e5
+- [x] Task: Conductor - User Manual Verification 'Phase 4: UI Integration & Sorting' (Protocol in workflow.md) dac64a9
