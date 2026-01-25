@@ -9,7 +9,7 @@ This plan covers the restructuring of the mission detail page header and the imp
 
 ## Phase 2: Component Development
 
-- [ ] Task: Create `MissionTimeline` component
+- [x] Task: Create `MissionTimeline` component (d4047cd)
     - [ ] Write tests for `MissionTimeline` in `components/missions/mission-timeline.test.tsx`.
     - [ ] Implement `MissionTimeline` using Tailwind CSS and Lucide icons.
     - [ ] Ensure responsiveness and "n/a" handling for missing dates.
