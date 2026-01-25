@@ -13,7 +13,8 @@ import {
   ChevronUp
 } from 'lucide-react'
 import { Database } from '@/types/database.types'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { MilestoneActions } from './milestone-actions'
 
 export type Milestone = Database['public']['Tables']['milestones']['Row'] & {
   milestone_types: { name: string } | null
@@ -34,6 +35,8 @@ const TYPE_ICONS: Record<string, any> = {
 
 export function MissionMilestoneItem({ milestone, onEdit, onDelete }: MissionMilestoneItemProps) {
   const [isExpanded, setIsExpanded] = useState(false)
+  const [showActions, setShowActions] = useState(false)
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   
   const milestoneDate = new Date(milestone.date)
   const today = new Date()
@@ -43,6 +46,29 @@ export function MissionMilestoneItem({ milestone, onEdit, onDelete }: MissionMil
   const typeName = milestone.milestone_types?.name || 'Autre'
   const Icon = TYPE_ICONS[typeName] || MoreHorizontal
 
+  const handleMouseEnter = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setShowActions(true)
+    }, 1000)
+  }
+
+  const handleMouseLeave = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current)
+      hoverTimeoutRef.current = null
+    }
+    setShowActions(false)
+  }
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current)
+      }
+    }
+  }, [])
+
   return (
     <div 
       className={`group relative pl-8 pb-6 border-l-2 last:pb-0 ${
@@ -50,6 +76,8 @@ export function MissionMilestoneItem({ milestone, onEdit, onDelete }: MissionMil
           ? 'border-slate-200 dark:border-slate-800' 
           : 'border-blue-200 dark:border-blue-900'
       }`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {/* Icon Bubble */}
       <div 
@@ -78,6 +106,13 @@ export function MissionMilestoneItem({ milestone, onEdit, onDelete }: MissionMil
           </div>
           
           <div className="flex items-center gap-2">
+            {showActions && (
+              <MilestoneActions 
+                onEdit={onEdit || (() => {})} 
+                onDelete={onDelete || (() => {})} 
+              />
+            )}
+            
             {milestone.note && (
               <button 
                 onClick={() => setIsExpanded(!isExpanded)}
