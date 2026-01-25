@@ -85,3 +85,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Améliorer la visualisation des détails d'une mission avec un bloc héro et une timeline minimaliste.
 - **ID**: `mission_detail_visual_20260125`
 - **Link**: [conductor/archive/mission_detail_visual_20260125](archive/mission_detail_visual_20260125/)
+
+---
+
+## [ ] Track: Améliore l'UI de la vue de détail d'une mission (police, alignement metadata, inversion sections, suppression metadata redondante, suppression shadows)
+- **Link**: [./tracks/mission_detail_ui_polish_20260125/](./tracks/mission_detail_ui_polish_20260125/)
