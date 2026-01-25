@@ -1,6 +1,6 @@
 # Implementation Plan: Mission Detail UI Polishing
 
-## Phase 1: Header and Metadata Cleanup
+## Phase 1: Header and Metadata Cleanup [checkpoint: 6dcfdad]
 Refactor the `MissionHeaderHero` component to reduce the title size, reorganize the metadata row, and remove shadows.
 
 - [x] Task: Update `MissionHeaderHero.tsx` title styling and metadata layout (5e121d3)
@@ -9,7 +9,7 @@ Refactor the `MissionHeaderHero` component to reduce the title size, reorganize 
     - [x] Remove `shadow-md` and other shadow classes from the hero container
 - [x] Task: Remove redundant metadata grid from Mission Detail page (5e121d3)
     - [x] Locate and remove the grid containing Estimation, Confidence, and Delivery Dates in `app/missions/[id]/page.tsx`
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Header and Metadata Cleanup' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Header and Metadata Cleanup' (Protocol in workflow.md) (6dcfdad)
 
 ## Phase 2: Section Reorganization
 Reorder the "Objectif Principal", "Timeline & Scheduling", and "Notes" sections in the main layout.
