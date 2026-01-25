@@ -1,0 +1,8 @@
+{
+  "track_id": "mission_detail_ui_polish_20260125",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-25T22:42:00Z",
+  "updated_at": "2026-01-25T22:42:00Z",
+  "description": "Améliore l'UI de la vue de détail d'une mission (police, alignement metadata, inversion sections, suppression metadata redondante, suppression shadows)"
+}
