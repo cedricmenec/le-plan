@@ -34,8 +34,8 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Planned Missions List Refactor' (Protocol in workflow.md)
 
 ## Phase 4: Final Polish & Verification
-- [ ] Task: Verify overall visual consistency and responsiveness
-    - [ ] Check alignment of mission counts in headers
-    - [ ] Ensure `GridPlaceholder` matches `MissionCard` dimensions exactly
-    - [ ] Test Edit/Delete actions from the new planned missions list
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Polish & Verification' (Protocol in workflow.md)
+- [x] Task: Verify overall visual consistency and responsiveness
+    - [x] Check alignment of mission counts in headers
+    - [x] Ensure `GridPlaceholder` matches `MissionCard` dimensions exactly
+    - [x] Test Edit/Delete actions from the new planned missions list
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Final Polish & Verification' (Protocol in workflow.md)
