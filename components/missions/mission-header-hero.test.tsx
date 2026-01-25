@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
-import { expect, test, describe, vi, beforeEach, afterEach } from 'vitest'
-import { MissionHeaderHero } from './mission-header-hero'
+import { expect, test, describe, vi } from 'vitest'
+import { MissionHeaderHero, MissionHeroBlock } from './mission-header-hero'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
 // Mock MissionTimeline to simplify testing
@@ -8,7 +8,7 @@ vi.mock('./mission-timeline', () => ({
   MissionTimeline: () => <div data-testid="mission-timeline" />
 }))
 
-describe('MissionHeaderHero', () => {
+describe('MissionHeaderHero & MissionHeroBlock', () => {
   const mockMission = {
     id: 'm1',
     title: 'Hero Mission',
@@ -44,20 +44,20 @@ describe('MissionHeaderHero', () => {
     expect(screen.getByText(/EN COURS/i)).toBeDefined()
   })
 
-  test('renders confidence score discreetly', () => {
+  test('renders confidence score discreetly in MissionHeroBlock', () => {
     render(
       <TooltipProvider>
-        <MissionHeaderHero mission={mockMission} onUpdate={async () => {}} />
+        <MissionHeroBlock mission={mockMission} />
       </TooltipProvider>
     )
 
     expect(screen.getByText('90%')).toBeDefined()
   })
 
-  test('integrates MissionTimeline', () => {
+  test('integrates MissionTimeline in MissionHeroBlock', () => {
     render(
       <TooltipProvider>
-        <MissionHeaderHero mission={mockMission} onUpdate={async () => {}} />
+        <MissionHeroBlock mission={mockMission} />
       </TooltipProvider>
     )
 

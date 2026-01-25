@@ -5,7 +5,7 @@ import { redirect, notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { TaskList } from '@/components/missions/task-list'
 import { MissionDetailMilestones } from '@/components/missions/mission-detail-milestones'
-import { MissionHeaderHero } from '@/components/missions/mission-header-hero'
+import { MissionHeaderHero, MissionHeroBlock } from '@/components/missions/mission-header-hero'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import { formatRelativeDuration } from '@/lib/utils'
 
@@ -88,12 +88,14 @@ export default async function MissionDetailPage({ params }: PageProps) {
               />
             </div>
 
+            <MissionHeroBlock mission={mission} />
+
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <h3 className="text-xs font-bold uppercase tracking-[0.2em]">Notes & Contexte</h3>
                 <div className="h-px flex-1 bg-slate-100 dark:bg-slate-800" />
               </div>
-              <div className="p-6 bg-white dark:bg-slate-900/40 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+              <div className="p-6 bg-white dark:bg-slate-900/40 rounded-2xl border border-slate-100 dark:border-slate-800">
                 <InlineEditableField
                   value={mission.notes}
                   onSave={async (val) => {
@@ -109,7 +111,7 @@ export default async function MissionDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#15202b] rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-md h-fit sticky top-10 space-y-10">
+        <div className="bg-white dark:bg-[#15202b] rounded-2xl p-8 border border-slate-200 dark:border-slate-800 h-fit sticky top-10 space-y-10">
           <MissionDetailMilestones missionId={mission.id} initialMilestones={milestones} />
           <div className="h-px bg-slate-100 dark:bg-slate-800" />
           <TaskList missionId={mission.id} />
