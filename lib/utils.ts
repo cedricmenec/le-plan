@@ -65,6 +65,7 @@ export interface TimelineMetrics {
   estimatedPercentage: number | null
   desiredPercentage: number | null
   isDanger: boolean
+  delayDays: number
 }
 
 export function calculateTimelineMetrics(
@@ -88,13 +89,17 @@ export function calculateTimelineMetrics(
   )
 
   const totalDuration = endTime - todayTime
+  const delayMs = (estTime !== null && desTime !== null) ? estTime - desTime : 0
+  const delayDays = Math.max(0, Math.round(delayMs / (1000 * 60 * 60 * 24)))
+
   if (totalDuration <= 0) {
     // If end date is today or in the past, timeline is basically at 100% or invalid
     return {
       effortPercentage: 100,
       estimatedPercentage: estTime ? 100 : null,
       desiredPercentage: desTime ? 100 : null,
-      isDanger: estTime !== null && desTime !== null && estTime > desTime
+      isDanger: estTime !== null && desTime !== null && estTime > desTime,
+      delayDays
     }
   }
 
@@ -104,7 +109,8 @@ export function calculateTimelineMetrics(
     effortPercentage: Math.min(100, (estimation / totalDays) * 100),
     estimatedPercentage: estTime ? ((estTime - todayTime) / totalDuration) * 100 : null,
     desiredPercentage: desTime ? ((desTime - todayTime) / totalDuration) * 100 : null,
-    isDanger: estTime !== null && desTime !== null && estTime > desTime
+    isDanger: estTime !== null && desTime !== null && estTime > desTime,
+    delayDays
   }
 }
 

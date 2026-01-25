@@ -4,12 +4,6 @@ import { useMemo } from 'react'
 import { calculateTimelineMetrics } from '@/lib/utils'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import { AlertTriangle, Info } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 
 interface MissionTimelineProps {
   estimation: number
@@ -28,85 +22,107 @@ export function MissionTimeline({
 
   if (!metrics) return null
 
-  const { effortPercentage, estimatedPercentage, desiredPercentage, isDanger } = metrics
+  const { effortPercentage, estimatedPercentage, desiredPercentage, isDanger, delayDays } = metrics
 
   const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return 'n/a'
-    return format(new Date(dateStr), 'd MMM.', { locale: fr })
+    if (!dateStr) return null
+    return format(new Date(dateStr), 'yyyy-MM-dd')
   }
 
   return (
-    <div className="w-full space-y-6 py-4">
-      <div className="relative h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-visible">
-        {/* Effort Segment */}
-        <div 
-          className="absolute top-0 left-0 h-full bg-blue-500 rounded-l-full transition-all duration-500"
-          style={{ width: `${effortPercentage}%` }}
-        />
-
-        {/* Today Marker */}
-        <div className="absolute top-0 left-0 -translate-x-1/2 flex flex-col items-center">
-          <div className="h-4 w-0.5 bg-slate-400 dark:bg-slate-600 mb-1" />
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Aujourd'hui</span>
+    <div className="w-full space-y-12">
+      {/* Header & Legend */}
+      <div className="flex justify-between items-center">
+        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Timeline & Scheduling</h3>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full border-2 border-blue-500 bg-blue-50 dark:bg-blue-900/20" />
+            <span className="text-[11px] font-semibold text-slate-500 tracking-tight">Effort restant</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-orange-500" />
+            <span className="text-[11px] font-semibold text-slate-500 tracking-tight">Risk zone</span>
+          </div>
         </div>
-
-        {/* Estimated Marker */}
-        {estimatedPercentage !== null && (
-          <div 
-            className="absolute top-0 -translate-x-1/2 flex flex-col items-center z-10"
-            style={{ left: `${estimatedPercentage}%` }}
-          >
-            <div className={`h-4 w-1 mb-1 rounded-full ${isDanger ? 'bg-rose-500' : 'bg-blue-600'}`} />
-            <div className="flex flex-col items-center bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-slate-100 dark:border-slate-800 shadow-sm">
-              <span className={`text-[10px] font-bold whitespace-nowrap ${isDanger ? 'text-rose-600' : 'text-blue-600'}`}>
-                {formatDate(estimatedDelivery)}
-              </span>
-              <span className="text-[8px] font-medium text-slate-400 uppercase leading-none">Est.</span>
-            </div>
-          </div>
-        )}
-
-        {/* Desired Marker */}
-        {desiredPercentage !== null && (
-          <div 
-            className="absolute top-0 -translate-x-1/2 flex flex-col items-center"
-            style={{ left: `${desiredPercentage}%` }}
-          >
-            <div className="h-4 w-0.5 bg-slate-300 dark:bg-slate-700 mb-1" />
-            <div className="flex flex-col items-center">
-              <span className="text-[10px] font-bold text-slate-500 whitespace-nowrap">
-                {formatDate(desiredDelivery)}
-              </span>
-              <span className="text-[8px] font-medium text-slate-400 uppercase leading-none">Voulu</span>
-            </div>
-          </div>
-        )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-6 pt-4">
-        <div className="flex items-center gap-2">
-          <div className="h-3 w-3 bg-blue-500 rounded-sm" />
-          <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
-            {estimation} jours d'effort restant
-          </span>
-        </div>
+      <div className="relative pt-8 pb-10 px-4">
+        {/* Main Track */}
+        <div className="relative h-[6px] w-full bg-slate-100 dark:bg-slate-800 rounded-full">
+          
+          {/* Risk Zone (Orange background between Target and Estimated if late) */}
+          {isDanger && desiredPercentage !== null && estimatedPercentage !== null && (
+            <div 
+              className="absolute top-0 h-full bg-orange-200 dark:bg-orange-900/40 rounded-sm opacity-60"
+              style={{ 
+                left: `${desiredPercentage}%`, 
+                width: `${estimatedPercentage - desiredPercentage}%` 
+              }}
+            />
+          )}
 
-        {isDanger && (
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 rounded-full border border-rose-100 dark:border-rose-900/30">
-            <AlertTriangle data-testid="timeline-danger-icon" className="h-3.5 w-3.5" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Planning en danger</span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className="ml-1 text-rose-400 hover:text-rose-600 transition-colors">
-                  <Info className="h-3 w-3" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-xs">La date de livraison estimée dépasse la date souhaitée.</p>
-              </TooltipContent>
-            </Tooltip>
+          {/* Effort Segment (Blue) */}
+          <div 
+            className="absolute top-0 left-0 h-full bg-blue-500 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
+            style={{ width: `${effortPercentage}%` }}
+          />
+
+          {/* Remaining Days Pill */}
+          <div 
+            className="absolute top-0 -translate-y-[calc(100%+12px)] flex justify-center"
+            style={{ left: `${effortPercentage / 2}%` }}
+          >
+            <div className="bg-blue-600 text-white text-[9px] font-black px-4 py-1.5 rounded-full shadow-lg uppercase tracking-wider whitespace-nowrap">
+              {estimation} {estimation > 1 ? 'days' : 'day'} remaining
+            </div>
           </div>
-        )}
+
+          {/* Markers */}
+          {/* Today Marker */}
+          <div className="absolute top-0 left-0 flex flex-col items-center">
+            <div className="absolute top-0 -translate-y-6 text-[10px] font-bold text-slate-400 tracking-tight">TODAY</div>
+            <div className="h-8 w-[2px] bg-blue-500/30 -translate-y-[calc(50%-3px)]" />
+          </div>
+
+          {/* Target Marker */}
+          {desiredPercentage !== null && (
+            <div 
+              className="absolute top-0 flex flex-col items-center"
+              style={{ left: `${desiredPercentage}%` }}
+            >
+              <div className="absolute top-0 -translate-y-6 text-[10px] font-bold text-slate-400 tracking-tight uppercase">Target</div>
+              <div className="h-10 w-[1px] bg-slate-300 dark:bg-slate-700 -translate-y-[calc(50%-3px)]" />
+              <div className="absolute bottom-0 translate-y-8 flex flex-col items-center">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{formatDate(desiredDelivery)}</span>
+                <span className="text-[9px] font-medium text-slate-400 whitespace-nowrap">Livraison souhaitée</span>
+              </div>
+            </div>
+          )}
+
+          {/* Estimated Marker */}
+          {estimatedPercentage !== null && (
+            <div 
+              className="absolute top-0 flex flex-col items-center"
+              style={{ left: `${estimatedPercentage}%` }}
+            >
+              <div className={`absolute top-0 -translate-y-6 text-[10px] font-bold tracking-tight uppercase ${isDanger ? 'text-orange-500' : 'text-slate-400'}`}>
+                Estimated
+              </div>
+              <div className={`h-10 w-[2px] -translate-y-[calc(50%-3px)] ${isDanger ? 'bg-orange-500' : 'bg-slate-400'}`} />
+              <div className="absolute bottom-0 translate-y-8 flex flex-col items-center">
+                <span className={`text-xs font-bold ${isDanger ? 'text-orange-600' : 'text-slate-700 dark:text-slate-300'}`}>
+                  {formatDate(estimatedDelivery)}
+                </span>
+                {isDanger && (
+                  <span className="text-[9px] font-bold text-orange-500 whitespace-nowrap">
+                    Critical Delay (~{delayDays} days)
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+        </div>
       </div>
     </div>
   )

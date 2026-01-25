@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { MissionTimeline } from './mission-timeline'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
-import { ShieldCheck, AlertTriangle, Smartphone, BookOpen, Wrench, FileText, MoreHorizontal } from 'lucide-react'
+import { ShieldCheck, AlertTriangle, Smartphone, BookOpen, Wrench, FileText, MoreHorizontal, User, History, Flag } from 'lucide-react'
 
 interface MissionHeaderHeroProps {
   mission: any
@@ -37,7 +37,7 @@ export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps)
         <div className="flex items-center gap-2">
           <Link 
             href={`/projects/${mission.project_id}`}
-            className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-primary transition-colors"
+            className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] hover:text-primary transition-colors"
           >
             {mission.projects.name}
           </Link>
@@ -46,57 +46,89 @@ export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps)
       )}
 
       {/* Main Header Row */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-4 flex-1">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${currentType.color}`}>
-              <TypeIcon className="h-3.5 w-3.5" />
-              <span>{currentType.label}</span>
-            </div>
-            <InlineEditableField
-              value={mission.status}
-              type="select"
-              options={MISSION_STATUSES}
-              onSave={async (val) => {
-                await onUpdate({ status: val })
-              }}
-              displayClassName="text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
-            />
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${currentType.color}`}>
+            <TypeIcon className="h-3.5 w-3.5" />
+            <span>{currentType.label}</span>
           </div>
-
           <InlineEditableField
-            value={mission.title}
+            value={mission.status}
+            type="select"
+            options={MISSION_STATUSES}
             onSave={async (val) => {
-              await onUpdate({ title: val })
+              await onUpdate({ status: val })
             }}
-            displayClassName="text-5xl font-extrabold tracking-tight h-auto py-1 text-slate-900 dark:text-white"
-            className="text-5xl"
+            displayClassName="text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
           />
         </div>
 
-        {/* Discreet Metrics */}
-        <div className="flex items-center gap-6 pb-2">
-          <div className="flex flex-col items-end">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Confiance</p>
-            <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md border ${
-              isHighConfidence 
-                ? 'bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-900/30 text-green-700 dark:text-green-300'
-                : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-100 dark:border-yellow-900/30 text-yellow-700 dark:text-yellow-300'
-            }`}>
-              {isHighConfidence ? <ShieldCheck className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
-              <span className="text-sm font-bold">{confidence}%</span>
-            </div>
-          </div>
-        </div>
+        <InlineEditableField
+          value={mission.title}
+          onSave={async (val) => {
+            await onUpdate({ title: val })
+          }}
+          displayClassName="text-5xl font-extrabold tracking-tight h-auto py-1 text-slate-900 dark:text-white"
+          className="text-5xl"
+        />
       </div>
 
-      {/* Timeline Hero Block */}
-      <div className="bg-white dark:bg-slate-900/40 p-6 md:p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm transition-all hover:shadow-md">
+      {/* Integrated Hero Block */}
+      <div className="bg-white dark:bg-slate-900/40 p-8 md:p-10 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm transition-all hover:shadow-md space-y-12">
+        
+        {/* Timeline visualization */}
         <MissionTimeline 
           estimation={mission.estimation}
           estimatedDelivery={mission.estimated_delivery_date}
           desiredDelivery={mission.desired_delivery_date}
         />
+
+        <div className="h-px bg-slate-50 dark:bg-slate-800" />
+
+        {/* Bottom Metrics Row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="space-y-2">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Confidence Score</p>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-black text-slate-900 dark:text-white">{confidence}%</span>
+              {isHighConfidence ? (
+                <div className="bg-green-100 dark:bg-green-900/30 p-1 rounded-full">
+                  <ShieldCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
+                </div>
+              ) : (
+                <div className="bg-yellow-100 dark:bg-yellow-900/30 p-1 rounded-full">
+                  <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Priority</p>
+            <div className="flex items-center gap-2">
+              <Flag className="h-5 w-5 text-slate-400" />
+              <span className="text-xl font-bold text-slate-800 dark:text-slate-200">High</span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Last Updated</p>
+            <div className="flex items-center gap-2">
+              <History className="h-5 w-5 text-slate-400" />
+              <span className="text-xl font-bold text-slate-800 dark:text-slate-200">Today</span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Assignee</p>
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                <User className="h-4 w-4 text-slate-400" />
+              </div>
+              <span className="text-xl font-bold text-slate-800 dark:text-slate-200">Product Team</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

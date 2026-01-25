@@ -32,10 +32,11 @@ describe('MissionTimeline', () => {
       />
     )
 
-    expect(screen.getByText(/Aujourd'hui/i)).toBeDefined()
-    expect(screen.getByText(/3 févr\./i)).toBeDefined()
-    expect(screen.getByText(/8 févr\./i)).toBeDefined()
-    expect(screen.getByText(/5 jours/i)).toBeDefined()
+    expect(screen.getByText(/Timeline & Scheduling/i)).toBeDefined()
+    expect(screen.getByText(/TODAY/i)).toBeDefined()
+    expect(screen.getByText(/2026-02-03/i)).toBeDefined()
+    expect(screen.getByText(/2026-02-08/i)).toBeDefined()
+    expect(screen.getByText(/5 days remaining/i)).toBeDefined()
   })
 
   test('displays danger state when estimated > desired', () => {
@@ -47,9 +48,8 @@ describe('MissionTimeline', () => {
       />
     )
 
-    // Check for danger indicator or color class
-    const dangerIcon = screen.getByTestId('timeline-danger-icon')
-    expect(dangerIcon).toBeDefined()
+    // Check for Critical Delay text in orange
+    expect(screen.getByText(/Critical Delay/i)).toBeDefined()
   })
 
   test('handles missing estimated date', () => {
@@ -62,6 +62,6 @@ describe('MissionTimeline', () => {
     )
 
     expect(screen.queryByText(/n\/a/i)).toBeNull() // Should show date for desired
-    expect(screen.getByText(/3 févr\./i)).toBeDefined()
+    expect(screen.getByText(/2026-02-03/i)).toBeDefined()
   })
 })
