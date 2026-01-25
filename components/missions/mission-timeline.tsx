@@ -80,7 +80,7 @@ export function MissionTimeline({
           {/* Markers */}
           {/* Today Marker */}
           <div className="absolute top-0 left-0 flex flex-col items-center">
-            <div className="absolute top-0 -translate-y-6 text-[10px] font-bold text-slate-400 tracking-tight">TODAY</div>
+            <div className="absolute top-0 -translate-y-8 text-[10px] font-bold text-slate-400 tracking-tight">TODAY</div>
             <div className="h-8 w-[2px] bg-blue-500/30 -translate-y-[calc(50%-3px)]" />
           </div>
 
@@ -90,7 +90,7 @@ export function MissionTimeline({
               className="absolute top-0 flex flex-col items-center"
               style={{ left: `${desiredPercentage}%` }}
             >
-              <div className="absolute top-0 -translate-y-6 text-[10px] font-bold text-slate-400 tracking-tight uppercase">Target</div>
+              <div className="absolute top-0 -translate-y-8 text-[10px] font-bold text-slate-400 tracking-tight uppercase">Target</div>
               <div className="h-10 w-[1px] bg-slate-300 dark:bg-slate-700 -translate-y-[calc(50%-3px)]" />
               <div className="absolute bottom-0 translate-y-8 flex flex-col items-center">
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{formatDate(desiredDelivery)}</span>
@@ -105,7 +105,7 @@ export function MissionTimeline({
               className="absolute top-0 flex flex-col items-center"
               style={{ left: `${estimatedPercentage}%` }}
             >
-              <div className={`absolute top-0 -translate-y-6 text-[10px] font-bold tracking-tight uppercase ${isDanger ? 'text-orange-500' : 'text-slate-400'}`}>
+              <div className={`absolute top-0 -translate-y-8 text-[10px] font-bold tracking-tight uppercase ${isDanger ? 'text-orange-500' : 'text-slate-400'}`}>
                 Estimated
               </div>
               <div className={`h-10 w-[2px] -translate-y-[calc(50%-3px)] ${isDanger ? 'bg-orange-500' : 'bg-slate-400'}`} />

@@ -74,7 +74,7 @@ export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps)
       </div>
 
       {/* Integrated Hero Block */}
-      <div className="bg-white dark:bg-slate-900/40 p-8 md:p-10 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm transition-all hover:shadow-md space-y-12">
+      <div className="bg-slate-50/50 dark:bg-slate-900/40 p-8 md:p-10 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-8">
         
         {/* Timeline visualization */}
         <MissionTimeline 
@@ -83,11 +83,11 @@ export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps)
           desiredDelivery={mission.desired_delivery_date}
         />
 
-        <div className="h-px bg-slate-50 dark:bg-slate-800" />
+        <div className="h-px bg-slate-100 dark:bg-slate-800" />
 
         {/* Bottom Metrics Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Confidence Score</p>
             <div className="flex items-center gap-2">
               <span className="text-2xl font-black text-slate-900 dark:text-white">{confidence}%</span>
@@ -103,26 +103,26 @@ export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps)
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Priority</p>
             <div className="flex items-center gap-2">
-              <Flag className="h-5 w-5 text-slate-400" />
-              <span className="text-xl font-bold text-slate-800 dark:text-slate-200">High</span>
+              <Flag className="h-5 w-5 text-slate-300" />
+              <span className="text-xl font-bold text-slate-800 dark:text-slate-200 uppercase">n/a</span>
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Last Updated</p>
             <div className="flex items-center gap-2">
-              <History className="h-5 w-5 text-slate-400" />
+              <History className="h-5 w-5 text-slate-300" />
               <span className="text-xl font-bold text-slate-800 dark:text-slate-200">Today</span>
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Assignee</p>
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center">
                 <User className="h-4 w-4 text-slate-400" />
               </div>
               <span className="text-xl font-bold text-slate-800 dark:text-slate-200">Product Team</span>
