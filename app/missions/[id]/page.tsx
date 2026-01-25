@@ -1,9 +1,10 @@
-import { getMission, updateMission } from '../actions'
+import { getMission, updateMission, getMilestones } from '../actions'
 import { getProjects } from '../../projects/actions'
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { TaskList } from '@/components/missions/task-list'
+import { MissionDetailMilestones } from '@/components/missions/mission-detail-milestones'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import { formatRelativeDuration } from '@/lib/utils'
 
@@ -36,10 +37,12 @@ export default async function MissionDetailPage({ params }: PageProps) {
 
   let mission;
   let projects;
+  let milestones;
   try {
-    [mission, projects] = await Promise.all([
+    [mission, projects, milestones] = await Promise.all([
       getMission(id),
-      getProjects()
+      getProjects(),
+      getMilestones(id)
     ])
   } catch (error) {
     console.error('Error fetching data:', error)
@@ -257,7 +260,9 @@ export default async function MissionDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#15202b] rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-md h-fit sticky top-10">
+        <div className="bg-white dark:bg-[#15202b] rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-md h-fit sticky top-10 space-y-10">
+          <MissionDetailMilestones missionId={mission.id} initialMilestones={milestones} />
+          <div className="h-px bg-slate-100 dark:bg-slate-800" />
           <TaskList missionId={mission.id} />
         </div>
       </div>
