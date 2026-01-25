@@ -1,6 +1,6 @@
 # Plan: Project Detail UI Refinement & Grid Placeholders
 
-## Phase 1: Foundation & Header Refactoring
+## Phase 1: Foundation & Header Refactoring [checkpoint: 8c7e34a]
 - [x] Task: Create `GridPlaceholder` component in `components/ui/grid-placeholder.tsx` fa6385d
     - [x] Implement a card-sized container with a dashed border
     - [x] Add a customizable centered text label
