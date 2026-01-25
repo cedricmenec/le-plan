@@ -84,19 +84,12 @@ vi.mock('@/lib/supabase/client', () => {
   }
 })
 
-test('filters missions correctly based on toggle', async () => {
+test('shows all non-completed missions by default', async () => {
   render(<ProjectMissionList projectId="p1" initialMissions={mockMissions} />)
   
-  // By default, only in_progress should be shown
+  // Both missions should be shown by default now
   expect(screen.getByText('Mission In Progress')).toBeDefined()
-  expect(screen.queryByText('Mission Todo')).toBeNull()
-  
-  // We'll use the select trigger
-  const trigger = screen.getByRole('combobox')
-  fireEvent.click(trigger)
-  
-  // This is hard to test with Select from Radix without proper setup.
-  // I'll focus on the initial state and assume the component logic works if it passes.
+  expect(screen.getByText('Mission Todo')).toBeDefined()
 })
 
 test('renders dashboard with stats', () => {
