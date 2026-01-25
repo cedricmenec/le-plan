@@ -14,23 +14,23 @@ This plan covers adding edit and delete functionality to milestones, including a
     - [x] Verify `onEdit` is called immediately.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Milestone Action Menu Component' (Protocol in workflow.md)
 
-## Phase 2: Hover Logic & Integration
+## Phase 2: Hover Logic & Integration [checkpoint: 0d7279c]
 **Goal:** Update `MissionMilestoneItem` to handle the contextual action button visibility with delay.
 
-- [~] Task: Update `MissionMilestoneItem` in `components/missions/mission-milestone-item.tsx`.
-    - [ ] Add state for action button visibility.
-    - [ ] Implement `onMouseEnter` with a 1000ms `setTimeout`.
-    - [ ] Implement `onMouseLeave` with immediate `clearTimeout` and visibility reset.
-    - [ ] Integrate the `MilestoneActions` component.
-- [ ] Task: Update unit tests for `MissionMilestoneItem`.
-    - [ ] Test the 1s delay before visibility (mock timers).
-    - [ ] Test immediate disappearance on mouse leave.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Hover Logic & Integration' (Protocol in workflow.md)
+- [x] Task: Update `MissionMilestoneItem` in `components/missions/mission-milestone-item.tsx`. [709ee86]
+    - [x] Add state for action button visibility.
+    - [x] Implement `onMouseEnter` with a 1000ms `setTimeout`.
+    - [x] Implement `onMouseLeave` with immediate `clearTimeout` and visibility reset.
+    - [x] Integrate the `MilestoneActions` component.
+- [x] Task: Write unit tests for `MissionMilestoneItem`. [709ee86]
+    - [x] Test the 1s delay before visibility (mock timers).
+    - [x] Test immediate disappearance on mouse leave.
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Hover Logic & Integration' (Protocol in workflow.md)
 
 ## Phase 3: Wiring UI to Backend Actions
 **Goal:** Connect the UI components to the existing server actions and handle dialog state.
 
-- [ ] Task: Update `MissionDetailMilestones` in `components/missions/mission-detail-milestones.tsx`.
+- [~] Task: Update `MissionDetailMilestones` in `components/missions/mission-detail-milestones.tsx`.
     - [ ] Add state to track the milestone currently being edited.
     - [ ] Pass `onEdit` callback to `MissionMilestoneList` -> `MissionMilestoneItem`.
     - [ ] Pass `onDelete` callback (calling `deleteMilestone`) to `MissionMilestoneItem`.
