@@ -33,7 +33,7 @@
     - [x] Implement "three dots" (ellipsis) menu appearing on hover for Edit/Delete actions
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Planned Missions List Refactor' (Protocol in workflow.md)
 
-## Phase 4: Final Polish & Verification
+## Phase 4: Final Polish & Verification [checkpoint: 9917bcf]
 - [x] Task: Verify overall visual consistency and responsiveness
     - [x] Check alignment of mission counts in headers
     - [x] Ensure `GridPlaceholder` matches `MissionCard` dimensions exactly
