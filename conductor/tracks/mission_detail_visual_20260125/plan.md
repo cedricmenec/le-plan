@@ -21,7 +21,7 @@ This plan covers the restructuring of the mission detail page header and the imp
 
 ## Phase 3: Integration & Refactoring
 
-- [ ] Task: Integrate `MissionHeaderHero` into the Mission Detail Page
+- [x] Task: Integrate `MissionHeaderHero` into the Mission Detail Page (3f59577)
     - [ ] Update `app/missions/[id]/page.tsx` to use the new hero component.
     - [ ] Reposition Project Name above the title.
     - [ ] Remove the redundant metrics grid from the bottom of the page.
