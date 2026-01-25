@@ -11,7 +11,7 @@
     - [x] Add mission counts aligned to the far right of the header line
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Header Refactoring' (Protocol in workflow.md)
 
-## Phase 2: Active Missions Grid Enhancement
+## Phase 2: Active Missions Grid Enhancement [checkpoint: c41d44f]
 - [x] Task: Implement dynamic `GridPlaceholder` logic in `MissionList` f60c517
     - [x] Update `renderGrid` to accept a `minItems` parameter or calculate needed placeholders
     - [x] Logic: Fill the remainder of the 3-column row if total items < 3 or (items % 3 != 0)
