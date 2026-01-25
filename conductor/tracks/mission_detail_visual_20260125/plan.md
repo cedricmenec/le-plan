@@ -2,12 +2,10 @@
 
 This plan covers the restructuring of the mission detail page header and the implementation of a new "hero" visual block featuring a minimalist horizontal timeline.
 
-## Phase 1: Logic & Utils Preparation
+## Phase 1: Logic & Utils Preparation [checkpoint: 9d198d2]
 
 - [x] Task: Create date calculation utilities for the timeline (6c1696f)
-    - [ ] Write tests in `lib/utils.test.ts` for timeline percentage calculations (start, end, duration).
-    - [ ] Implement `calculateTimelineMetrics` in `lib/utils.ts` to return percentages and status (danger).
-- [ ] Task: Conductor - User Manual Verification 'Logic & Utils Preparation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Logic & Utils Preparation' (Protocol in workflow.md) (9d198d2)
 
 ## Phase 2: Component Development
 
