@@ -5,6 +5,13 @@ import { Database } from '@/types/database.types'
 
 type Mission = Database['public']['Tables']['missions']['Row']
 
+// Mock useRouter
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+  })),
+}))
+
 // Mock scrollIntoView which is missing in jsdom
 beforeEach(() => {
   window.HTMLElement.prototype.scrollIntoView = vi.fn()
