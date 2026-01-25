@@ -139,6 +139,14 @@ export function MissionList({
       ? fillTo - items.length 
       : (items.length % 3 !== 0 ? 3 - (items.length % 3) : 0);
 
+    const humorousLabels = [
+      "Encore de la place pour sauver le monde ?",
+      "Un créneau de libre ? C'est rare !",
+      "Prêt pour une nouvelle aventure ?",
+      "Emplacement réservé aux génies.",
+      "Silence... une mission pourrait apparaître ici.",
+    ];
+
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map((mission) => (
@@ -152,7 +160,10 @@ export function MissionList({
           />
         ))}
         {Array.from({ length: placeholdersCount }).map((_, i) => (
-          <GridPlaceholder key={`placeholder-${i}`} />
+          <GridPlaceholder 
+            key={`placeholder-${i}`} 
+            label={humorousLabels[i % humorousLabels.length]} 
+          />
         ))}
       </div>
     )
@@ -179,9 +190,11 @@ export function MissionList({
               {activeMissions.length > 0 ? (
                 renderGrid(activeMissions, 3)
               ) : (
-                <p className="text-sm text-muted-foreground italic py-4 border-2 border-dashed rounded-lg text-center">
-                  Aucune mission en cours.
-                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <GridPlaceholder label="C'est le calme plat... Profites-en pour prendre un café ☕" />
+                  <GridPlaceholder label="Rien à signaler. C'est louche, non ?" />
+                  <GridPlaceholder label="Libre comme l'air ! (Ou presque)" />
+                </div>
               )}
             </div>
 

@@ -10,6 +10,7 @@ import {
   Wrench, 
   FileText, 
   MoreHorizontal,
+  Clock,
   LucideIcon
 } from 'lucide-react'
 
@@ -19,6 +20,14 @@ const TYPE_ICONS: Record<string, LucideIcon> = {
   support: Wrench,
   docs: FileText,
   other: MoreHorizontal,
+}
+
+const TYPE_COLORS: Record<string, string> = {
+  feature: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400',
+  study: 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400',
+  support: 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400',
+  docs: 'bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400',
+  other: 'bg-slate-50 dark:bg-slate-900/20 text-slate-600 dark:text-slate-400',
 }
 
 interface CondensedMissionRowProps {
@@ -39,7 +48,7 @@ export function CondensedMissionRow({
   isDeleting,
 }: CondensedMissionRowProps) {
   const router = useRouter()
-  const Icon = TYPE_ICONS[mission.type] || TYPE_ICONS.other
+  const colorClass = TYPE_COLORS[mission.type] || TYPE_COLORS.other
   const projectName = mission.projects?.name || mission.project_parent
 
   const handleRowClick = () => {
@@ -49,35 +58,32 @@ export function CondensedMissionRow({
   return (
     <div 
       onClick={handleRowClick}
-      className={`group grid grid-cols-[1fr,100px,120px,100px,48px] items-center px-4 py-3 bg-white dark:bg-[#15202b] hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors cursor-pointer ${
+      className={`group grid grid-cols-[100px_1fr_120px_100px_48px] items-center px-4 py-3 bg-white dark:bg-[#15202b] hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors cursor-pointer ${
         (isDeleting || isUpdating) ? 'opacity-50 pointer-events-none' : ''
       }`}
     >
-      {/* Mission Column */}
-      <div className="flex items-center gap-3 overflow-hidden">
-        <div className="h-2 w-2 rounded-full bg-slate-300 dark:bg-slate-700 flex-shrink-0" />
-        <div className="flex flex-col min-w-0">
-          <div className="text-sm font-bold text-slate-900 dark:text-white truncate">
-            {mission.title}
-          </div>
-          {showProjectName && projectName && (
-            <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-              {projectName}
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* Type Column */}
       <div className="flex justify-center">
-        <Badge variant="secondary" className="text-[10px] font-bold uppercase py-0 px-2 h-5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-none">
+        <Badge variant="secondary" className={`text-[10px] font-bold uppercase py-0 px-2 h-5 border-none ${colorClass}`}>
           {mission.type}
         </Badge>
       </div>
 
+      {/* Mission Column */}
+      <div className="flex flex-col min-w-0 px-2">
+        <div className="text-sm font-bold text-slate-900 dark:text-white truncate">
+          {mission.title}
+        </div>
+        {showProjectName && projectName && (
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+            {projectName}
+          </div>
+        )}
+      </div>
+
       {/* Estimation Column */}
-      <div className="flex justify-center items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
-        <span className="text-slate-400"><Icon className="h-3.5 w-3.5" /></span>
+      <div className="flex justify-start items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 px-2">
+        <span className="text-slate-400"><Clock className="h-3.5 w-3.5" /></span>
         {mission.estimation} jours
       </div>
 

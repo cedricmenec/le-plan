@@ -31,10 +31,10 @@ export function CondensedMissionList({
   return (
     <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white dark:bg-[#15202b]">
       {/* Header */}
-      <div className="grid grid-cols-[1fr,100px,120px,100px,48px] items-center px-4 py-2 bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-        <div>Mission</div>
+      <div className="grid grid-cols-[100px_1fr_120px_100px_48px] items-center px-4 py-2 bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
         <div className="text-center">Type</div>
-        <div className="text-center">Charge Estimée</div>
+        <div>Mission</div>
+        <div className="text-left px-2">Charge Estimée</div>
         <div className="text-center">Priorité</div>
         <div></div>
       </div>

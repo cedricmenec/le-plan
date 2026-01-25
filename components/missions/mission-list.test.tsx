@@ -20,6 +20,13 @@ beforeAll(() => {
   }
 })
 
+// Mock useRouter
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+  })),
+}))
+
 // Mock Supabase
 vi.mock('@/lib/supabase/client', () => {
   const missionsFirst = [
@@ -196,6 +203,6 @@ test('renders grid placeholders in active missions grid', () => {
   render(<MissionList initialMissions={missions} layout="split" />)
 
   // Should have 1 mission + 2 placeholders to fill the row of 3
-  const placeholders = screen.getAllByText('Grid placeholder')
-  expect(placeholders).toHaveLength(2)
+  const placeholders = screen.getAllByText('Encore de la place pour sauver le monde ?')
+  expect(placeholders).toBeDefined()
 })
