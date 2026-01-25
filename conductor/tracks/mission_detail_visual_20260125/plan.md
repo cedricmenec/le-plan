@@ -22,10 +22,9 @@ This plan covers the restructuring of the mission detail page header and the imp
 ## Phase 3: Integration & Refactoring
 
 - [x] Task: Integrate `MissionHeaderHero` into the Mission Detail Page (3f59577)
-    - [ ] Update `app/missions/[id]/page.tsx` to use the new hero component.
-    - [ ] Reposition Project Name above the title.
-    - [ ] Remove the redundant metrics grid from the bottom of the page.
-- [x] Task: Verification & Cleanup (6c08df9)
-    - [ ] Run full test suite: `npm test`.
-    - [ ] Verify visual alignment and responsiveness on mobile/desktop.
+- [x] Task: UI Polish - MissionTimeline Refinement (match screenshot) (119b453)
+    - [ ] Update `MissionTimeline` styling: title, legend, vertical lines, and dates below.
+    - [ ] Add "Risk zone" visualization between Target and Estimated dates.
+    - [ ] Move Confidence Score row below the timeline inside the hero block.
+- [~] Task: Verification & Cleanup
 - [ ] Task: Conductor - User Manual Verification 'Integration & Refactoring' (Protocol in workflow.md)
