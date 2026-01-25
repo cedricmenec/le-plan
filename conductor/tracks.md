@@ -79,3 +79,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Project Detail UI Refinement & Grid Placeholders
 - **ID**: `project_detail_ui_20260125`
 - **Link**: [conductor/archive/project_detail_ui_20260125](archive/project_detail_ui_20260125/)
+
+---
+
+## [x] Track: Améliorer la visualisation des détails d'une mission avec un bloc héro et une timeline minimaliste.
+- **ID**: `mission_detail_visual_20260125`
+- **Link**: [./tracks/mission_detail_visual_20260125/](./tracks/mission_detail_visual_20260125/)
