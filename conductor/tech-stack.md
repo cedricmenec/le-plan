@@ -7,6 +7,7 @@
 *   **Iconographie :** [Lucide React](https://lucide.dev/) - Pour une bibliothèque d'icônes cohérente et légère.
 *   **Composants UI :** [Shadcn/ui](https://ui.shadcn.com/) (basé sur Radix UI) - Pour des composants accessibles et hautement personnalisables.
 *   **Drag & Drop :** [@dnd-kit](https://dndkit.com/) - Pour une gestion performante et accessible du réordonnancement des tâches.
+*   **Gestion des dates :** [date-fns](https://date-fns.org/) - Pour le formatage et la manipulation des dates.
 
 ## 2. Backend & Base de données
 *   **Infrastructure/BaaS :** [Supabase](https://supabase.com/) - Pour l'authentification, la base de données PostgreSQL et le stockage.

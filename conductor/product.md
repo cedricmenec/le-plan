@@ -170,6 +170,7 @@ Le projet consiste à développer une **application Web** personnelle de visibil
     *   Facilitation de la priorisation des missions par un **tri automatique par date de livraison estimée**.
     *   Système de navigation par breadcrumbs (Inclus).
 *   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge, score de confiance, **objectif principal (Main Goal)**, **notes complémentaires**, ainsi que des **dates de livraison estimées et souhaitées**.
+    *   **Jalons (Milestones) (Inclus) :** Définition d'étapes intermédiaires datées (Cadrage, Review, Livraison) pour améliorer la visibilité court terme.
 *   **Indicateurs de Délai (Inclus) :** Affichage de la durée restante approximative (jours, semaines, mois) basée sur la date de livraison estimée pour faciliter la visibilité immédiate des échéances.
 *   **Tâches (Inclus) :** Décomposition des missions en actions simples avec suivi d'état (checkbox), réordonnancement par drag & drop et édition in-line.
 *   **Authentification (Inclus) :** Sécurisation des données par utilisateur via Supabase Auth.
