@@ -18,7 +18,7 @@
     - [x] Apply this logic specifically for the "Active Missions" section
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Active Missions Grid Enhancement' (Protocol in workflow.md)
 
-## Phase 3: Planned Missions List Refactor
+## Phase 3: Planned Missions List Refactor [checkpoint: 2fb903d]
 - [x] Task: Refactor `CondensedMissionList` structure in `components/missions/condensed-mission-list.tsx` 6f88d6b
     - [x] Create a container with rounded corners and a subtle border
     - [x] Add table-like headers: Mission, Type, Charge Estimée, Priorité
