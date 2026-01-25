@@ -1,5 +1,5 @@
 import { expect, test, describe, vi, beforeEach, afterEach } from 'vitest'
-import { cn, formatRelativeDuration, sortMissions } from './utils'
+import { cn, formatRelativeDuration, sortMissions, calculateTimelineMetrics } from './utils'
 
 test('cn merges class names correctly', () => {
   expect(cn('c1', 'c2')).toBe('c1 c2')
@@ -90,5 +90,74 @@ describe('sortMissions', () => {
     expect(sorted[1].id).toBe('1')
     expect(sorted[2].id).toBe('4')
     expect(sorted[3].id).toBe('2')
+  })
+})
+
+describe('calculateTimelineMetrics', () => {
+  const today = new Date('2026-01-24T12:00:00Z')
+
+  test('returns null if both dates are missing', () => {
+    // @ts-ignore - testing with nulls
+    const metrics = calculateTimelineMetrics(today, 5, null, null)
+    expect(metrics).toBeNull()
+  })
+
+  test('calculates correct percentages when both dates are present', () => {
+    const estimated = '2026-02-03' // Today + 10 days
+    const desired = '2026-02-08'   // Today + 15 days
+    // Timeline window: 15 days
+    
+    // @ts-ignore
+    const metrics = calculateTimelineMetrics(today, 5, estimated, desired)
+    
+    expect(metrics).not.toBeNull()
+    if (metrics) {
+      expect(metrics.effortPercentage).toBeCloseTo((5 / 15) * 100)
+      expect(metrics.estimatedPercentage).toBeCloseTo((10 / 15) * 100)
+      expect(metrics.desiredPercentage).toBe(100)
+      expect(metrics.isDanger).toBe(false)
+    }
+  })
+
+  test('detects danger when estimated > desired', () => {
+    const estimated = '2026-02-10' // Today + 17 days
+    const desired = '2026-02-03'   // Today + 10 days
+    // Timeline window: 17 days
+    
+    // @ts-ignore
+    const metrics = calculateTimelineMetrics(today, 5, estimated, desired)
+    
+    expect(metrics).not.toBeNull()
+    if (metrics) {
+      expect(metrics.isDanger).toBe(true)
+      expect(metrics.estimatedPercentage).toBe(100)
+      expect(metrics.desiredPercentage).toBeCloseTo((10 / 17) * 100)
+    }
+  })
+
+  test('handles missing estimated date', () => {
+    const desired = '2026-02-03' // Today + 10 days
+    // @ts-ignore
+    const metrics = calculateTimelineMetrics(today, 3, null, desired)
+    
+    expect(metrics).not.toBeNull()
+    if (metrics) {
+      expect(metrics.estimatedPercentage).toBeNull()
+      expect(metrics.desiredPercentage).toBe(100)
+      expect(metrics.effortPercentage).toBeCloseTo((3 / 10) * 100)
+    }
+  })
+
+  test('handles missing desired date', () => {
+    const estimated = '2026-02-03' // Today + 10 days
+    // @ts-ignore
+    const metrics = calculateTimelineMetrics(today, 3, estimated, null)
+    
+    expect(metrics).not.toBeNull()
+    if (metrics) {
+      expect(metrics.estimatedPercentage).toBe(100)
+      expect(metrics.desiredPercentage).toBeNull()
+      expect(metrics.effortPercentage).toBeCloseTo((3 / 10) * 100)
+    }
   })
 })

@@ -60,3 +60,51 @@ export function sortMissions<T extends { estimated_delivery_date?: string | null
   })
 }
 
+export interface TimelineMetrics {
+  effortPercentage: number
+  estimatedPercentage: number | null
+  desiredPercentage: number | null
+  isDanger: boolean
+}
+
+export function calculateTimelineMetrics(
+  today: Date,
+  estimation: number,
+  estimatedDelivery: string | null,
+  desiredDelivery: string | null
+): TimelineMetrics | null {
+  if (!estimatedDelivery && !desiredDelivery) return null
+
+  const estDate = estimatedDelivery ? new Date(estimatedDelivery) : null
+  const desDate = desiredDelivery ? new Date(desiredDelivery) : null
+
+  const todayTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()
+  const estTime = estDate ? new Date(estDate.getFullYear(), estDate.getMonth(), estDate.getDate()).getTime() : null
+  const desTime = desDate ? new Date(desDate.getFullYear(), desDate.getMonth(), desDate.getDate()).getTime() : null
+
+  const endTime = Math.max(
+    estTime || 0,
+    desTime || 0
+  )
+
+  const totalDuration = endTime - todayTime
+  if (totalDuration <= 0) {
+    // If end date is today or in the past, timeline is basically at 100% or invalid
+    return {
+      effortPercentage: 100,
+      estimatedPercentage: estTime ? 100 : null,
+      desiredPercentage: desTime ? 100 : null,
+      isDanger: estTime !== null && desTime !== null && estTime > desTime
+    }
+  }
+
+  const totalDays = totalDuration / (1000 * 60 * 60 * 24)
+  
+  return {
+    effortPercentage: Math.min(100, (estimation / totalDays) * 100),
+    estimatedPercentage: estTime ? ((estTime - todayTime) / totalDuration) * 100 : null,
+    desiredPercentage: desTime ? ((desTime - todayTime) / totalDuration) * 100 : null,
+    isDanger: estTime !== null && desTime !== null && estTime > desTime
+  }
+}
+
