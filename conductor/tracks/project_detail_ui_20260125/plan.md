@@ -9,7 +9,7 @@
     - [x] Replace existing bullet icons with small rounded rectangles
     - [x] Apply Blue for "Active Missions" and Gray for "Planned Missions"
     - [x] Add mission counts aligned to the far right of the header line
-- [~] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Header Refactoring' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Header Refactoring' (Protocol in workflow.md)
 
 ## Phase 2: Active Missions Grid Enhancement
 - [ ] Task: Implement dynamic `GridPlaceholder` logic in `MissionList`
