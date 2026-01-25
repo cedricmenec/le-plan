@@ -13,9 +13,10 @@ import { useState } from 'react'
 interface MilestoneActionsProps {
   onEdit: () => void
   onDelete: () => void
+  onOpenChange?: (open: boolean) => void
 }
 
-export function MilestoneActions({ onEdit, onDelete }: MilestoneActionsProps) {
+export function MilestoneActions({ onEdit, onDelete, onOpenChange }: MilestoneActionsProps) {
   const [showConfirm, setShowConfirm] = useState(false)
 
   const handleDeleteClick = (e: React.MouseEvent) => {
@@ -32,6 +33,7 @@ export function MilestoneActions({ onEdit, onDelete }: MilestoneActionsProps) {
     if (!open) {
       setShowConfirm(false)
     }
+    onOpenChange?.(open)
   }
 
   return (

@@ -35,44 +35,46 @@ describe('MissionMilestoneItem Hover Logic', () => {
   test('shows action button only after 1s hover', async () => {
     render(<MissionMilestoneItem milestone={mockMilestone} />)
     
-    // Initially hidden
-    expect(screen.queryByTestId('milestone-actions')).toBeNull()
+    // Initially hidden (opacity-0)
+    const actionsWrapper = screen.getByTestId('milestone-actions').parentElement!
+    expect(actionsWrapper.className).toContain('opacity-0')
     
-    const container = screen.getByText('Test Milestone').closest('div')!
+    const itemContainer = screen.getByText('Test Milestone').closest('.group')!
     
     // Hover start
-    fireEvent.mouseEnter(container)
+    fireEvent.mouseEnter(itemContainer)
     
     // Still hidden after 500ms
     act(() => {
       vi.advanceTimersByTime(500)
     })
-    expect(screen.queryByTestId('milestone-actions')).toBeNull()
+    expect(actionsWrapper.className).toContain('opacity-0')
     
     // Visible after 1000ms
     act(() => {
       vi.advanceTimersByTime(500)
     })
-    expect(screen.getByTestId('milestone-actions')).toBeDefined()
+    expect(actionsWrapper.className).toContain('opacity-100')
   })
 
   test('clears timeout and hides button on mouse leave', async () => {
     render(<MissionMilestoneItem milestone={mockMilestone} />)
     
-    const container = screen.getByText('Test Milestone').closest('div')!
+    const actionsWrapper = screen.getByTestId('milestone-actions').parentElement!
+    const itemContainer = screen.getByText('Test Milestone').closest('.group')!
     
-    fireEvent.mouseEnter(container)
+    fireEvent.mouseEnter(itemContainer)
     
     // Move out before 1s
     act(() => {
       vi.advanceTimersByTime(500)
     })
-    fireEvent.mouseLeave(container)
+    fireEvent.mouseLeave(itemContainer)
     
     // Should stay hidden even after more time passes
     act(() => {
       vi.advanceTimersByTime(1000)
     })
-    expect(screen.queryByTestId('milestone-actions')).toBeNull()
+    expect(actionsWrapper.className).toContain('opacity-0')
   })
 })

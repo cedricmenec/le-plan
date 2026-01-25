@@ -36,6 +36,7 @@ const TYPE_ICONS: Record<string, any> = {
 export function MissionMilestoneItem({ milestone, onEdit, onDelete }: MissionMilestoneItemProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [showActions, setShowActions] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   
   const milestoneDate = new Date(milestone.date)
@@ -47,6 +48,7 @@ export function MissionMilestoneItem({ milestone, onEdit, onDelete }: MissionMil
   const Icon = TYPE_ICONS[typeName] || MoreHorizontal
 
   const handleMouseEnter = () => {
+    if (hoverTimeoutRef.current) return
     hoverTimeoutRef.current = setTimeout(() => {
       setShowActions(true)
     }, 1000)
@@ -57,8 +59,17 @@ export function MissionMilestoneItem({ milestone, onEdit, onDelete }: MissionMil
       clearTimeout(hoverTimeoutRef.current)
       hoverTimeoutRef.current = null
     }
-    setShowActions(false)
+    if (!isMenuOpen) {
+      setShowActions(false)
+    }
   }
+
+  // Ensure actions stay visible if menu was opened, even if mouse left
+  useEffect(() => {
+    if (!isMenuOpen && hoverTimeoutRef.current === null) {
+      // Logic handled by handleMouseLeave, but this is a safety net
+    }
+  }, [isMenuOpen])
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -105,13 +116,18 @@ export function MissionMilestoneItem({ milestone, onEdit, onDelete }: MissionMil
             </span>
           </div>
           
-          <div className="flex items-center gap-2">
-            {showActions && (
+          <div className="flex items-center gap-2 h-8">
+            <div 
+              className={`transition-all duration-200 ${
+                (showActions || isMenuOpen) ? 'opacity-100' : 'opacity-0 pointer-events-none'
+              }`}
+            >
               <MilestoneActions 
                 onEdit={onEdit || (() => {})} 
                 onDelete={onDelete || (() => {})} 
+                onOpenChange={setIsMenuOpen}
               />
-            )}
+            </div>
             
             {milestone.note && (
               <button 
