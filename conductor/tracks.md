@@ -79,9 +79,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Project Detail UI Refinement & Grid Placeholders
 - **ID**: `project_detail_ui_20260125`
 - **Link**: [conductor/archive/project_detail_ui_20260125](archive/project_detail_ui_20260125/)
-
----
-
-## [x] **Track: Sidebar Navigation Enhancement**
-- **ID**: `sidebar_navigation_20260125`
-- **Link**: [conductor/tracks/sidebar_navigation_20260125/](./tracks/sidebar_navigation_20260125/)
