@@ -88,5 +88,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [ ] Track: Améliore l'UI de la vue de détail d'une mission (police, alignement metadata, inversion sections, suppression metadata redondante, suppression shadows)
+## [x] Track: Améliore l'UI de la vue de détail d'une mission (police, alignement metadata, inversion sections, suppression metadata redondante, suppression shadows)
+- **ID**: `mission_detail_ui_polish_20260125`
 - **Link**: [./tracks/mission_detail_ui_polish_20260125/](./tracks/mission_detail_ui_polish_20260125/)
