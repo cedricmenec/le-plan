@@ -31,7 +31,7 @@
     - [x] Implement row-wide click for navigation to mission detail
     - [x] Add subtle background hover effect
     - [x] Implement "three dots" (ellipsis) menu appearing on hover for Edit/Delete actions
-- [~] Task: Conductor - User Manual Verification 'Phase 3: Planned Missions List Refactor' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Planned Missions List Refactor' (Protocol in workflow.md)
 
 ## Phase 4: Final Polish & Verification
 - [ ] Task: Verify overall visual consistency and responsiveness
