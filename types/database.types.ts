@@ -136,6 +136,72 @@ export type Database = {
           }
         ]
       }
+      milestone_types: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+      milestones: {
+        Row: {
+          id: string
+          mission_id: string
+          type_id: string
+          date: string
+          title: string
+          note: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          mission_id: string
+          type_id: string
+          date: string
+          title: string
+          note?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          mission_id?: string
+          type_id?: string
+          date?: string
+          title?: string
+          note?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "milestones_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "milestones_type_id_fkey"
+            columns: ["type_id"]
+            isOneToOne: false
+            referencedRelation: "milestone_types"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
