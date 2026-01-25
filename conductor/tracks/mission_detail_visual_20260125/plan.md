@@ -13,7 +13,7 @@ This plan covers the restructuring of the mission detail page header and the imp
     - [ ] Write tests for `MissionTimeline` in `components/missions/mission-timeline.test.tsx`.
     - [ ] Implement `MissionTimeline` using Tailwind CSS and Lucide icons.
     - [ ] Ensure responsiveness and "n/a" handling for missing dates.
-- [ ] Task: Create `MissionHeaderHero` component
+- [x] Task: Create `MissionHeaderHero` component (4cd2e0b)
     - [ ] Write tests for `MissionHeaderHero` in `components/missions/mission-header-hero.test.tsx`.
     - [ ] Implement `MissionHeaderHero` to group: Project name, Mission title, badges, and the `MissionTimeline`.
     - [ ] Integrate "Danger" alert logic if Estimated > Desired delivery.
