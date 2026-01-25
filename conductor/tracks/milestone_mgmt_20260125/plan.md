@@ -27,13 +27,13 @@ This plan covers adding edit and delete functionality to milestones, including a
     - [x] Test immediate disappearance on mouse leave.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Hover Logic & Integration' (Protocol in workflow.md)
 
-## Phase 3: Wiring UI to Backend Actions
+## Phase 3: Wiring UI to Backend Actions [checkpoint: b3c3b7f]
 **Goal:** Connect the UI components to the existing server actions and handle dialog state.
 
-- [~] Task: Update `MissionDetailMilestones` in `components/missions/mission-detail-milestones.tsx`.
-    - [ ] Add state to track the milestone currently being edited.
-    - [ ] Pass `onEdit` callback to `MissionMilestoneList` -> `MissionMilestoneItem`.
-    - [ ] Pass `onDelete` callback (calling `deleteMilestone`) to `MissionMilestoneItem`.
-    - [ ] Wire up the `EditMilestoneDialog` with the selected milestone data.
-- [ ] Task: Add integration tests for the full Edit/Delete flow.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Wiring UI to Backend Actions' (Protocol in workflow.md)
+- [x] Task: Update `MissionDetailMilestones` in `components/missions/mission-detail-milestones.tsx`. [4c39949]
+    - [x] Add state to track the milestone currently being edited.
+    - [x] Pass `onEdit` callback to `MissionMilestoneList` -> `MissionMilestoneItem`.
+    - [x] Pass `onDelete` callback (calling `deleteMilestone`) to `MissionMilestoneItem`.
+    - [x] Wire up the `EditMilestoneDialog` with the selected milestone data.
+- [x] Task: Add integration tests for the full Edit/Delete flow. [4c39949]
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Wiring UI to Backend Actions' (Protocol in workflow.md)
