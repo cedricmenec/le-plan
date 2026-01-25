@@ -1,0 +1,8 @@
+{
+  "track_id": "milestone_mgmt_20260125",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-25T15:20:00Z",
+  "updated_at": "2026-01-25T15:20:00Z",
+  "description": "Implémenter les actions de suppression et modification des jalons de mission avec un menu d'action retardé au survol."
+}

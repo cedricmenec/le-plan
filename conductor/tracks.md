@@ -73,9 +73,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Mission Card UI Polish
 - **ID**: `mission_card_ui_polish_20260124`
 - **Link**: [conductor/archive/mission_card_ui_polish_20260124](archive/mission_card_ui_polish_20260124/)
-
----
-
-## [x] Track: Milestone Management (Edit & Delete)
-- **ID**: milestone_mgmt_20260125
-- **Link**: [./tracks/milestone_mgmt_20260125/](./tracks/milestone_mgmt_20260125/)
