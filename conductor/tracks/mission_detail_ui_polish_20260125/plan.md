@@ -11,7 +11,7 @@ Refactor the `MissionHeaderHero` component to reduce the title size, reorganize 
     - [x] Locate and remove the grid containing Estimation, Confidence, and Delivery Dates in `app/missions/[id]/page.tsx`
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Header and Metadata Cleanup' (Protocol in workflow.md) (6dcfdad)
 
-## Phase 2: Section Reorganization
+## Phase 2: Section Reorganization [checkpoint: 7756dc2]
 Reorder the "Objectif Principal", "Timeline & Scheduling", and "Notes" sections in the main layout.
 
 - [x] Task: Reorder sections in `app/missions/[id]/page.tsx` (711ae3b)
@@ -20,7 +20,7 @@ Reorder the "Objectif Principal", "Timeline & Scheduling", and "Notes" sections 
 - [x] Task: Remove remaining shadows from page components (711ae3b)
     - [x] Remove `shadow-sm` from the "Notes & Contexte" container in `app/missions/[id]/page.tsx`
     - [x] Remove `shadow-md` from the Sidebar container in `app/missions/[id]/page.tsx`
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Section Reorganization' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Section Reorganization' (Protocol in workflow.md) (7756dc2)
 
 ## Phase 3: Final Polishing & Verification
 Ensure all styles are consistent and no shadows remain.
