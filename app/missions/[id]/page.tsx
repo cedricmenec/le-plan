@@ -5,15 +5,11 @@ import { redirect, notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { TaskList } from '@/components/missions/task-list'
 import { MissionDetailMilestones } from '@/components/missions/mission-detail-milestones'
+import { MissionHeaderHero } from '@/components/missions/mission-header-hero'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import { formatRelativeDuration } from '@/lib/utils'
 
 import { 
-  Smartphone, 
-  BookOpen, 
-  Wrench, 
-  FileText, 
-  MoreHorizontal,
   Calendar,
   ShieldCheck,
   Briefcase
@@ -64,23 +60,7 @@ export default async function MissionDetailPage({ params }: PageProps) {
         { label: mission.title }
       ]
 
-  const missionTypes = [
-    { label: 'Feature', value: 'feature', icon: Smartphone, color: 'text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-900/20' },
-    { label: 'Étude', value: 'study', icon: BookOpen, color: 'text-orange-600 bg-orange-50 dark:text-orange-400 dark:bg-orange-900/20' },
-    { label: 'Support', value: 'support', icon: Wrench, color: 'text-rose-600 bg-rose-50 dark:text-rose-400 dark:bg-rose-900/20' },
-    { label: 'Docs', value: 'docs', icon: FileText, color: 'text-sky-600 bg-sky-50 dark:text-sky-400 dark:bg-sky-900/20' },
-    { label: 'Autre', value: 'other', icon: MoreHorizontal, color: 'text-slate-600 bg-slate-50 dark:text-slate-400 dark:bg-slate-900/20' },
-  ]
-
-  const missionStatuses = [
-    { label: 'À faire', value: 'todo' },
-    { label: 'En cours', value: 'in_progress' },
-    { label: 'Terminé', value: 'done' },
-  ]
-
   const projectOptions = projects.map(p => ({ label: p.name, value: p.id }))
-  const currentType = missionTypes.find(t => t.value === mission.type) || missionTypes[4]
-  const TypeIcon = currentType.icon
 
   return (
     <div className="w-full max-w-[1600px] mx-auto p-6 md:p-10 space-y-8">
@@ -88,34 +68,15 @@ export default async function MissionDetailPage({ params }: PageProps) {
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
-          <div className="space-y-6">
-            <div className="flex flex-wrap items-center gap-3">
-              <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${currentType.color}`}>
-                <TypeIcon className="h-3.5 w-3.5" />
-                <span>{currentType.label}</span>
-              </div>
-              <InlineEditableField
-                value={mission.status}
-                type="select"
-                options={missionStatuses}
-                onSave={async (val) => {
-                  'use server'
-                  await updateMission(id, { status: val })
-                }}
-                displayClassName="text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
-              />
-            </div>
-            
-            <InlineEditableField
-              value={mission.title}
-              onSave={async (val) => {
-                'use server'
-                await updateMission(id, { title: val })
-              }}
-              displayClassName="text-5xl font-extrabold tracking-tight h-auto py-1 text-slate-900 dark:text-white"
-              className="text-5xl"
-            />
-            
+          <MissionHeaderHero 
+            mission={mission} 
+            onUpdate={async (updates) => {
+              'use server'
+              await updateMission(id, updates)
+            }} 
+          />
+
+          <div className="space-y-10">
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <h3 className="text-xs font-bold uppercase tracking-[0.2em]">Objectif Principal</h3>

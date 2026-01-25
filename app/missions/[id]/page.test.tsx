@@ -18,7 +18,9 @@ vi.mock('../actions', () => ({
     subtasks: [],
     estimated_delivery_date: '2026-06-01',
     desired_delivery_date: '2026-06-15'
-  }))
+  })),
+  getMilestones: vi.fn(() => Promise.resolve([])),
+  updateMission: vi.fn(() => Promise.resolve())
 }))
 
 vi.mock('../../projects/actions', () => ({
@@ -55,7 +57,7 @@ test('renders mission detail page with project breadcrumbs', async () => {
   render(Page)
 
   expect(screen.getByText('Projects')).toBeDefined()
-  expect(screen.getAllByText('Test Project')).toHaveLength(2)
+  expect(screen.getAllByText('Test Project')).toHaveLength(3)
 })
 
 test('renders mission detail page', async () => {
