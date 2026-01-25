@@ -12,11 +12,11 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Header Refactoring' (Protocol in workflow.md)
 
 ## Phase 2: Active Missions Grid Enhancement
-- [ ] Task: Implement dynamic `GridPlaceholder` logic in `MissionList`
-    - [ ] Update `renderGrid` to accept a `minItems` parameter or calculate needed placeholders
-    - [ ] Logic: Fill the remainder of the 3-column row if total items < 3 or (items % 3 != 0)
-    - [ ] Apply this logic specifically for the "Active Missions" section
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Active Missions Grid Enhancement' (Protocol in workflow.md)
+- [x] Task: Implement dynamic `GridPlaceholder` logic in `MissionList` f60c517
+    - [x] Update `renderGrid` to accept a `minItems` parameter or calculate needed placeholders
+    - [x] Logic: Fill the remainder of the 3-column row if total items < 3 or (items % 3 != 0)
+    - [x] Apply this logic specifically for the "Active Missions" section
+- [~] Task: Conductor - User Manual Verification 'Phase 2: Active Missions Grid Enhancement' (Protocol in workflow.md)
 
 ## Phase 3: Planned Missions List Refactor
 - [ ] Task: Refactor `CondensedMissionList` structure in `components/missions/condensed-mission-list.tsx`
