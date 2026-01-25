@@ -90,3 +90,79 @@ export async function reorderTasks(missionId: string, tasks: { id: string, posit
   revalidatePath(`/missions/${missionId}`)
 }
 
+export async function getMilestoneTypes() {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('milestone_types')
+    .select('*')
+    .order('name')
+
+  if (error) throw error
+  return data
+}
+
+export async function getMilestones(missionId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('milestones')
+    .select('*, milestone_types(name)')
+    .eq('mission_id', missionId)
+    .order('date', { ascending: true })
+
+  if (error) throw error
+  return data
+}
+
+export async function createMilestone(missionId: string, milestone: Omit<Database['public']['Tables']['milestones']['Insert'], 'id' | 'created_at' | 'mission_id'>) {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const { data, error } = await supabase
+    .from('milestones')
+    .insert({ ...milestone, mission_id: missionId })
+    .select()
+    .single()
+
+  if (error) throw error
+  
+  revalidatePath(`/missions/${missionId}`)
+  return data
+}
+
+export async function updateMilestone(missionId: string, id: string, updates: Omit<Database['public']['Tables']['milestones']['Update'], 'id' | 'created_at' | 'mission_id'>) {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const { data, error } = await supabase
+    .from('milestones')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw error
+  
+  revalidatePath(`/missions/${missionId}`)
+  return data
+}
+
+export async function deleteMilestone(missionId: string, id: string) {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const { error } = await supabase
+    .from('milestones')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw error
+  
+  revalidatePath(`/missions/${missionId}`)
+}
+
