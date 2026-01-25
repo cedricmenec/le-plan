@@ -9,12 +9,6 @@ import { MissionHeaderHero } from '@/components/missions/mission-header-hero'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import { formatRelativeDuration } from '@/lib/utils'
 
-import { 
-  Calendar,
-  ShieldCheck,
-  Briefcase
-} from 'lucide-react'
-
 interface PageProps {
   params: Promise<{ id: string }>
 }
@@ -111,112 +105,6 @@ export default async function MissionDetailPage({ params }: PageProps) {
                   placeholder="Ajouter des notes complémentaires, liens ou détails techniques..."
                 />
               </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 pt-8 border-t border-slate-100 dark:border-slate-800">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                <Calendar className="h-4 w-4" />
-                <p className="text-[10px] font-bold uppercase tracking-wider">Estimation</p>
-              </div>
-              <div className="flex items-baseline gap-1">
-                <InlineEditableField
-                  value={mission.estimation}
-                  type="number"
-                  onSave={async (val) => {
-                    'use server'
-                    await updateMission(id, { estimation: val })
-                  }}
-                  displayClassName="text-2xl font-bold text-slate-900 dark:text-white"
-                  placeholder="0"
-                />
-                <span className="text-sm font-medium text-muted-foreground">jours</span>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                <ShieldCheck className="h-4 w-4" />
-                <p className="text-[10px] font-bold uppercase tracking-wider">Confiance</p>
-              </div>
-              <div className="flex items-baseline gap-1">
-                <InlineEditableField
-                  value={mission.confidence}
-                  type="number"
-                  onSave={async (val) => {
-                    'use server'
-                    await updateMission(id, { confidence: val })
-                  }}
-                  displayClassName="text-2xl font-bold text-slate-900 dark:text-white"
-                  placeholder="0"
-                />
-                <span className="text-sm font-medium text-muted-foreground">%</span>
-              </div>
-            </div>
-
-            <div className="space-y-2 col-span-2 md:col-span-1">
-              <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                <Calendar className="h-4 w-4" />
-                <p className="text-[10px] font-bold uppercase tracking-wider">Livraison Estimée</p>
-              </div>
-              <div className="flex flex-col">
-                <InlineEditableField
-                  value={mission.estimated_delivery_date}
-                  onSave={async (val) => {
-                    'use server'
-                    await updateMission(id, { estimated_delivery_date: val || null })
-                  }}
-                  displayClassName="text-lg font-bold text-slate-900 dark:text-white"
-                  placeholder="n/a"
-                />
-                {mission.estimated_delivery_date && (
-                  <span className="text-[10px] font-medium text-muted-foreground italic">
-                    ({formatRelativeDuration(mission.estimated_delivery_date)})
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2 col-span-2 md:col-span-1">
-              <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                <Calendar className="h-4 w-4" />
-                <p className="text-[10px] font-bold uppercase tracking-wider">Livraison Souhaitée</p>
-              </div>
-              <div className="flex flex-col">
-                <InlineEditableField
-                  value={mission.desired_delivery_date}
-                  onSave={async (val) => {
-                    'use server'
-                    await updateMission(id, { desired_delivery_date: val || null })
-                  }}
-                  displayClassName="text-lg font-bold text-slate-900 dark:text-white"
-                  placeholder="n/a"
-                />
-                {mission.desired_delivery_date && (
-                  <span className="text-[10px] font-medium text-muted-foreground italic">
-                    ({formatRelativeDuration(mission.desired_delivery_date)})
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2 col-span-2">
-              <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                <Briefcase className="h-4 w-4" />
-                <p className="text-[10px] font-bold uppercase tracking-wider">Projet</p>
-              </div>
-              <InlineEditableField
-                value={mission.project_id}
-                type="select"
-                options={projectOptions}
-                onSave={async (val) => {
-                  'use server'
-                  await updateMission(id, { project_id: val === 'none' ? null : val })
-                }}
-                displayClassName="text-lg font-semibold text-primary hover:underline underline-offset-4"
-                placeholder="Assigner un projet..."
-              />
             </div>
           </div>
         </div>

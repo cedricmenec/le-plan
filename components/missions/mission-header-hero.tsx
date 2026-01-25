@@ -32,46 +32,45 @@ export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps)
 
   return (
     <div className="space-y-6">
-      {/* Project Context */}
-      {mission.projects && (
-        <div className="flex items-center gap-2">
-          <Link 
-            href={`/projects/${mission.project_id}`}
-            className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] hover:text-primary transition-colors"
-          >
-            {mission.projects.name}
-          </Link>
-          <span className="text-[10px] text-slate-300">/</span>
-        </div>
-      )}
-
-      {/* Main Header Row */}
-      <div className="space-y-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${currentType.color}`}>
-            <TypeIcon className="h-3.5 w-3.5" />
-            <span>{currentType.label}</span>
+      {/* Metadata Row: Project, Type, and Status */}
+      <div className="flex flex-wrap items-center gap-4">
+        {mission.projects && (
+          <div className="flex items-center gap-2">
+            <Link 
+              href={`/projects/${mission.project_id}`}
+              className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] hover:text-primary transition-colors"
+            >
+              {mission.projects.name}
+            </Link>
+            <span className="text-[10px] text-slate-300">/</span>
           </div>
-          <InlineEditableField
-            value={mission.status}
-            type="select"
-            options={MISSION_STATUSES}
-            onSave={async (val) => {
-              await onUpdate({ status: val })
-            }}
-            displayClassName="text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
-          />
+        )}
+        
+        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${currentType.color}`}>
+          <TypeIcon className="h-3.5 w-3.5" />
+          <span>{currentType.label}</span>
         </div>
 
         <InlineEditableField
-          value={mission.title}
+          value={mission.status}
+          type="select"
+          options={MISSION_STATUSES}
           onSave={async (val) => {
-            await onUpdate({ title: val })
+            await onUpdate({ status: val })
           }}
-          displayClassName="text-5xl font-extrabold tracking-tight h-auto py-1 text-slate-900 dark:text-white"
-          className="text-5xl"
+          displayClassName="text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
         />
       </div>
+
+      {/* Title */}
+      <InlineEditableField
+        value={mission.title}
+        onSave={async (val) => {
+          await onUpdate({ title: val })
+        }}
+        displayClassName="text-3xl font-extrabold tracking-tight h-auto py-1 text-slate-900 dark:text-white"
+        className="text-3xl"
+      />
 
       {/* Integrated Hero Block */}
       <div className="bg-slate-50/50 dark:bg-slate-900/40 p-8 md:p-10 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-8">
