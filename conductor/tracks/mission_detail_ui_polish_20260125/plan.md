@@ -25,6 +25,6 @@ Reorder the "Objectif Principal", "Timeline & Scheduling", and "Notes" sections 
 ## Phase 3: Final Polishing & Verification
 Ensure all styles are consistent and no shadows remain.
 
-- [ ] Task: Audit `app/missions/[id]/page.tsx` and its components for any missed shadow classes
-- [ ] Task: Verify the layout hierarchy matches the specification (Metadata -> Title -> Objective -> Timeline -> Notes)
+- [x] Task: Audit `app/missions/[id]/page.tsx` and its components for any missed shadow classes
+- [x] Task: Verify the layout hierarchy matches the specification (Metadata -> Title -> Objective -> Timeline -> Notes)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Final Polishing & Verification' (Protocol in workflow.md)
