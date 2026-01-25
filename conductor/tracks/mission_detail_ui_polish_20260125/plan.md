@@ -22,9 +22,9 @@ Reorder the "Objectif Principal", "Timeline & Scheduling", and "Notes" sections 
     - [x] Remove `shadow-md` from the Sidebar container in `app/missions/[id]/page.tsx`
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Section Reorganization' (Protocol in workflow.md) (7756dc2)
 
-## Phase 3: Final Polishing & Verification
+## Phase 3: Final Polishing & Verification [checkpoint: dc320b7]
 Ensure all styles are consistent and no shadows remain.
 
 - [x] Task: Audit `app/missions/[id]/page.tsx` and its components for any missed shadow classes
 - [x] Task: Verify the layout hierarchy matches the specification (Metadata -> Title -> Objective -> Timeline -> Notes)
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Final Polishing & Verification' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Final Polishing & Verification' (Protocol in workflow.md) (dc320b7)
