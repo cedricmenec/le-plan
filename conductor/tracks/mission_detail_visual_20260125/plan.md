@@ -19,12 +19,9 @@ This plan covers the restructuring of the mission detail page header and the imp
     - [ ] Integrate "Danger" alert logic if Estimated > Desired delivery.
 - [x] Task: Conductor - User Manual Verification 'Component Development' (Protocol in workflow.md) (6018ddb)
 
-## Phase 3: Integration & Refactoring
+## Phase 3: Integration & Refactoring [checkpoint: a2c1d49]
 
 - [x] Task: Integrate `MissionHeaderHero` into the Mission Detail Page (3f59577)
 - [x] Task: UI Polish - MissionTimeline Refinement (match screenshot) (119b453)
-    - [ ] Update `MissionTimeline` styling: title, legend, vertical lines, and dates below.
-    - [ ] Add "Risk zone" visualization between Target and Estimated dates.
-    - [ ] Move Confidence Score row below the timeline inside the hero block.
-- [~] Task: Verification & Cleanup
-- [ ] Task: Conductor - User Manual Verification 'Integration & Refactoring' (Protocol in workflow.md)
+- [x] Task: Verification & Cleanup (a2c1d49)
+- [x] Task: Conductor - User Manual Verification 'Integration & Refactoring' (Protocol in workflow.md) (a2c1d49)
