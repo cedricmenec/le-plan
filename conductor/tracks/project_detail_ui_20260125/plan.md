@@ -16,7 +16,7 @@
     - [x] Update `renderGrid` to accept a `minItems` parameter or calculate needed placeholders
     - [x] Logic: Fill the remainder of the 3-column row if total items < 3 or (items % 3 != 0)
     - [x] Apply this logic specifically for the "Active Missions" section
-- [~] Task: Conductor - User Manual Verification 'Phase 2: Active Missions Grid Enhancement' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Active Missions Grid Enhancement' (Protocol in workflow.md)
 
 ## Phase 3: Planned Missions List Refactor
 - [ ] Task: Refactor `CondensedMissionList` structure in `components/missions/condensed-mission-list.tsx`
