@@ -157,11 +157,15 @@ export function MissionList({
           <>
             {/* Active Missions Section */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-                Missions actives
-                <span className="text-xs font-normal text-muted-foreground ml-2">({activeMissions.length})</span>
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="h-4 w-1.5 rounded-full bg-blue-500" />
+                  Missions actives
+                </h3>
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  {activeMissions.length} mission{activeMissions.length > 1 ? 's' : ''} en cours
+                </span>
+              </div>
               {activeMissions.length > 0 ? (
                 renderGrid(activeMissions)
               ) : (
@@ -173,11 +177,15 @@ export function MissionList({
 
             {/* To Do Missions Section */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-slate-700" />
-                Missions non commencées
-                <span className="text-xs font-normal text-muted-foreground ml-2">({todoMissions.length})</span>
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="h-4 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700" />
+                  Missions non commencées
+                </h3>
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  {todoMissions.length} mission{todoMissions.length > 1 ? 's' : ''} en attente
+                </span>
+              </div>
               <CondensedMissionList
                 missions={todoMissions}
                 showProjectName={showProjectName}

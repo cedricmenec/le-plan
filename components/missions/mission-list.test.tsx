@@ -174,6 +174,8 @@ test('renders split layout correctly', () => {
 
   expect(screen.getByText('Missions actives')).toBeDefined()
   expect(screen.getByText('Missions non commencées')).toBeDefined()
+  expect(screen.getByText('1 mission en cours')).toBeDefined()
+  expect(screen.getByText('1 mission en attente')).toBeDefined()
   expect(screen.getByText('Active Mission')).toBeDefined()
   expect(screen.getByText('Todo Mission')).toBeDefined()
 })
