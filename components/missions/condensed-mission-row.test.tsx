@@ -1,7 +1,14 @@
 import { render, screen } from '@testing-library/react'
-import { expect, test, describe } from 'vitest'
+import { expect, test, describe, vi } from 'vitest'
 import { CondensedMissionRow } from './condensed-mission-row'
 import { MissionWithProject } from './mission-card'
+
+// Mock useRouter
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+  })),
+}))
 
 describe('CondensedMissionRow', () => {
   const mockMission: MissionWithProject = {
@@ -32,7 +39,8 @@ describe('CondensedMissionRow', () => {
 
     expect(screen.getByText('Test Condensed Mission')).toBeDefined()
     expect(screen.getByText('feature')).toBeDefined()
-    expect(screen.getByText('1.5 j')).toBeDefined()
+    expect(screen.getByText('1.5 jours')).toBeDefined()
+    expect(screen.getByText('n/a')).toBeDefined()
     // Should NOT show project name by default
     expect(screen.queryByText('Awesome Project')).toBeNull()
   })
@@ -48,18 +56,5 @@ describe('CondensedMissionRow', () => {
     )
 
     expect(screen.getByText('Awesome Project')).toBeDefined()
-  })
-
-  test('renders link to detail page', () => {
-    render(
-      <CondensedMissionRow 
-        mission={mockMission} 
-        onEdit={() => {}} 
-        onDelete={() => {}} 
-      />
-    )
-
-    const link = screen.getByRole('link', { name: 'Test Condensed Mission' })
-    expect(link.getAttribute('href')).toBe('/missions/1')
   })
 })
