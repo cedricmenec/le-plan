@@ -179,3 +179,23 @@ test('renders split layout correctly', () => {
   expect(screen.getByText('Active Mission')).toBeDefined()
   expect(screen.getByText('Todo Mission')).toBeDefined()
 })
+
+test('renders grid placeholders in active missions grid', () => {
+  const missions = [
+    { 
+      id: '1', 
+      title: 'Active Mission 1', 
+      type: 'feature', 
+      status: 'in_progress', 
+      estimation: 2, 
+      created_at: '2026-01-24T10:00:00Z',
+      projects: null 
+    },
+  ]
+  // @ts-ignore
+  render(<MissionList initialMissions={missions} layout="split" />)
+
+  // Should have 1 mission + 2 placeholders to fill the row of 3
+  const placeholders = screen.getAllByText('Grid placeholder')
+  expect(placeholders).toHaveLength(2)
+})

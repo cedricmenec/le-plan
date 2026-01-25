@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { MissionCard, MissionWithProject } from './mission-card'
+import { GridPlaceholder } from '@/components/ui/grid-placeholder'
 import { CondensedMissionList } from './condensed-mission-list'
 import { DeleteMissionDialog } from './delete-mission-dialog'
 import { EditMissionModal } from './edit-mission-modal'
@@ -133,20 +134,29 @@ export function MissionList({
     return <p className="text-slate-500 animate-pulse">Chargement des missions...</p>
   }
 
-  const renderGrid = (items: MissionWithProject[]) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {items.map((mission) => (
-        <MissionCard
-          key={mission.id}
-          mission={mission}
-          onEdit={() => setMissionToEdit(mission)}
-          onDelete={() => setMissionToDelete(mission)}
-          isUpdating={updatingId === mission.id}
-          isDeleting={deletingId === mission.id}
-        />
-      ))}
-    </div>
-  )
+  const renderGrid = (items: MissionWithProject[], fillTo: number = 0) => {
+    const placeholdersCount = fillTo > items.length 
+      ? fillTo - items.length 
+      : (items.length % 3 !== 0 ? 3 - (items.length % 3) : 0);
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {items.map((mission) => (
+          <MissionCard
+            key={mission.id}
+            mission={mission}
+            onEdit={() => setMissionToEdit(mission)}
+            onDelete={() => setMissionToDelete(mission)}
+            isUpdating={updatingId === mission.id}
+            isDeleting={deletingId === mission.id}
+          />
+        ))}
+        {Array.from({ length: placeholdersCount }).map((_, i) => (
+          <GridPlaceholder key={`placeholder-${i}`} />
+        ))}
+      </div>
+    )
+  }
 
   return (
     <TooltipProvider>
@@ -167,7 +177,7 @@ export function MissionList({
                 </span>
               </div>
               {activeMissions.length > 0 ? (
-                renderGrid(activeMissions)
+                renderGrid(activeMissions, 3)
               ) : (
                 <p className="text-sm text-muted-foreground italic py-4 border-2 border-dashed rounded-lg text-center">
                   Aucune mission en cours.
