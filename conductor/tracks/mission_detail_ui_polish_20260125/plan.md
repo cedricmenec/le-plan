@@ -14,12 +14,12 @@ Refactor the `MissionHeaderHero` component to reduce the title size, reorganize 
 ## Phase 2: Section Reorganization
 Reorder the "Objectif Principal", "Timeline & Scheduling", and "Notes" sections in the main layout.
 
-- [ ] Task: Reorder sections in `app/missions/[id]/page.tsx`
-    - [ ] Move "Objectif Principal" block before the Timeline/Hero block
-    - [ ] Ensure "Timeline & Scheduling" (currently integrated in `MissionHeaderHero`) is extracted or repositioned as requested
-- [ ] Task: Remove remaining shadows from page components
-    - [ ] Remove `shadow-sm` from the "Notes & Contexte" container in `app/missions/[id]/page.tsx`
-    - [ ] Remove `shadow-md` from the Sidebar container in `app/missions/[id]/page.tsx`
+- [x] Task: Reorder sections in `app/missions/[id]/page.tsx` (711ae3b)
+    - [x] Move "Objectif Principal" block before the Timeline/Hero block
+    - [x] Ensure "Timeline & Scheduling" (currently integrated in `MissionHeaderHero`) is extracted or repositioned as requested
+- [x] Task: Remove remaining shadows from page components (711ae3b)
+    - [x] Remove `shadow-sm` from the "Notes & Contexte" container in `app/missions/[id]/page.tsx`
+    - [x] Remove `shadow-md` from the Sidebar container in `app/missions/[id]/page.tsx`
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Section Reorganization' (Protocol in workflow.md)
 
 ## Phase 3: Final Polishing & Verification
