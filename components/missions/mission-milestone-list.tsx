@@ -8,9 +8,11 @@ import { History, Plus } from 'lucide-react'
 interface MissionMilestoneListProps {
   milestones: Milestone[]
   onAddClick?: () => void
+  onEdit?: (milestone: Milestone) => void
+  onDelete?: (milestone: Milestone) => void
 }
 
-export function MissionMilestoneList({ milestones, onAddClick }: MissionMilestoneListProps) {
+export function MissionMilestoneList({ milestones, onAddClick, onEdit, onDelete }: MissionMilestoneListProps) {
   const [showAll, setShowAll] = useState(false)
 
   const today = new Date()
@@ -61,6 +63,8 @@ export function MissionMilestoneList({ milestones, onAddClick }: MissionMileston
               <MissionMilestoneItem 
                 key={milestone.id} 
                 milestone={milestone} 
+                onEdit={() => onEdit?.(milestone)}
+                onDelete={() => onDelete?.(milestone)}
               />
             ))}
           </div>
