@@ -97,3 +97,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Ajouter le concept de "Priorité" dans l'entité "Mission"
 - **ID**: `mission_priority_20260126`
 - **Link**: [conductor/archive/mission_priority_20260126](archive/mission_priority_20260126/)
+
+---
+
+## [x] Track: Améliorer la card 'ProjectCard' avec un hero header, liste des missions actives et tri alphabétique.
+- **Link**: [./tracks/project_card_refinement_20260126/](./tracks/project_card_refinement_20260126/)*
