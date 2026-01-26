@@ -166,8 +166,6 @@ Le projet consiste à développer une **application Web** personnelle de visibil
     *   **Accès Direct aux Projets (Inclus) :** Liste des projets accessible directement depuis la barre de navigation latérale via un dossier "Projects" dépliable.
 *   **Gestion des Projets :** Création, modification et vue détaillée des projets.
     *   **Vue détaillée (Inclus) :** Visualisation de toutes les missions non-terminées d'un projet (actives et à venir) avec des indicateurs visuels de capacité (Grid Placeholders), de **priorité** et de **délais relatifs**.
-    *   **Dashboard de projet (Inclus) :** Indicateurs de charge totale (jours restants), décompte des tâches par statut (À faire, En cours) et accès direct via la sidebar.
-    *   Indicateurs de charge totale, d'avancement et de **priorité** pour les stakeholders (PI/Release planning).
     *   Facilitation de la priorisation des missions par un **tri automatique par date de livraison estimée** et un **tri alphabétique des projets**.
     *   Système de navigation par breadcrumbs (Inclus).
 *   **Gestion des Projets :** Création, modification et vue détaillée des projets avec support pour une **image d'illustration (Hero Image)**.
