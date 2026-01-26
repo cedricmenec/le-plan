@@ -45,19 +45,23 @@ export function ProjectCard({ project, missions, onEdit, onDelete }: ProjectCard
       </Link>
       
       {/* Hero Image Section */}
-      <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-100 dark:bg-slate-900">
+      <div 
+        className="relative w-full aspect-[16/9] overflow-hidden bg-slate-100 dark:bg-slate-900 z-10"
+      >
         <img 
           src={project.image_url || placeholderImage} 
           alt={project.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 block"
+          referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
         
         {/* Actions Button (Top Right) */}
         <div className="absolute top-2 right-2 z-20">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/20 hover:bg-white/40 backdrop-blur-md border-white/20 text-white rounded-full">
+              <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/20 hover:bg-white/40 backdrop-blur-md border-white/20 text-white rounded-full transition-colors">
                 <MoreHorizontal className="h-4 w-4" />
                 <span className="sr-only">Actions</span>
               </Button>
@@ -93,8 +97,8 @@ export function ProjectCard({ project, missions, onEdit, onDelete }: ProjectCard
 
         {/* Project Type/Label (Bottom Left on Image) */}
         {project.label && (
-          <div className="absolute bottom-3 left-4 z-10">
-            <span className="text-[10px] font-bold text-white/90 bg-black/30 backdrop-blur-md px-2 py-0.5 rounded-full uppercase tracking-wider border border-white/10">
+          <div className="absolute bottom-3 left-4 z-20">
+            <span className="text-[9px] font-bold text-white/90 bg-white/10 backdrop-blur-md px-2 py-0.5 rounded uppercase tracking-[0.15em] border border-white/10 shadow-sm">
               {project.label}
             </span>
           </div>
@@ -105,7 +109,7 @@ export function ProjectCard({ project, missions, onEdit, onDelete }: ProjectCard
         {/* Project Title and Color Code */}
         <div className="flex items-center gap-2 mb-2">
           <div 
-            className="w-2 h-2 rounded-full flex-shrink-0" 
+            className="w-2.5 h-2.5 rounded-full flex-shrink-0" 
             style={{ backgroundColor: project.color }} 
           />
           <CardTitle className="text-lg font-bold tracking-tight text-slate-900 dark:text-white line-clamp-1">

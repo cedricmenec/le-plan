@@ -103,3 +103,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Améliorer la card 'ProjectCard' avec un hero header, liste des missions actives et tri alphabétique.
 - **ID**: `project_card_refinement_20260126`
 - **Link**: [conductor/archive/project_card_refinement_20260126](archive/project_card_refinement_20260126/)
+
+---
+
+- [x] **Track: Amélioration de la carte des projets (ProjectCard) : Fix de l'affichage de l'image et ajout d'un overlay de couleur.**
+*Link: [./tracks/project_card_ui_fix_20260126/](./tracks/project_card_ui_fix_20260126/)*

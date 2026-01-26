@@ -81,6 +81,20 @@ test('renders active missions list', () => {
   expect(screen.queryByText('Upcoming Mission')).toBeNull() // Should only show in-progress
 })
 
+test('renders project image when image_url is provided', () => {
+  const projectWithImage = { ...mockProject, image_url: 'https://example.com/image.jpg' }
+  render(
+    <ProjectCard 
+      project={projectWithImage} 
+      missions={mockMissions}
+      onEdit={vi.fn()} 
+      onDelete={vi.fn()} 
+    />
+  )
+  const img = screen.getByAltText('Test Project') as HTMLImageElement
+  expect(img.src).toBe('https://example.com/image.jpg')
+})
+
 test('renders upcoming missions count', () => {
   render(
     <ProjectCard 
