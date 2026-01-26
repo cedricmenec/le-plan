@@ -1,0 +1,8 @@
+{
+  "track_id": "project_card_refinement_20260126",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-26T10:00:00Z",
+  "updated_at": "2026-01-26T10:00:00Z",
+  "description": "Améliorer la card 'ProjectCard' avec un hero header, liste des missions actives et tri alphabétique."
+}

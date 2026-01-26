@@ -101,4 +101,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 ---
 
 ## [x] Track: Améliorer la card 'ProjectCard' avec un hero header, liste des missions actives et tri alphabétique.
-- **Link**: [./tracks/project_card_refinement_20260126/](./tracks/project_card_refinement_20260126/)*
+- **ID**: `project_card_refinement_20260126`
+- **Link**: [conductor/archive/project_card_refinement_20260126](archive/project_card_refinement_20260126/)
