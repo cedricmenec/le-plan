@@ -21,18 +21,18 @@ This plan outlines the steps to add a "Priority" field to Missions, including da
     - [x] Write unit tests for value selection
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Core UI Components' (Protocol in workflow.md)
 
-## Phase 3: Mission Management Integration
-- [ ] Task: Update Mission Actions
-    - [ ] Update `app/missions/actions.ts` to handle `priority` in `createMission` and `updateMission`
-    - [ ] Update existing tests in `app/missions/actions.test.ts`
-- [ ] Task: Update Add Mission Dialog
-    - [ ] Add `PrioritySelect` to `components/missions/add-mission-dialog.tsx`
-    - [ ] Update form schema and submission logic
-    - [ ] Update tests in `components/missions/add-mission-dialog.test.tsx`
-- [ ] Task: Update Edit Mission Modal
-    - [ ] Add `PrioritySelect` to `components/missions/edit-mission-modal.tsx`
-    - [ ] Update tests in `components/missions/edit-mission-modal.test.tsx`
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Mission Management Integration' (Protocol in workflow.md)
+## Phase 3: Mission Management Integration [checkpoint: 863c2f2]
+- [x] Task: Update Mission Actions
+    - [x] Update `app/missions/actions.ts` to handle `priority` in `createMission` and `updateMission`
+    - [x] Update existing tests in `app/missions/actions.test.ts`
+- [x] Task: Update Add Mission Dialog
+    - [x] Add `PrioritySelect` to `components/missions/add-mission-dialog.tsx`
+    - [x] Update form schema and submission logic
+    - [x] Update tests in `components/missions/add-mission-dialog.test.tsx`
+- [x] Task: Update Edit Mission Modal
+    - [x] Add `PrioritySelect` to `components/missions/edit-mission-modal.tsx`
+    - [x] Update tests in `components/missions/edit-mission-modal.test.tsx`
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Mission Management Integration' (Protocol in workflow.md)
 
 ## Phase 4: View Integration & In-line Editing
 - [ ] Task: Implement In-line Editing on Mission Detail Page
