@@ -11,12 +11,12 @@ This plan covers the database migration, server action updates for alphabetical 
     - [x] Update `types/database.types.ts` to include `image_url` in the projects table
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Database & Schema' (Protocol in workflow.md)
 
-## Phase 2: Data Access & Sorting
-- [ ] Task: Update `getProjects` server action
-    - [ ] Modify `app/projects/actions.ts` to sort projects by `name` ascending
-    - [ ] Ensure missions are being fetched along with projects (needed for the card summary)
-    - [ ] Update existing tests in `app/projects/actions.test.ts`
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Data Access & Sorting' (Protocol in workflow.md)
+## Phase 2: Data Access & Sorting [checkpoint: 4bef452]
+- [x] Task: Update `getProjects` server action
+    - [x] Modify `app/projects/actions.ts` to sort projects by `name` ascending
+    - [x] Ensure missions are being fetched along with projects (needed for the card summary)
+    - [x] Update existing tests in `app/projects/actions.test.ts`
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Data Access & Sorting' (Protocol in workflow.md)
 
 ## Phase 3: UI Components Enhancement
 - [ ] Task: Refactor `ProjectCard` component
