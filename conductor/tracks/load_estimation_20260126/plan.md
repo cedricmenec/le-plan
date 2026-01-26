@@ -9,10 +9,10 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Database Schema & Types' (Protocol in workflow.md) 8304ee4
 
 ## Phase 2: Core Logic & Utilities (TDD)
-- [ ] Task: Implement load calculation utility `lib/load-utils.ts`
-    - [ ] Write tests for ROM size to days mapping
-    - [ ] Write tests for Task Sum calculation (excluding 'done' status)
-    - [ ] Implement calculation functions
+- [x] Task: Implement load calculation utility `lib/load-utils.ts` c9b8e75
+    - [x] Write tests for ROM size to days mapping
+    - [x] Write tests for Task Sum calculation (excluding 'done' status)
+    - [x] Implement calculation functions
 - [ ] Task: Update Mission Server Actions `app/missions/actions.ts`
     - [ ] Write tests for updating `rom_size` and `load_source`
     - [ ] Implement updates in `updateMission`
