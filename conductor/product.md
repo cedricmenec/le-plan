@@ -165,12 +165,12 @@ Le projet consiste à développer une **application Web** personnelle de visibil
 *   **Tableau de Bord de Charge (Inclus) :** Interface de type Dashboard avec barre de navigation latérale, header d'actions rapides et grille de missions active.
     *   **Accès Direct aux Projets (Inclus) :** Liste des projets accessible directement depuis la barre de navigation latérale via un dossier "Projects" dépliable.
 *   **Gestion des Projets :** Création, modification et vue détaillée des projets.
-    *   **Vue détaillée (Inclus) :** Visualisation de toutes les missions non-terminées d'un projet (actives et à venir) avec des indicateurs visuels de capacité (Grid Placeholders).
+    *   **Vue détaillée (Inclus) :** Visualisation de toutes les missions non-terminées d'un projet (actives et à venir) avec des indicateurs visuels de capacité (Grid Placeholders) et de **priorité**.
     *   **Dashboard de projet (Inclus) :** Indicateurs de charge totale (jours restants), décompte des tâches par statut (À faire, En cours) et accès direct via la sidebar.
-    *   Indicateurs de charge totale et d'avancement pour les stakeholders (PI/Release planning).
+    *   Indicateurs de charge totale, d'avancement et de **priorité** pour les stakeholders (PI/Release planning).
     *   Facilitation de la priorisation des missions par un **tri automatique par date de livraison estimée**.
     *   Système de navigation par breadcrumbs (Inclus).
-*   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge, score de confiance, **objectif principal (Main Goal)**, **notes complémentaires**, ainsi que des **dates de livraison estimées et souhaitées**.
+*   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge, score de confiance, **priorité (low, medium, high, critical)**, **objectif principal (Main Goal)**, **notes complémentaires**, ainsi que des **dates de livraison estimées et souhaitées**.
     *   **Jalons (Milestones) (Inclus) :** Définition d'étapes intermédiaires datées (Cadrage, Review, Livraison) pour améliorer la visibilité court terme.
 *   **Indicateurs de Délai (Inclus) :** Affichage de la durée restante approximative (jours, semaines, mois) basée sur la date de livraison estimée pour faciliter la visibilité immédiate des échéances.
 *   **Timeline de Mission (Inclus) :** Visualisation horizontale interactive dans le détail d'une mission, incluant l'effort restant (Effort restant), les dates clés (Cadrage, Livraison souhaitée, Livraison estimée) et une zone de risque (Risk zone) en cas de retard critique.
