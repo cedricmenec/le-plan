@@ -43,6 +43,13 @@ const mockMissions: MissionWithProject[] = [
   }
 ]
 
+// Mock useRouter
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+  })),
+}))
+
 // Mock supabase client
 vi.mock('@/lib/supabase/client', () => {
   const mockMissions = [
@@ -105,7 +112,7 @@ test('shows all non-completed missions by default', async () => {
   
   // Both missions should be shown by default now
   expect(screen.getByText('Mission In Progress')).toBeDefined()
-  expect(screen.getByText('Mission Todo')).toBeDefined()
+  expect(screen.getByText('Mission 2')).toBeDefined()
 })
 
 test('renders dashboard with stats', () => {
