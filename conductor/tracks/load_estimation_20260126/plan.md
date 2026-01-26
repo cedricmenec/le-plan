@@ -5,7 +5,7 @@
     - [x] Add `rom_size` and `load_source` to `missions`
     - [x] Add `estimation` and `status` to `subtasks`
     - [x] Migrate `is_completed` data to `status`
-- [ ] Task: Regenerate database types
+- [x] Task: Regenerate database types 6e43229
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Database Schema & Types' (Protocol in workflow.md)
 
 ## Phase 2: Core Logic & Utilities (TDD)
