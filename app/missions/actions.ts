@@ -79,12 +79,45 @@ export async function updateTask(id: string, updates: Database['public']['Tables
 
   if (error) throw error
   
-  // Revalidate the mission detail page if we know the mission_id
   if (data.mission_id) {
     revalidatePath(`/missions/${data.mission_id}`)
   }
 
   return data
+}
+
+export async function createTask(task: Omit<Database['public']['Tables']['subtasks']['Insert'], 'id' | 'created_at'>) {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const { data, error } = await supabase
+    .from('subtasks')
+    .insert(task)
+    .select()
+    .single()
+
+  if (error) throw error
+  
+  revalidatePath(`/missions/${data.mission_id}`)
+  return data
+}
+
+export async function deleteTask(missionId: string, id: string) {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const { error } = await supabase
+    .from('subtasks')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw error
+  
+  revalidatePath(`/missions/${missionId}`)
 }
 
 export async function reorderTasks(missionId: string, tasks: { id: string, position: number }[]) {
