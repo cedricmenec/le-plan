@@ -27,9 +27,9 @@ test('renders grid header and empty state', () => {
 })
 
 test('renders projects', () => {
-  const projects: Project[] = [
-    { id: '1', name: 'P1', status: 'active', color: '#000', created_at: '', user_id: 'u1', label: null, description: null }
-  ]
-  render(<ProjectGrid projects={projects} />)
+const mockProjects: Project[] = [
+  { id: '1', name: 'P1', status: 'active', color: '#000', created_at: '', user_id: 'u1', label: null, description: null, image_url: null }
+]
+  render(<ProjectGrid projects={mockProjects} />)
   expect(screen.getByText('Card: P1')).toBeDefined()
 })

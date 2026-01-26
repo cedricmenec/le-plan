@@ -19,6 +19,7 @@ export type Database = {
           description: string | null
           status: 'active' | 'archived'
           color: string
+          image_url: string | null
         }
         Insert: {
           id?: string
@@ -29,6 +30,7 @@ export type Database = {
           description?: string | null
           status?: 'active' | 'archived'
           color: string
+          image_url?: string | null
         }
         Update: {
           id?: string
@@ -39,6 +41,7 @@ export type Database = {
           description?: string | null
           status?: 'active' | 'archived'
           color?: string
+          image_url?: string | null
         }
         Relationships: []
       }

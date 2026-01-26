@@ -12,9 +12,10 @@ const mockProject: Project = {
   label: 'TP',
   description: 'Desc',
   status: 'active',
-  color: '#ff0000',
+  color: '#000',
   created_at: new Date().toISOString(),
-  user_id: 'user-1'
+  user_id: 'user-1',
+  image_url: null
 }
 
 const onEdit = vi.fn()
