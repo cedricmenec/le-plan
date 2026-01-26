@@ -1,0 +1,8 @@
+{
+  "track_id": "project_card_ui_fix_20260126",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-26T13:00:00Z",
+  "updated_at": "2026-01-26T13:00:00Z",
+  "description": "Amélioration de la carte des projets (ProjectCard) : Fix de l'affichage de l'image et ajout d'un overlay de couleur."
+}
