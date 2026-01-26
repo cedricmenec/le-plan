@@ -112,6 +112,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Retirer la ligne de métriques au dessus de la sections "Missions actives" dans la page de détail d'un Projet.
+## [x] Track: Retirer la ligne de métriques au dessus de la sections "Missions actives" dans la page de détail d'un Projet.
 - **ID**: `remove_project_metrics_20260126`
 - **Link**: [conductor/tracks/remove_project_metrics_20260126/](./tracks/remove_project_metrics_20260126/)
