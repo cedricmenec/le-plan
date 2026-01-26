@@ -1,12 +1,12 @@
 # Plan: Load Estimation Evolution
 
-## Phase 1: Database Schema & Types
+## Phase 1: Database Schema & Types [checkpoint: 8304ee4]
 - [x] Task: Create Supabase migration for `missions` and `subtasks` updates d5c5c7f
     - [x] Add `rom_size` and `load_source` to `missions`
     - [x] Add `estimation` and `status` to `subtasks`
     - [x] Migrate `is_completed` data to `status`
 - [x] Task: Regenerate database types 6e43229
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Database Schema & Types' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Database Schema & Types' (Protocol in workflow.md) 8304ee4
 
 ## Phase 2: Core Logic & Utilities (TDD)
 - [ ] Task: Implement load calculation utility `lib/load-utils.ts`
