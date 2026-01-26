@@ -12,8 +12,8 @@ export async function getProjects() {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('projects')
-    .select('*, missions(id, status)')
-    .order('created_at', { ascending: false })
+    .select('*, missions(*)')
+    .order('name', { ascending: true })
 
   if (error) throw error
   return data
