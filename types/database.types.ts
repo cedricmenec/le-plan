@@ -58,6 +58,7 @@ export type Database = {
           status: string
           estimated_delivery_date: string | null
           desired_delivery_date: string | null
+          priority: 'low' | 'medium' | 'high' | 'critical'
         }
         Insert: {
           id?: string
@@ -74,6 +75,7 @@ export type Database = {
           status?: string
           estimated_delivery_date?: string | null
           desired_delivery_date?: string | null
+          priority?: 'low' | 'medium' | 'high' | 'critical'
         }
         Update: {
           id?: string
@@ -90,6 +92,7 @@ export type Database = {
           status?: string
           estimated_delivery_date?: string | null
           desired_delivery_date?: string | null
+          priority?: 'low' | 'medium' | 'high' | 'critical'
         }
         Relationships: [
           {

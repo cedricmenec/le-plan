@@ -42,12 +42,15 @@ const mockMission = {
   notes: 'Test Notes',
   estimation: 2,
   confidence: 80,
-  project_parent: 'Projet A',
-  status: 'todo',
-  created_at: '2021-01-01',
-  user_id: 'user-1',
-  project_id: null
-}
+    project_parent: 'p1',
+    status: 'todo',
+    created_at: '2024-01-01',
+    user_id: 'u1',
+    project_id: null,
+    estimated_delivery_date: null,
+    desired_delivery_date: null,
+    priority: 'medium' as const
+  }
 
 test('renders edit mission modal with existing data', async () => {
   const onOpenChange = vi.fn()

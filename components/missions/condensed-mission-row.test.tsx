@@ -21,9 +21,13 @@ describe('CondensedMissionRow', () => {
     goal: 'Test Goal',
     notes: 'Test Notes',
     project_parent: null,
-    created_at: '2026-01-23T00:00:00Z',
-    user_id: 'user1',
-    projects: { name: 'Awesome Project' },
+    created_at: new Date().toISOString(),
+    user_id: 'user-1',
+    project_id: null,
+    priority: 'medium',
+    projects: {
+      name: 'Project 1'
+    },
     estimated_delivery_date: null,
     desired_delivery_date: null
   }

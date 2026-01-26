@@ -66,11 +66,12 @@ export function MissionCard({
   const isHighConfidence = confidence >= 80
   const projectName = mission.projects?.name || mission.project_parent
   
-  const statusDisplay = {
+  const statusLabels: Record<string, string> = {
     todo: 'TODO',
     in_progress: 'ACTIVE',
     done: 'DONE'
-  }[mission.status as keyof typeof statusDisplay] || mission.status.toUpperCase()
+  }
+  const statusDisplay = statusLabels[mission.status] || mission.status.toUpperCase()
 
   useEffect(() => {
     const checkTruncation = () => {

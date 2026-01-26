@@ -30,10 +30,14 @@ describe('MissionCard', () => {
     confidence: 85,
     goal: 'Test Goal',
     notes: 'Test Notes',
-    project_parent: 'Project A',
-    created_at: '2026-01-23T00:00:00Z',
-    user_id: 'user1',
-    projects: { name: 'Project A' },
+    project_parent: 'p1',
+    created_at: new Date().toISOString(),
+    user_id: 'user-1',
+    project_id: 'p1',
+    priority: 'medium',
+    projects: {
+      name: 'Project 1'
+    },
     estimated_delivery_date: null,
     desired_delivery_date: null
   }

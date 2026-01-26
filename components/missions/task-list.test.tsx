@@ -3,9 +3,9 @@ import { expect, test, vi } from 'vitest'
 import { TaskList } from './task-list'
 
 // Mock server actions
-const mockUpdateTask = vi.fn(() => Promise.resolve({}))
+const mockUpdateTask = vi.fn((id: string, updates: any) => Promise.resolve({}))
 vi.mock('@/app/missions/actions', () => ({
-  updateTask: (...args: any[]) => mockUpdateTask(...args)
+  updateTask: (id: string, updates: any) => mockUpdateTask(id, updates)
 }))
 
 // Mock Supabase

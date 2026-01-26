@@ -2,22 +2,9 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { ProjectMissionList } from './project-mission-list'
 import { expect, test, vi, beforeEach } from 'vitest'
 import { Database } from '@/types/database.types'
+import { MissionWithProject } from '@/components/missions/mission-card'
 
-type Mission = Database['public']['Tables']['missions']['Row']
-
-// Mock useRouter
-vi.mock('next/navigation', () => ({
-  useRouter: vi.fn(() => ({
-    push: vi.fn(),
-  })),
-}))
-
-// Mock scrollIntoView which is missing in jsdom
-beforeEach(() => {
-  window.HTMLElement.prototype.scrollIntoView = vi.fn()
-})
-
-const mockMissions: Mission[] = [
+const mockMissions: MissionWithProject[] = [
   {
     id: '1',
     title: 'Mission In Progress',
@@ -26,21 +13,33 @@ const mockMissions: Mission[] = [
     user_id: 'u1',
     created_at: '',
     type: 'feature',
-    confidence: 100,
+    confidence: 3,
     project_parent: null,
-    project_id: 'p1'
+    project_id: 'p1',
+    goal: 'Goal 1',
+    notes: 'Notes 1',
+    estimated_delivery_date: null,
+    desired_delivery_date: null,
+    priority: 'medium',
+    projects: { name: 'Project 1' }
   },
   {
     id: '2',
-    title: 'Mission Todo',
+    title: 'Mission 2',
     status: 'todo',
     estimation: 3,
     user_id: 'u1',
-    created_at: '',
-    type: 'feature',
-    confidence: 100,
+    created_at: '2024-01-01',
+    type: 'study',
+    confidence: 2,
     project_parent: null,
-    project_id: 'p1'
+    project_id: 'p1',
+    goal: 'Goal 2',
+    notes: 'Notes 2',
+    estimated_delivery_date: null,
+    desired_delivery_date: null,
+    priority: 'medium',
+    projects: { name: 'Project 1' }
   }
 ]
 
@@ -57,7 +56,12 @@ vi.mock('@/lib/supabase/client', () => {
       type: 'feature',
       confidence: 100,
       project_parent: null,
-      project_id: 'p1'
+      project_id: 'p1',
+      goal: null,
+      notes: null,
+      estimated_delivery_date: null,
+      desired_delivery_date: null,
+      priority: 'medium'
     },
     {
       id: '2',
@@ -69,7 +73,12 @@ vi.mock('@/lib/supabase/client', () => {
       type: 'feature',
       confidence: 100,
       project_parent: null,
-      project_id: 'p1'
+      project_id: 'p1',
+      goal: null,
+      notes: null,
+      estimated_delivery_date: null,
+      desired_delivery_date: null,
+      priority: 'medium'
     }
   ]
   const result = Promise.resolve({ data: mockMissions, error: null })
