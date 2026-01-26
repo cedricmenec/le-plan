@@ -58,15 +58,12 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project: any) => {
             const missions = project.missions || []
-            const missionCount = missions.length
-            const activeMissionsCount = missions.filter((m: any) => m.status !== 'done').length
 
             return (
               <ProjectCard
                 key={project.id}
                 project={project}
-                missionCount={missionCount}
-                activeTaskCount={activeMissionsCount}
+                missions={missions}
                 onEdit={setProjectToEdit}
                 onDelete={handleDelete}
               />

@@ -1,8 +1,8 @@
 'use client'
 
 import { Database } from '@/types/database.types'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { MoreHorizontal, Edit2, Trash2, CheckSquare, Eye } from 'lucide-react'
+import { Card, CardTitle, CardContent } from '@/components/ui/card'
+import { MoreHorizontal, Edit2, Trash2, Eye, Clock, ListTodo } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,86 +10,148 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
+import { formatRelativeDuration } from '@/lib/utils'
 import Link from 'next/link'
 
 type Project = Database['public']['Tables']['projects']['Row']
+type Mission = Database['public']['Tables']['missions']['Row']
 
 interface ProjectCardProps {
   project: Project
-  missionCount: number
-  activeTaskCount: number
+  missions: Mission[]
   onEdit: (project: Project) => void
   onDelete: (project: Project) => void
 }
 
-export function ProjectCard({ project, missionCount, activeTaskCount, onEdit, onDelete }: ProjectCardProps) {
+export function ProjectCard({ project, missions, onEdit, onDelete }: ProjectCardProps) {
+  const activeMissions = missions
+    .filter(m => m.status === 'in_progress')
+    .sort((a, b) => {
+      if (!a.estimated_delivery_date) return 1
+      if (!b.estimated_delivery_date) return -1
+      return a.estimated_delivery_date.localeCompare(b.estimated_delivery_date)
+    })
+    .slice(0, 3)
+
+  const upcomingMissionsCount = missions.filter(m => m.status === 'todo').length
+  const totalMissions = missions.length
+
+  const placeholderImage = `https://images.unsplash.com/photo-1572177222102-78617f76cc23?q=80&w=1000&auto=format&fit=crop`
+
   return (
-    <Card className="hover:shadow-md transition-shadow relative overflow-hidden group">
+    <Card className="hover:shadow-lg transition-all duration-300 relative overflow-hidden group flex flex-col h-full border-slate-200 dark:border-slate-800">
       <Link href={`/projects/${project.id}`} className="absolute inset-0 z-0">
         <span className="sr-only">Voir le détail du projet {project.name}</span>
       </Link>
-      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 relative z-10">
-        <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-                <div 
-                    className="w-3 h-3 rounded-full" 
-                    style={{ backgroundColor: project.color }} 
-                    aria-label="Code couleur du projet"
-                />
-                <CardTitle className="text-base font-semibold leading-none">
-                {project.name}
-                </CardTitle>
-            </div>
-          {project.label && (
-            <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded-sm w-fit">
+      
+      {/* Hero Image Section */}
+      <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-100 dark:bg-slate-900">
+        <img 
+          src={project.image_url || placeholderImage} 
+          alt={project.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
+        
+        {/* Actions Button (Top Right) */}
+        <div className="absolute top-2 right-2 z-20">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/20 hover:bg-white/40 backdrop-blur-md border-white/20 text-white rounded-full">
+                <MoreHorizontal className="h-4 w-4" />
+                <span className="sr-only">Actions</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem asChild>
+                <Link href={`/projects/${project.id}`}>
+                  <Eye className="mr-2 h-4 w-4" />
+                  Voir le détail
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onEdit(project)}>
+                <Edit2 className="mr-2 h-4 w-4" />
+                Modifier
+              </DropdownMenuItem>
+              
+              {totalMissions > 0 ? (
+                  <div title="Impossible de supprimer un projet avec des missions rattachées. L'archivage arrive bientôt !">
+                      <DropdownMenuItem disabled className="text-destructive opacity-50">
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Supprimer
+                      </DropdownMenuItem>
+                  </div>
+              ) : (
+                  <DropdownMenuItem onClick={() => onDelete(project)} className="text-destructive focus:text-destructive">
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Supprimer
+                  </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Project Type/Label (Bottom Left on Image) */}
+        {project.label && (
+          <div className="absolute bottom-3 left-4 z-10">
+            <span className="text-[10px] font-bold text-white/90 bg-black/30 backdrop-blur-md px-2 py-0.5 rounded-full uppercase tracking-wider border border-white/10">
               {project.label}
             </span>
-          )}
+          </div>
+        )}
+      </div>
+
+      <CardContent className="p-5 flex flex-col flex-1 relative z-10 pointer-events-none">
+        {/* Project Title and Color Code */}
+        <div className="flex items-center gap-2 mb-2">
+          <div 
+            className="w-2 h-2 rounded-full flex-shrink-0" 
+            style={{ backgroundColor: project.color }} 
+          />
+          <CardTitle className="text-lg font-bold tracking-tight text-slate-900 dark:text-white line-clamp-1">
+            {project.name}
+          </CardTitle>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">Actions</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link href={`/projects/${project.id}`}>
-                <Eye className="mr-2 h-4 w-4" />
-                Voir le détail
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onEdit(project)}>
-              <Edit2 className="mr-2 h-4 w-4" />
-              Modifier
-            </DropdownMenuItem>
-            
-            {missionCount > 0 ? (
-                <div title="Impossible de supprimer un projet avec des missions rattachées. L'archivage arrive bientôt !">
-                    <DropdownMenuItem disabled className="text-destructive opacity-50">
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Supprimer
-                    </DropdownMenuItem>
-                </div>
-            ) : (
-                <DropdownMenuItem onClick={() => onDelete(project)} className="text-destructive focus:text-destructive">
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Supprimer
-                </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </CardHeader>
-      <CardContent className="relative z-10 pointer-events-none">
+
         {project.description && (
-          <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-5 leading-relaxed">
             {project.description}
           </p>
         )}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <CheckSquare className="h-4 w-4" />
-          <span>{activeTaskCount} tâches à faire</span>
+
+        {/* Active Missions Section */}
+        {activeMissions.length > 0 && (
+          <div className="space-y-3 mt-auto mb-5">
+            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+              <Clock className="h-3 w-3" />
+              Missions Actives
+            </p>
+            <div className="space-y-2">
+              {activeMissions.map(mission => (
+                <div key={mission.id} className="flex items-center justify-between gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800/50">
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">
+                    {mission.title}
+                  </span>
+                  {mission.estimated_delivery_date && (
+                    <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-100 dark:border-slate-700">
+                      {formatRelativeDuration(mission.estimated_delivery_date)}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Footer Summary */}
+        <div className="pt-4 border-t border-slate-100 dark:border-slate-800/50 mt-auto flex items-center justify-between text-[11px] font-bold">
+          <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
+            <ListTodo className="h-3.5 w-3.5" />
+            <span>{upcomingMissionsCount} MISSION{upcomingMissionsCount > 1 ? 'S' : ''} À VENIR</span>
+          </div>
+          <span className="text-slate-400 dark:text-slate-600 uppercase tracking-tighter">
+            {totalMissions} MISSION{totalMissions > 1 ? 'S' : ''} TOTAL
+          </span>
         </div>
       </CardContent>
     </Card>

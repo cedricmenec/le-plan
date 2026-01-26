@@ -1,16 +1,16 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-// This import will fail initially
+import { render, screen } from '@testing-library/react'
 import { ProjectCard } from './project-card'
-import { vi, expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import { Database } from '@/types/database.types'
 
 type Project = Database['public']['Tables']['projects']['Row']
+type Mission = Database['public']['Tables']['missions']['Row']
 
 const mockProject: Project = {
   id: '1',
   name: 'Test Project',
-  label: 'TP',
-  description: 'Desc',
+  label: 'Marketing',
+  description: 'Test Description',
   status: 'active',
   color: '#000',
   created_at: new Date().toISOString(),
@@ -18,37 +18,77 @@ const mockProject: Project = {
   image_url: null
 }
 
-const onEdit = vi.fn()
-const onDelete = vi.fn()
+const mockMissions: Mission[] = [
+  {
+    id: 'm1',
+    title: 'Active Mission',
+    status: 'in_progress',
+    estimated_delivery_date: '2026-01-30',
+    created_at: '',
+    user_id: 'u1',
+    type: 'feature',
+    confidence: 100,
+    project_id: '1',
+    estimation: 3,
+    goal: null,
+    notes: null,
+    desired_delivery_date: null,
+    priority: 'medium',
+    project_parent: null
+  },
+  {
+    id: 'm2',
+    title: 'Upcoming Mission',
+    status: 'todo',
+    estimated_delivery_date: null,
+    created_at: '',
+    user_id: 'u1',
+    type: 'study',
+    confidence: 100,
+    project_id: '1',
+    estimation: 2,
+    goal: null,
+    notes: null,
+    desired_delivery_date: null,
+    priority: 'low',
+    project_parent: null
+  }
+]
 
-test('renders project details', () => {
+test('renders project name and label', () => {
   render(
     <ProjectCard 
       project={mockProject} 
-      missionCount={0} 
-      activeTaskCount={5}
-      onEdit={onEdit} 
-      onDelete={onDelete} 
+      missions={mockMissions}
+      onEdit={vi.fn()} 
+      onDelete={vi.fn()} 
     />
   )
   expect(screen.getByText('Test Project')).toBeDefined()
-  expect(screen.getByText('TP')).toBeDefined()
-  // Check for stats
-  expect(screen.getByText('5 tâches à faire')).toBeDefined()
+  expect(screen.getByText('Marketing')).toBeDefined()
 })
 
-test('delete action is disabled if missions exist', () => {
+test('renders active missions list', () => {
   render(
     <ProjectCard 
       project={mockProject} 
-      missionCount={2} 
-      activeTaskCount={5}
-      onEdit={onEdit} 
-      onDelete={onDelete} 
+      missions={mockMissions}
+      onEdit={vi.fn()} 
+      onDelete={vi.fn()} 
     />
   )
-  // This requires interacting with the dropdown.
-  // We can just verify if we can find the delete text or logic if exposed?
-  // Testing dropdown interactions in unit tests can be tricky without user-event.
-  // I'll skip complex interaction test for now and focus on rendering.
+  expect(screen.getByText('Active Mission')).toBeDefined()
+  expect(screen.queryByText('Upcoming Mission')).toBeNull() // Should only show in-progress
+})
+
+test('renders upcoming missions count', () => {
+  render(
+    <ProjectCard 
+      project={mockProject} 
+      missions={mockMissions}
+      onEdit={vi.fn()} 
+      onDelete={vi.fn()} 
+    />
+  )
+  expect(screen.getByText(/1 MISSION À VENIR/i)).toBeDefined()
 })
