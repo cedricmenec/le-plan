@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { MissionList } from '@/components/missions/mission-list'
-import { ProjectDashboard } from './project-dashboard'
 import { createClient } from '@/lib/supabase/client'
 import { MissionWithProject } from '@/components/missions/mission-card'
 import { Button } from '@/components/ui/button'
@@ -101,10 +100,6 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
         </Button>
 
       </div>
-
-
-
-      <ProjectDashboard missions={missions} />
 
 
 
