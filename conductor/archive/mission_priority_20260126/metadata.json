@@ -1,0 +1,8 @@
+{
+  "track_id": "mission_priority_20260126",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-26T10:00:00Z",
+  "updated_at": "2026-01-26T10:00:00Z",
+  "description": "Ajouter le concept de \"Priorité\" dans l'entité \"Mission\"."
+}
