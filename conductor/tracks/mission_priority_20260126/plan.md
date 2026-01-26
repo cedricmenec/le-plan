@@ -11,15 +11,15 @@ This plan outlines the steps to add a "Priority" field to Missions, including da
     - [x] Update `types/database.types.ts` (or re-generate) to include the new `priority` field
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Database & Schema' (Protocol in workflow.md)
 
-## Phase 2: Core UI Components
-- [ ] Task: Create `PriorityBadge` component
-    - [ ] Implement a reusable badge using `shadcn/ui` Badge
-    - [ ] Define color mapping and icon mapping for `low`, `medium`, `high`, `critical`
-    - [ ] Write unit tests for rendering different priority states
-- [ ] Task: Create `PrioritySelect` component
-    - [ ] Implement a reusable select component using `shadcn/ui` Select
-    - [ ] Write unit tests for value selection
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Core UI Components' (Protocol in workflow.md)
+## Phase 2: Core UI Components [checkpoint: 5d3c49d]
+- [x] Task: Create `PriorityBadge` component
+    - [x] Implement a reusable badge using `shadcn/ui` Badge
+    - [x] Define color mapping and icon mapping for `low`, `medium`, `high`, `critical`
+    - [x] Write unit tests for rendering different priority states
+- [x] Task: Create `PrioritySelect` component
+    - [x] Implement a reusable select component using `shadcn/ui` Select
+    - [x] Write unit tests for value selection
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Core UI Components' (Protocol in workflow.md)
 
 ## Phase 3: Mission Management Integration
 - [ ] Task: Update Mission Actions
