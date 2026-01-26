@@ -8,7 +8,7 @@
 - [x] Task: Regenerate database types 6e43229
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Database Schema & Types' (Protocol in workflow.md) 8304ee4
 
-## Phase 2: Core Logic & Utilities (TDD)
+## Phase 2: Core Logic & Utilities (TDD) [checkpoint: 6115bea]
 - [x] Task: Implement load calculation utility `lib/load-utils.ts` c9b8e75
     - [x] Write tests for ROM size to days mapping
     - [x] Write tests for Task Sum calculation (excluding 'done' status)
@@ -20,7 +20,7 @@
     - [x] Write tests for subtask creation/update/deletion with `estimation` and `status`
     - [x] Implement `createTask`, `updateTask`, `deleteTask` as server actions
     - [x] Implement `estimation` and `status` handling in these actions
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Logic & Utilities' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Core Logic & Utilities' (Protocol in workflow.md) 6115bea
 
 ## Phase 3: Subtask UI Enhancements
 - [ ] Task: Update `TaskItem` / `SubtaskForm` components
