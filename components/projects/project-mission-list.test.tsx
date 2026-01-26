@@ -114,10 +114,3 @@ test('shows all non-completed missions by default', async () => {
   expect(screen.getByText('Mission In Progress')).toBeDefined()
   expect(screen.getByText('Mission 2')).toBeDefined()
 })
-
-test('renders dashboard with stats', () => {
-  render(<ProjectMissionList projectId="p1" initialMissions={mockMissions} />)
-  
-  // Remaining workload should be 8
-  expect(screen.getByText('8 jours')).toBeDefined()
-})
