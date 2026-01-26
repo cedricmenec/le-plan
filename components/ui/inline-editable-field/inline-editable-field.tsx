@@ -6,6 +6,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/components/ui/use-toast'
+import { PrioritySelect } from '@/components/missions/priority-select'
+import { PriorityBadge, PriorityLevel } from '@/components/missions/priority-badge'
 
 interface Option {
   label: string
@@ -15,7 +17,7 @@ interface Option {
 interface InlineEditableFieldProps {
   value: string | number | null
   onSave: (value: any) => Promise<void>
-  type?: 'text' | 'textarea' | 'select' | 'number'
+  type?: 'text' | 'textarea' | 'select' | 'number' | 'priority'
   options?: Option[]
   className?: string
   displayClassName?: string
@@ -111,6 +113,38 @@ export function InlineEditableField({
       )
     }
 
+    if (type === 'priority') {
+      return (
+        <div className={cn("w-fit", className)}>
+          <PrioritySelect
+            value={currentValue as PriorityLevel}
+            onValueChange={(val) => {
+              setCurrentValue(val)
+              // Auto-save for priority
+              setIsSaving(true)
+              onSave(val).then(() => {
+                setIsEditing(false)
+                toast({
+                  title: "Priorité modifiée",
+                  description: "La priorité a été mise à jour.",
+                  duration: 2000,
+                })
+              }).catch(() => {
+                toast({
+                  title: "Erreur",
+                  description: "Impossible de modifier la priorité.",
+                  variant: "destructive",
+                })
+                setCurrentValue(value ?? 'medium')
+              }).finally(() => {
+                setIsSaving(false)
+              })
+            }}
+          />
+        </div>
+      )
+    }
+
     const Component = type === 'textarea' ? Textarea : Input
     
     return (
@@ -136,6 +170,21 @@ export function InlineEditableField({
   const displayValue = options?.find(opt => opt.value === String(value))?.label || value
   const handleTrigger = () => setIsEditing(true)
   const isPending = isSaving || isExternalPending
+
+  if (type === 'priority') {
+    return (
+      <div 
+        onClick={handleTrigger}
+        className={cn(
+          "cursor-pointer hover:opacity-80 transition-opacity flex items-center",
+          isPending && "opacity-50 animate-pulse cursor-wait",
+          displayClassName
+        )}
+      >
+        <PriorityBadge priority={value as PriorityLevel} />
+      </div>
+    )
+  }
 
   return (
     <div 

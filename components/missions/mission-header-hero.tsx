@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import { MissionTimeline } from './mission-timeline'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
-import { ShieldCheck, AlertTriangle, Smartphone, BookOpen, Wrench, FileText, MoreHorizontal, User, History, Flag } from 'lucide-react'
+import { PriorityBadge } from './priority-badge'
+import { ShieldCheck, AlertTriangle, Smartphone, BookOpen, Wrench, FileText, MoreHorizontal, User, History } from 'lucide-react'
 
 const MISSION_TYPES = [
   { label: 'Feature', value: 'feature', icon: Smartphone, color: 'text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-900/20' },
@@ -112,9 +113,8 @@ export function MissionHeroBlock({ mission }: MissionHeroBlockProps) {
 
         <div className="space-y-1.5">
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Priority</p>
-          <div className="flex items-center gap-2">
-            <Flag className="h-5 w-5 text-slate-300" />
-            <span className="text-xl font-bold text-slate-800 dark:text-slate-200 uppercase">n/a</span>
+          <div className="flex items-center gap-2 pt-1">
+            <PriorityBadge priority={mission.priority || 'medium'} variant="text" className="text-base" />
           </div>
         </div>
 

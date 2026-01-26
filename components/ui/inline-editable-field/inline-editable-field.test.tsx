@@ -1,6 +1,11 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { expect, test, vi } from 'vitest'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { expect, test, vi, beforeEach } from 'vitest'
 import { InlineEditableField } from './inline-editable-field'
+
+// Mock scrollIntoView
+beforeEach(() => {
+  window.HTMLElement.prototype.scrollIntoView = vi.fn()
+})
 
 test('renders initial value', () => {
   render(<InlineEditableField value="Initial Value" onSave={vi.fn()} />)
@@ -31,4 +36,29 @@ test('renders as textarea when type is textarea', () => {
   render(<InlineEditableField value="Initial Value" onSave={vi.fn()} type="textarea" />)
   fireEvent.click(screen.getByText('Initial Value'))
   expect(screen.getByDisplayValue('Initial Value').tagName).toBe('TEXTAREA')
+})
+
+test('renders as priority badge when type is priority', () => {
+  render(<InlineEditableField value="high" onSave={vi.fn()} type="priority" />)
+  expect(screen.getByText('Haute')).toBeDefined()
+})
+
+test('calls onSave when priority is changed', async () => {
+  const onSave = vi.fn(() => Promise.resolve())
+  render(<InlineEditableField value="medium" onSave={onSave} type="priority" />)
+  
+  // Click to enter edit mode
+  fireEvent.click(screen.getByText('Moyenne'))
+  
+  // Open the select
+  const trigger = screen.getByRole('combobox')
+  fireEvent.click(trigger)
+  
+  // Find and click 'Basse' in the select content
+  const option = await screen.findByText('Basse')
+  fireEvent.click(option)
+  
+  await waitFor(() => {
+    expect(onSave).toHaveBeenCalledWith('low')
+  })
 })

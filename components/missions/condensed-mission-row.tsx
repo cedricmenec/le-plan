@@ -3,24 +3,12 @@
 import { useRouter } from 'next/navigation'
 import { MissionWithProject } from './mission-card'
 import { MissionActions } from './mission-actions'
+import { PriorityBadge } from './priority-badge'
 import { Badge } from '@/components/ui/badge'
 import { 
-  Smartphone, 
-  BookOpen, 
-  Wrench, 
-  FileText, 
-  MoreHorizontal,
   Clock,
   LucideIcon
 } from 'lucide-react'
-
-const TYPE_ICONS: Record<string, LucideIcon> = {
-  feature: Smartphone,
-  study: BookOpen,
-  support: Wrench,
-  docs: FileText,
-  other: MoreHorizontal,
-}
 
 const TYPE_COLORS: Record<string, string> = {
   feature: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400',
@@ -87,9 +75,13 @@ export function CondensedMissionRow({
         {mission.estimation} jours
       </div>
 
-      {/* Priority Column (Placeholder) */}
-      <div className="text-center text-[11px] font-bold text-slate-300 dark:text-slate-700 uppercase tracking-wider">
-        n/a
+      {/* Priority Column */}
+      <div className="flex justify-center">
+        <PriorityBadge 
+          priority={mission.priority || 'medium'} 
+          variant="text"
+          className="text-[9px]"
+        />
       </div>
 
       {/* Actions Column */}
