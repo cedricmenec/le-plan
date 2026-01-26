@@ -13,12 +13,13 @@
     - [x] Write tests for ROM size to days mapping
     - [x] Write tests for Task Sum calculation (excluding 'done' status)
     - [x] Implement calculation functions
-- [ ] Task: Update Mission Server Actions `app/missions/actions.ts`
-    - [ ] Write tests for updating `rom_size` and `load_source`
-    - [ ] Implement updates in `updateMission`
-- [ ] Task: Update Subtask Server Actions `app/missions/milestone-actions.ts` (or relevant subtask file)
-    - [ ] Write tests for subtask creation/update with `estimation` and `status`
-    - [ ] Implement `estimation` and `status` handling
+- [x] Task: Update Mission Server Actions `app/missions/actions.ts` 0655ddf
+    - [x] Write tests for updating `rom_size` and `load_source`
+    - [x] Implement updates in `updateMission`
+- [x] Task: Update Subtask Server Actions `app/missions/actions.ts` 0655ddf
+    - [x] Write tests for subtask creation/update/deletion with `estimation` and `status`
+    - [x] Implement `createTask`, `updateTask`, `deleteTask` as server actions
+    - [x] Implement `estimation` and `status` handling in these actions
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Logic & Utilities' (Protocol in workflow.md)
 
 ## Phase 3: Subtask UI Enhancements
