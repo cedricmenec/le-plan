@@ -109,3 +109,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Amélioration de la carte des projets (ProjectCard) : Fix de l'affichage de l'image et ajout d'un overlay de couleur.
 - **ID**: `project_card_ui_fix_20260126`
 - **Link**: [conductor/archive/project_card_ui_fix_20260126](archive/project_card_ui_fix_20260126/)
+
+---
+
+## [~] Track: Retirer la ligne de métriques au dessus de la sections "Missions actives" dans la page de détail d'un Projet.
+- **ID**: `remove_project_metrics_20260126`
+- **Link**: [conductor/tracks/remove_project_metrics_20260126/](./tracks/remove_project_metrics_20260126/)

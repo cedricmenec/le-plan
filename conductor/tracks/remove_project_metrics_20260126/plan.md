@@ -15,7 +15,7 @@ This plan outlines the steps to remove the `ProjectDashboard` component from the
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Implementation (Removal)' (Protocol in workflow.md)
 
 ## Phase 3: Cleanup
-- [ ] Task: Delete ProjectDashboard files
+- [~] Task: Delete ProjectDashboard files
     - [ ] Delete `components/projects/project-dashboard.tsx`.
     - [ ] Delete `components/projects/project-dashboard.test.tsx`.
 - [ ] Task: Final Verification
