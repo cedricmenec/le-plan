@@ -62,6 +62,8 @@ export type Database = {
           estimated_delivery_date: string | null
           desired_delivery_date: string | null
           priority: 'low' | 'medium' | 'high' | 'critical'
+          rom_size: string | null
+          load_source: 'rom' | 'tasks'
         }
         Insert: {
           id?: string
@@ -79,6 +81,8 @@ export type Database = {
           estimated_delivery_date?: string | null
           desired_delivery_date?: string | null
           priority?: 'low' | 'medium' | 'high' | 'critical'
+          rom_size?: string | null
+          load_source?: 'rom' | 'tasks'
         }
         Update: {
           id?: string
@@ -96,6 +100,8 @@ export type Database = {
           estimated_delivery_date?: string | null
           desired_delivery_date?: string | null
           priority?: 'low' | 'medium' | 'high' | 'critical'
+          rom_size?: string | null
+          load_source?: 'rom' | 'tasks'
         }
         Relationships: [
           {
@@ -115,6 +121,8 @@ export type Database = {
           title: string
           is_completed: boolean
           position: number
+          estimation: number
+          status: 'todo' | 'in_progress' | 'done'
         }
         Insert: {
           id?: string
@@ -123,6 +131,8 @@ export type Database = {
           title: string
           is_completed?: boolean
           position?: number
+          estimation?: number
+          status?: 'todo' | 'in_progress' | 'done'
         }
         Update: {
           id?: string
@@ -131,6 +141,8 @@ export type Database = {
           title?: string
           is_completed?: boolean
           position?: number
+          estimation?: number
+          status?: 'todo' | 'in_progress' | 'done'
         }
         Relationships: [
           {
