@@ -18,13 +18,13 @@ This plan covers the database migration, server action updates for alphabetical 
     - [x] Update existing tests in `app/projects/actions.test.ts`
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Data Access & Sorting' (Protocol in workflow.md)
 
-## Phase 3: UI Components Enhancement
-- [ ] Task: Refactor `ProjectCard` component
-    - [ ] Implement Hero image section with 16:9 aspect ratio and placeholder fallback
-    - [ ] Add active missions section (max 3, sorted by estimated delivery date)
-    - [ ] Add "missions à venir" count in the footer
-    - [ ] Integrate `formatRelativeDuration` for mission deadlines
-    - [ ] Update styles to match the modern "hero" layout
-- [ ] Task: Update `ProjectGrid` tests
-    - [ ] Update `components/projects/project-grid.test.tsx` and `project-card.test.tsx` to reflect new UI structure and data requirements
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Components Enhancement' (Protocol in workflow.md)
+## Phase 3: UI Components Enhancement [checkpoint: 53aa278]
+- [x] Task: Refactor `ProjectCard` component
+    - [x] Implement Hero image section with 16:9 aspect ratio and placeholder fallback
+    - [x] Add active missions section (max 3, sorted by estimated delivery date)
+    - [x] Add "missions à venir" count in the footer
+    - [x] Integrate `formatRelativeDuration` for mission deadlines
+    - [x] Update styles to match the modern "hero" layout
+- [x] Task: Update `ProjectGrid` tests
+    - [x] Update `components/projects/project-grid.test.tsx` and `project-card.test.tsx` to reflect new UI structure and data requirements
+- [x] Task: Conductor - User Manual Verification 'Phase 3: UI Components Enhancement' (Protocol in workflow.md)
