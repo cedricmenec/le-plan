@@ -7,7 +7,7 @@ This plan outlines the steps to remove the `ProjectDashboard` component from the
     - [ ] Run existing tests to ensure a stable baseline: `npm test components/projects/project-mission-list.test.tsx`
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Preparation and Verification' (Protocol in workflow.md)
 
-## Phase 2: Implementation (Removal)
+## Phase 2: Implementation (Removal) [checkpoint: 01fbc25]
 - [x] Task: Remove ProjectDashboard from ProjectMissionList (9e22648)
     - [ ] Modify `components/projects/project-mission-list.tsx` to remove the import and usage of `ProjectDashboard`.
 - [x] Task: Implement to Pass Tests (77f1f8f) (Green Phase)
