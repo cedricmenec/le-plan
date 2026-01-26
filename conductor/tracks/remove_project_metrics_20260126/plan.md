@@ -2,7 +2,7 @@
 
 This plan outlines the steps to remove the `ProjectDashboard` component from the Project detail page and clean up the codebase.
 
-## Phase 1: Preparation and Verification
+## Phase 1: Preparation and Verification [checkpoint: fd74560]
 - [x] Task: Verify current state and tests (05582ee)
     - [ ] Run existing tests to ensure a stable baseline: `npm test components/projects/project-mission-list.test.tsx`
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Preparation and Verification' (Protocol in workflow.md)
