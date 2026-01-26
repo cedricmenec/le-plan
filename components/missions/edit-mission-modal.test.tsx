@@ -1,40 +1,26 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { expect, test, vi, beforeAll } from 'vitest'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { expect, test, vi, beforeEach } from 'vitest'
 import { EditMissionModal } from './edit-mission-modal'
 
+// Mock scrollIntoView
+beforeEach(() => {
+  window.HTMLElement.prototype.scrollIntoView = vi.fn()
+})
+
 // Mock Supabase
-vi.mock('@/lib/supabase/client', () => {
-  const chain = {
-    select: vi.fn().mockReturnThis(),
-    eq: vi.fn().mockReturnThis(),
-    order: vi.fn().mockResolvedValue({ data: [], error: null }),
-  }
-  return {
-    createClient: vi.fn(() => ({
-      from: vi.fn(() => chain),
-    })),
-  }
-})
+vi.mock('@/lib/supabase/client', () => ({
+  createClient: vi.fn(() => ({
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({
+        eq: vi.fn(() => ({
+          order: vi.fn(() => Promise.resolve({ data: [], error: null }))
+        }))
+      }))
+    }))
+  }))
+}))
 
-beforeAll(() => {
-  global.ResizeObserver = class {
-    observe = vi.fn()
-    unobserve = vi.fn()
-    disconnect = vi.fn()
-  }
-  
-  if (!global.PointerEvent) {
-    class PointerEvent extends MouseEvent {
-      constructor(type: string, params: PointerEventInit = {}) {
-        super(type, params)
-      }
-    }
-    // @ts-expect-error - PointerEvent is not defined in jsdom
-    global.PointerEvent = PointerEvent
-  }
-})
-
-const mockMission = {
+const mockMission: any = {
   id: '1',
   title: 'Mission Test',
   type: 'feature',
@@ -71,6 +57,8 @@ test('renders edit mission modal with existing data', async () => {
   // Check if fields are populated
   const titleInput = screen.getByLabelText(/titre/i) as HTMLInputElement
   expect(titleInput.value).toBe(mockMission.title)
+
+  expect(screen.getByText(/priorité/i)).toBeDefined()
   
   const estimationInput = screen.getByLabelText(/estimation/i) as HTMLInputElement
   expect(estimationInput.value).toBe(mockMission.estimation.toString())

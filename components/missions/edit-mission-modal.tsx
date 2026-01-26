@@ -14,6 +14,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Trash2 } from 'lucide-react'
 import { Database } from '@/types/database.types'
 import { createClient } from '@/lib/supabase/client'
+import { PrioritySelect } from './priority-select'
+import { PriorityLevel } from './priority-badge'
 
 type Project = Database['public']['Tables']['projects']['Row']
 type Mission = Database['public']['Tables']['missions']['Row']
@@ -80,6 +82,7 @@ export function EditMissionModal({
         status: mission.status,
         estimated_delivery_date: mission.estimated_delivery_date,
         desired_delivery_date: mission.desired_delivery_date,
+        priority: mission.priority,
       })
     }
   }, [open, mission])
@@ -133,6 +136,14 @@ export function EditMissionModal({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Priorité</Label>
+            <PrioritySelect 
+              value={(formData.priority as PriorityLevel) || 'medium'} 
+              onValueChange={(value) => setFormData({ ...formData, priority: value })} 
+            />
           </div>
 
           <div className="space-y-2">

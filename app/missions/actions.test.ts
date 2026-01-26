@@ -1,7 +1,16 @@
 import { expect, test, vi } from 'vitest'
-import { getMission, updateMission, updateTask, reorderTasks } from './actions'
+import { getMission, createMission, updateMission, updateTask, reorderTasks } from './actions'
 
 // Mock the supabase server client
+const mockInsert = vi.fn(() => ({
+  select: vi.fn(() => ({
+    single: vi.fn(() => Promise.resolve({
+      data: { id: 'm2', title: 'New Mission', project_id: 'p1' },
+      error: null
+    }))
+  }))
+}))
+
 const mockUpdate = vi.fn(() => ({
   eq: vi.fn(() => ({
     select: vi.fn(() => ({
@@ -24,6 +33,7 @@ vi.mock('@/lib/supabase/server', () => ({
           }))
         }))
       })),
+      insert: mockInsert,
       update: mockUpdate
     })),
     auth: {
@@ -43,11 +53,24 @@ test('getMission fetches a mission', async () => {
   expect(mission.title).toBe('Test Mission')
 })
 
-test('updateMission updates a mission with delivery dates', async () => {
+test('createMission creates a mission', async () => {
+  const mission = {
+    title: 'New Mission',
+    type: 'feature',
+    estimation: 3,
+    priority: 'high' as const
+  }
+  const result = await createMission(mission)
+  expect(result.id).toBe('m2')
+  expect(mockInsert).toHaveBeenCalledWith({ ...mission, user_id: 'u1' })
+})
+
+test('updateMission updates a mission with delivery dates and priority', async () => {
   const updates = { 
     title: 'Updated Mission',
     estimated_delivery_date: '2026-06-01',
-    desired_delivery_date: '2026-06-15'
+    desired_delivery_date: '2026-06-15',
+    priority: 'critical' as const
   }
   await updateMission('m1', updates)
   expect(mockUpdate).toHaveBeenCalledWith(updates)

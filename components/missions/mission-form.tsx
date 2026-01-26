@@ -8,6 +8,9 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Database } from '@/types/database.types'
+import { PrioritySelect } from './priority-select'
+import { PriorityLevel } from './priority-badge'
+import { createMission } from '@/app/missions/actions'
 
 type Project = Database['public']['Tables']['projects']['Row']
 
@@ -27,6 +30,7 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
   const [loading, setLoading] = useState(false)
   const [projects, setProjects] = useState<Project[]>([])
   const [dateWarning, setDateWarning] = useState<string | null>(null)
+  const [priority, setPriority] = useState<PriorityLevel>('medium')
   const supabase = createClient()
 
   useEffect(() => {
@@ -86,39 +90,28 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
 
     setLoading(true)
 
-
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      await createMission({
+        title,
+        type,
+        goal,
+        notes,
+        estimation,
+        confidence,
+        project_id,
+        estimated_delivery_date,
+        desired_delivery_date,
+        priority,
+      })
 
-      if (!user) {
-        alert('Vous devez être connecté')
-        return
-      }
-
-      const { error } = await supabase
-        .from('missions')
-        .insert({
-          title,
-          type,
-          goal,
-          notes,
-          estimation,
-          confidence,
-          project_id,
-          user_id: user.id,
-          estimated_delivery_date,
-          desired_delivery_date,
-        })
-
-      if (error) {
-        alert('Erreur lors de la création de la mission')
-      } else {
-        // Use the captured form reference instead of `event` (which may be null after awaits)
-        form.reset()
-        // notify sibling components (e.g. MissionList) to refetch their data
-        window.dispatchEvent(new CustomEvent('missions:created'))
-        if (onSuccess) onSuccess()
-      }
+      form.reset()
+      setPriority('medium')
+      // notify sibling components (e.g. MissionList) to refetch their data
+      window.dispatchEvent(new CustomEvent('missions:created'))
+      if (onSuccess) onSuccess()
+    } catch (error) {
+      console.error(error)
+      alert('Erreur lors de la création de la mission')
     } finally {
       setLoading(false)
     }
@@ -145,6 +138,11 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
             ))}
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Priorité</Label>
+        <PrioritySelect value={priority} onValueChange={setPriority} />
       </div>
 
       <div className="space-y-2">
