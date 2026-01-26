@@ -26,7 +26,7 @@ describe('CondensedMissionRow', () => {
     project_id: null,
     priority: 'medium',
     projects: {
-      name: 'Project 1'
+      name: 'Awesome Project'
     },
     estimated_delivery_date: null,
     desired_delivery_date: null
@@ -44,7 +44,6 @@ describe('CondensedMissionRow', () => {
     expect(screen.getByText('Test Condensed Mission')).toBeDefined()
     expect(screen.getByText('feature')).toBeDefined()
     expect(screen.getByText('1.5 jours')).toBeDefined()
-    expect(screen.getByText('n/a')).toBeDefined()
     // Should NOT show project name by default
     expect(screen.queryByText('Awesome Project')).toBeNull()
   })

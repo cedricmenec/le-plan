@@ -115,3 +115,13 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Retirer la ligne de métriques au dessus de la sections "Missions actives" dans la page de détail d'un Projet.
 - **ID**: `remove_project_metrics_20260126`
 - **Link**: [conductor/archive/remove_project_metrics_20260126](archive/remove_project_metrics_20260126/)
+
+---
+
+
+
+## [~] Track: Evolve load estimation to include ROM (T-Shirt) and Task-based calculation (half-days) with a selectable official source.
+
+- **Link**: [./tracks/load_estimation_20260126/](./tracks/load_estimation_20260126/)
+
+*

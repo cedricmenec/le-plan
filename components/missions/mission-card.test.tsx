@@ -36,7 +36,7 @@ describe('MissionCard', () => {
     project_id: 'p1',
     priority: 'medium',
     projects: {
-      name: 'Project 1'
+      name: 'PROJECT A'
     },
     estimated_delivery_date: null,
     desired_delivery_date: null
