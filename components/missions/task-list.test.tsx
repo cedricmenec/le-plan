@@ -76,17 +76,26 @@ test('renders task list with status and estimation', async () => {
   expect(screen.getByLabelText(/Statut: À faire/i)).toBeDefined()
   expect(screen.getByLabelText(/Statut: Terminé/i)).toBeDefined()
 
-  // Check for estimation values
-  expect(screen.getByDisplayValue('0.5')).toBeDefined()
-  expect(screen.getByDisplayValue('1')).toBeDefined()
+  // Check for estimation values (now text)
+  expect(screen.getByText('0.5')).toBeDefined()
+  expect(screen.getByText('1')).toBeDefined()
 })
 
-test('changing estimation calls updateTask', async () => {
+test('changing estimation calls updateTask via popover on double click', async () => {
   render(<TaskList missionId="1" />)
   
-  const estimationInput = await screen.findByDisplayValue('0.5')
+  // Wait for tasks to load
+  const estimationText = await screen.findByText('0.5')
+  
+  // Double click to open popover
+  fireEvent.doubleClick(estimationText)
+  
+  // Now the input should be visible
+  const estimationInput = screen.getByDisplayValue('0.5')
   
   fireEvent.change(estimationInput, { target: { value: '2.5' } })
+  // Trigger blur to save
+  fireEvent.blur(estimationInput)
   
   await waitFor(() => {
     expect(mockUpdateTask).toHaveBeenCalledWith('1', { estimation: 2.5 })

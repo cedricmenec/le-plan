@@ -9,6 +9,11 @@ import { Plus, Trash2, GripVertical, Square, PlayCircle, CheckSquare, History } 
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import { updateTask, reorderTasks, createTask, deleteTask as deleteTaskAction } from '@/app/missions/actions'
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -53,6 +58,7 @@ interface SortableTaskItemProps {
 }
 
 function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskItemProps) {
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const {
     attributes,
     listeners,
@@ -141,15 +147,43 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
 
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1">
-          <Input
-            type="number"
-            value={task.estimation}
-            step="0.5"
-            min="0"
-            className="h-7 w-12 text-[11px] font-bold text-center px-1 bg-slate-50 dark:bg-slate-900 border-none shadow-none"
-            onChange={(e) => onUpdate(task.id, { estimation: parseFloat(e.target.value) || 0 })}
-            disabled={isPending}
-          />
+          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+            <PopoverTrigger asChild>
+              <div 
+                onDoubleClick={() => setIsPopoverOpen(true)}
+                className="cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 px-1.5 py-0.5 rounded transition-colors text-[11px] font-bold text-slate-700 dark:text-slate-300 min-w-[2rem] text-center"
+              >
+                {task.estimation}
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-24 p-2" side="top">
+              <div className="flex flex-col gap-2">
+                <div className="text-[10px] font-bold text-slate-500 uppercase">Estimation (J)</div>
+                <Input
+                  type="number"
+                  defaultValue={task.estimation}
+                  step="0.5"
+                  min="0"
+                  autoFocus
+                  className="h-8 text-xs font-bold text-center"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const val = parseFloat((e.target as HTMLInputElement).value) || 0
+                      onUpdate(task.id, { estimation: val })
+                      setIsPopoverOpen(false)
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const val = parseFloat(e.target.value) || 0
+                    if (val !== task.estimation) {
+                      onUpdate(task.id, { estimation: val })
+                    }
+                  }}
+                  disabled={isPending}
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
           <span className="text-[9px] font-bold text-slate-400 uppercase">J</span>
         </div>
 
