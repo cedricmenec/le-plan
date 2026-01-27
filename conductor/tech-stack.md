@@ -5,7 +5,7 @@
 *   **Langage :** TypeScript - Pour la sécurité du typage et la maintenabilité.
 *   **Stylisation :** [Tailwind CSS](https://tailwindcss.com/) - Pour un design aéré, réactif et une itération rapide sur l'UI.
 *   **Iconographie :** [Lucide React](https://lucide.dev/) - Pour une bibliothèque d'icônes cohérente et légère.
-*   **Composants UI :** [Shadcn/ui](https://ui.shadcn.com/) (basé sur Radix UI) - Pour des composants accessibles et hautement personnalisables.
+*   **Composants UI :** [Shadcn/ui](https://ui.shadcn.com/) (basé sur Radix UI) - Pour des composants accessibles et hautement personnalisables. Inclut désormais **Popover**.
 *   **Drag & Drop :** [@dnd-kit](https://dndkit.com/) - Pour une gestion performante et accessible du réordonnancement des tâches.
 *   **Gestion des dates :** [date-fns](https://date-fns.org/) - Pour le formatage et la manipulation des dates.
 *   **Logique de Charge :** Utilitaires de calcul personnalisés (`lib/load-utils.ts`) pour le mapping ROM et la somme des tâches.

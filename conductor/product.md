@@ -174,7 +174,7 @@ Le projet consiste à développer une **application Web** personnelle de visibil
     *   **Jalons (Milestones) (Inclus) :** Définition d'étapes intermédiaires datées (Cadrage, Review, Livraison) pour améliorer la visibilité court terme.
 *   **Indicateurs de Délai (Inclus) :** Affichage de la durée restante approximative (jours, semaines, mois) basée sur la date de livraison estimée pour faciliter la visibilité immédiate des échéances.
 *   **Timeline de Mission (Inclus) :** Visualisation horizontale interactive dans le détail d'une mission, incluant l'effort restant (Effort restant), les dates clés (Cadrage, Livraison souhaitée, Livraison estimée) et une zone de risque (Risk zone) en cas de retard critique.
-*   **Tâches (Inclus) :** Décomposition des missions en actions simples avec **estimation en demi-journées (0.5j)**, suivi d'état (**À faire, En cours, Terminé**), réordonnancement par drag & drop et édition in-line.
+*   **Tâches (Inclus) :** Décomposition des missions en actions simples avec **estimation en demi-journées (0.5j)**, suivi d'état (**À faire, En cours, Terminé**), réordonnancement par drag & drop et édition in-line. **Améliorations de l'UI :** masquage par défaut des tâches terminées avec toggle en haut de liste, compteur de tâches clarifié ("X restantes / Y au total"), et édition in-line de l'estimation via double-click (Popover).
 *   **Authentification (Inclus) :** Sécurisation des données par utilisateur via Supabase Auth.
 *   **Vues Temporelles :**
     *   *Vue Hebdomadaire* pour le pilotage tactique.
