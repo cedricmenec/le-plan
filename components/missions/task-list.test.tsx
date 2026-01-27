@@ -168,18 +168,21 @@ test('double-clicking a task title enters edit mode', async () => {
   
   
     await waitFor(() => {
-  
-  
-  
       expect(mockUpdateTask).toHaveBeenCalledWith('1', { status: 'in_progress' })
-  
-  
-  
     })
-  
-  
-  
   })
+
+test('displays clarified task counter', async () => {
+  render(<TaskList missionId="1" />)
+  
+  // Wait for tasks to load
+  await screen.findByText(/Task 1/i)
+  
+  // With 1 todo and 1 done: 1 remaining / 2 total
+  // Wording: "1 restantes / 2 au total"
+  const counter = screen.getByText(/1 restantes \/ 2 au total/i)
+  expect(counter).toBeDefined()
+})
   
   
   

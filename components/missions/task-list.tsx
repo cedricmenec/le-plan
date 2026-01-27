@@ -93,15 +93,17 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
         >
           <SelectTrigger 
             className={`h-7 w-fit px-2 border-none bg-transparent shadow-none focus:ring-0 ${
-              task.status === 'done' ? 'text-green-600 dark:text-green-400' : 
-              task.status === 'in_progress' ? 'text-blue-600 dark:text-blue-400' : 
+              task.status === 'done' ? 'text-slate-300 dark:text-slate-700' : 
+              task.status === 'in_progress' ? 'text-blue-500 dark:text-blue-400' : 
               'text-slate-400'
             }`}
             aria-label={`Statut: ${task.status === 'done' ? 'Terminé' : task.status === 'in_progress' ? 'En cours' : 'À faire'}`}
           >
-            {task.status === 'todo' && <Square className="h-4 w-4" />}
-            {task.status === 'in_progress' && <PlayCircle className="h-4 w-4" />}
-            {task.status === 'done' && <CheckSquare className="h-4 w-4" />}
+            <SelectValue>
+              {task.status === 'todo' && <Square className="h-4 w-4 text-slate-400" />}
+              {task.status === 'in_progress' && <PlayCircle className="h-4 w-4 text-blue-500 dark:text-blue-400" />}
+              {task.status === 'done' && <CheckSquare className="h-4 w-4 text-slate-300 dark:text-slate-700" />}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent align="start" className="min-w-[130px]">
             <SelectItem value="todo">
@@ -112,14 +114,14 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
             </SelectItem>
             <SelectItem value="in_progress">
               <div className="flex items-center gap-2">
-                <PlayCircle className="h-3.5 w-3.5" />
+                <PlayCircle className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />
                 <span>En cours</span>
               </div>
             </SelectItem>
             <SelectItem value="done">
               <div className="flex items-center gap-2">
-                <CheckSquare className="h-3.5 w-3.5" />
-                <span>Terminé</span>
+                <CheckSquare className="h-3.5 w-3.5 text-slate-300 dark:text-slate-700" />
+                <span className="text-slate-300 dark:text-slate-700">Terminé</span>
               </div>
             </SelectItem>
           </SelectContent>
@@ -133,7 +135,7 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
           trigger="doubleClick"
           className="flex-1"
           isExternalPending={isPending}
-          displayClassName={isDone ? 'line-through text-muted-foreground' : 'text-slate-700 dark:text-slate-200'}
+          displayClassName={isDone ? 'line-through text-slate-300 dark:text-slate-700' : 'text-slate-700 dark:text-slate-200'}
         />
       </div>
 
@@ -282,7 +284,7 @@ export function TaskList({ missionId }: TaskListProps) {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Tâches</h3>
         <span className="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full font-medium">
-          {tasks.filter(t => t.status === 'done').length} / {tasks.length}
+          {tasks.filter(t => t.status !== 'done').length} restantes / {tasks.length} au total
         </span>
       </div>
       
