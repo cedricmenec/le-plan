@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Plus, Trash2, GripVertical, Square, PlayCircle, CheckSquare } from 'lucide-react'
+import { Plus, Trash2, GripVertical, Square, PlayCircle, CheckSquare, History } from 'lucide-react'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import { updateTask, reorderTasks, createTask, deleteTask as deleteTaskAction } from '@/app/missions/actions'
 import {
@@ -172,7 +172,16 @@ export function TaskList({ missionId }: TaskListProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [newTitle, setNewTitle] = useState('')
   const [pendingTaskIds, setPendingTaskIds] = useState<Set<string>>(new Set())
+  const [showCompleted, setShowCompleted] = useState(false)
   const supabase = createClient()
+
+  const { filteredTasks, hasDoneTasks } = useMemo(() => {
+    const doneTasks = tasks.filter(t => t.status === 'done')
+    return {
+      filteredTasks: showCompleted ? tasks : tasks.filter(t => t.status !== 'done'),
+      hasDoneTasks: doneTasks.length > 0
+    }
+  }, [tasks, showCompleted])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -294,11 +303,11 @@ export function TaskList({ missionId }: TaskListProps) {
         onDragEnd={handleDragEnd}
       >
         <SortableContext 
-          items={tasks.map(t => t.id)}
+          items={filteredTasks.map(t => t.id)}
           strategy={verticalListSortingStrategy}
         >
           <div className="space-y-3">
-            {tasks.map((task) => (
+            {filteredTasks.map((task) => (
               <SortableTaskItem 
                 key={task.id} 
                 task={task} 
@@ -310,6 +319,22 @@ export function TaskList({ missionId }: TaskListProps) {
           </div>
         </SortableContext>
       </DndContext>
+
+      {hasDoneTasks && (
+        <button
+          onClick={() => setShowCompleted(!showCompleted)}
+          className="w-full py-2 text-[11px] font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center justify-center gap-1.5 border border-transparent hover:border-slate-100 dark:hover:border-slate-800 rounded-lg transition-all"
+        >
+          {showCompleted ? (
+            'Masquer les tâches terminées'
+          ) : (
+            <>
+              <History className="h-3.5 w-3.5" />
+              VOIR LES TÂCHES TERMINÉES ({tasks.filter(t => t.status === 'done').length})
+            </>
+          )}
+        </button>
+      )}
 
       <div className="flex items-center space-x-2 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
         <Input 

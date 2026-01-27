@@ -59,9 +59,17 @@ test('renders task list with status and estimation', async () => {
   render(<TaskList missionId="1" />)
   
   const task1 = await screen.findByText(/Task 1/i)
-  const task2 = await screen.findByText(/Task 2/i)
   
   expect(task1).toBeDefined()
+
+  // Task 2 is hidden by default because it's 'done'
+  expect(screen.queryByText(/Task 2/i)).toBeNull()
+
+  // Show completed tasks
+  const toggleButton = await screen.findByText(/Voir les tâches terminées/i)
+  fireEvent.click(toggleButton)
+
+  const task2 = await screen.findByText(/Task 2/i)
   expect(task2).toBeDefined()
 
   // Check for status via aria-label
@@ -182,6 +190,31 @@ test('displays clarified task counter', async () => {
   // Wording: "1 restantes / 2 au total"
   const counter = screen.getByText(/1 restantes \/ 2 au total/i)
   expect(counter).toBeDefined()
+})
+
+test('hides completed tasks by default and toggles visibility', async () => {
+  render(<TaskList missionId="1" />)
+  
+  // Wait for tasks to load
+  await screen.findByText(/Task 1/i)
+  
+  // Task 1 is 'todo', Task 2 is 'done' (based on mock)
+  // By default, Task 2 should NOT be visible
+  expect(screen.queryByText(/Task 2/i)).toBeNull()
+  
+  // Find and click the toggle button
+  const toggleButton = await screen.findByText(/Voir les tâches terminées/i)
+  fireEvent.click(toggleButton)
+  
+  // Now Task 2 should be visible
+  expect(await screen.findByText(/Task 2/i)).toBeDefined()
+  
+  // Toggle back
+  const hideButton = await screen.findByText(/Masquer les tâches terminées/i)
+  fireEvent.click(hideButton)
+  
+  // Task 2 should be hidden again
+  expect(screen.queryByText(/Task 2/i)).toBeNull()
 })
   
   
