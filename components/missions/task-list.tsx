@@ -12,6 +12,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  PopoverAnchor,
 } from '@/components/ui/popover'
 import {
   Select,
@@ -148,14 +149,14 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1">
           <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-            <PopoverTrigger asChild>
+            <PopoverAnchor asChild>
               <div 
                 onDoubleClick={() => setIsPopoverOpen(true)}
                 className="cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 px-1.5 py-0.5 rounded transition-colors text-[11px] font-bold text-slate-700 dark:text-slate-300 min-w-[2rem] text-center"
               >
                 {task.estimation}
               </div>
-            </PopoverTrigger>
+            </PopoverAnchor>
             <PopoverContent className="w-24 p-2" side="top">
               <div className="flex flex-col gap-2">
                 <div className="text-[10px] font-bold text-slate-500 uppercase">Estimation (J)</div>
