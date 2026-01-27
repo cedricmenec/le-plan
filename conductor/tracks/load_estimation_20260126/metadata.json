@@ -1,8 +1,0 @@
-{
-  "track_id": "load_estimation_20260126",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-01-26T14:45:00Z",
-  "updated_at": "2026-01-26T14:45:00Z",
-  "description": "Evolve load estimation to include ROM (T-Shirt) and Task-based calculation (half-days) with a selectable official source."
-}

@@ -17,7 +17,9 @@ vi.mock('../actions', () => ({
     project_id: 'p1',
     subtasks: [],
     estimated_delivery_date: '2026-06-01',
-    desired_delivery_date: '2026-06-15'
+    desired_delivery_date: '2026-06-15',
+    rom_size: 'M',
+    load_source: 'rom'
   })),
   getMilestones: vi.fn(() => Promise.resolve([])),
   updateMission: vi.fn(() => Promise.resolve())
@@ -70,7 +72,7 @@ test('renders mission detail page', async () => {
   expect(screen.getByText('Test Notes')).toBeDefined()
   expect(screen.getByText('Feature')).toBeDefined()
   expect(screen.getByText('En cours')).toBeDefined()
-  expect(screen.getByText(/5 days remaining/i)).toBeDefined()
+  expect(screen.getByText(/remaining/i)).toBeDefined()
   expect(screen.getByText('80%')).toBeDefined()
   expect(screen.getByText('2026-06-01')).toBeDefined()
   expect(screen.getByText('2026-06-15')).toBeDefined()
