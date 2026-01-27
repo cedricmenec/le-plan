@@ -1,0 +1,8 @@
+{
+  "track_id": "task_status_icons_20260127",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-27T10:05:00Z",
+  "updated_at": "2026-01-27T10:05:00Z",
+  "description": "Mettre à jour l'UI de la liste des tâches avec les modification suivantes : - Remplacer le texte de statut par un icon afin de prendre moins de place. Un click sur l'icon fait apparaitre le dropbox de selection. L'item de dropbox est constitué de de l'icon et du texte."
+}
