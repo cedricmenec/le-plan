@@ -1,9 +1,11 @@
 'use client'
 
+import React from 'react'
 import Link from 'next/link'
 import { MissionTimeline } from './mission-timeline'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import { PriorityBadge } from './priority-badge'
+import { Button } from '@/components/ui/button'
 import { romToDays, calculateTaskRemainingLoad, ROM_MAPPING, ROMSize } from '@/lib/load-utils'
 import { 
   ShieldCheck, 
@@ -17,7 +19,9 @@ import {
   History,
   Shirt,
   ListTodo,
-  Info
+  Info,
+  Settings2,
+  X
 } from 'lucide-react'
 
 const ROM_OPTIONS = Object.keys(ROM_MAPPING).map(size => ({
@@ -104,6 +108,8 @@ interface MissionHeroBlockProps {
 }
 
 export function MissionHeroBlock({ mission, onUpdate }: MissionHeroBlockProps) {
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
+  const [isAlertDismissed, setIsAlertDismissed] = React.useState(false)
   const confidence = mission.confidence || 0
   const isHighConfidence = confidence >= 80
 
@@ -111,80 +117,112 @@ export function MissionHeroBlock({ mission, onUpdate }: MissionHeroBlockProps) {
   const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
   const officialEstimation = mission.load_source === 'tasks' ? tasksDays : romDays
 
-  const showSuggestion = mission.load_source === 'rom' && (mission.subtasks?.length > 0) && tasksDays > 0
+  const showSuggestion = !isAlertDismissed && mission.load_source === 'rom' && (mission.subtasks?.length > 0) && tasksDays > 0
 
   return (
     <div className="bg-slate-50/50 dark:bg-slate-900/40 p-8 md:p-10 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-8">
-      {/* Estimation Settings & Suggestion */}
+      {/* Smart Suggestion - Keep highly visible at top if present */}
+      {showSuggestion && (
+        <div 
+          className="flex items-center justify-between gap-3 px-4 py-2.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-xl text-xs font-medium border border-blue-100 dark:border-blue-900/30 group mb-4"
+        >
+          <div 
+            className="flex items-center gap-3 cursor-pointer flex-1"
+            onClick={() => onUpdate?.({ load_source: 'tasks' })}
+          >
+            <Info className="h-4 w-4 shrink-0" />
+            <span>Cette mission a des tâches estimées. Passer à la charge par tâches ({tasksDays}j) ?</span>
+          </div>
+          <button 
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsAlertDismissed(true)
+            }}
+            className="p-1 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded transition-colors text-blue-400 hover:text-blue-600 dark:hover:text-blue-200"
+            aria-label="Fermer la notification"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* Timeline visualization */}
+      <MissionTimeline 
+        estimation={officialEstimation}
+        estimatedDelivery={mission.estimated_delivery_date}
+        desiredDelivery={mission.desired_delivery_date}
+      />
+
+      {/* Estimation Settings Collapsible */}
       <div className="space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-6 pb-6 border-b border-slate-100 dark:border-slate-800/50">
-          <div className="flex flex-wrap items-center gap-8">
-            {/* ROM Selection */}
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                <Shirt className="h-3 w-3" />
-                Estimation ROM
-              </label>
-              <InlineEditableField
-                value={mission.rom_size}
-                type="select"
-                options={ROM_OPTIONS}
-                onSave={async (val) => {
-                  onUpdate?.({ rom_size: val })
-                }}
-                placeholder="Choisir Taille..."
-                displayClassName="text-sm font-bold text-slate-700 dark:text-slate-300"
-              />
-            </div>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="ghost" 
+            size="icon-sm"
+            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+            className={`text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors ${isSettingsOpen ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-200' : ''}`}
+            title="Configuration de l'estimation"
+            aria-label="Configuration de l'estimation"
+          >
+            <Settings2 className="h-4 w-4" />
+          </Button>
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            {isSettingsOpen ? 'Estimation Settings' : ''}
+          </span>
+        </div>
 
-            {/* Load Source Toggle */}
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                <Info className="h-3 w-3" />
-                Source Officielle
-              </label>
-              <InlineEditableField
-                value={mission.load_source}
-                type="select"
-                options={LOAD_SOURCE_OPTIONS}
-                onSave={async (val) => {
-                  onUpdate?.({ load_source: val })
-                }}
-                displayClassName="text-sm font-bold text-blue-600 dark:text-blue-400"
-              />
-            </div>
-
-            {/* Comparison Display */}
-            <div className="flex items-center gap-4 pt-4 md:pt-0">
-              <div className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col items-center">
-                <span className="text-[9px] font-bold text-slate-400 uppercase">ROM</span>
-                <span className="text-xs font-black text-slate-700 dark:text-slate-300">{romDays}j</span>
+        {isSettingsOpen && (
+          <div className="bg-white dark:bg-[#1a2632] border border-slate-200 dark:border-slate-800 rounded-none p-6 animate-in fade-in slide-in-from-top-1 duration-200 shadow-none">
+            <div className="flex flex-wrap items-center gap-10">
+              {/* ROM Selection */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <Shirt className="h-3 w-3" />
+                  Estimation ROM
+                </label>
+                <InlineEditableField
+                  value={mission.rom_size}
+                  type="select"
+                  options={ROM_OPTIONS}
+                  onSave={async (val) => {
+                    onUpdate?.({ rom_size: val })
+                  }}
+                  placeholder="Choisir Taille..."
+                  displayClassName="text-sm font-bold text-slate-700 dark:text-slate-300"
+                />
               </div>
-              <div className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col items-center">
-                <span className="text-[9px] font-bold text-slate-400 uppercase">Tâches</span>
-                <span className="text-xs font-black text-slate-700 dark:text-slate-300">{tasksDays}j</span>
+
+              {/* Load Source Toggle */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <Info className="h-3 w-3" />
+                  Source Officielle
+                </label>
+                <InlineEditableField
+                  value={mission.load_source}
+                  type="select"
+                  options={LOAD_SOURCE_OPTIONS}
+                  onSave={async (val) => {
+                    onUpdate?.({ load_source: val })
+                  }}
+                  displayClassName="text-sm font-bold text-blue-600 dark:text-blue-400"
+                />
+              </div>
+
+              {/* Comparison Display */}
+              <div className="flex items-center gap-4">
+                <div className="px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col items-center min-w-[60px]">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase">ROM</span>
+                  <span className="text-xs font-black text-slate-700 dark:text-slate-300">{romDays}j</span>
+                </div>
+                <div className="px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col items-center min-w-[60px]">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase">Tâches</span>
+                  <span className="text-xs font-black text-slate-700 dark:text-slate-300">{tasksDays}j</span>
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Suggestion Alert */}
-          {showSuggestion && (
-            <div 
-              className="flex items-center gap-3 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-xl text-xs font-medium border border-blue-100 dark:border-blue-900/30 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
-              onClick={() => onUpdate?.({ load_source: 'tasks' })}
-            >
-              <ListTodo className="h-4 w-4" />
-              <span>Passer à la charge par tâches ({tasksDays}j) ?</span>
-            </div>
-          )}
-        </div>
-
-        {/* Timeline visualization */}
-        <MissionTimeline 
-          estimation={officialEstimation}
-          estimatedDelivery={mission.estimated_delivery_date}
-          desiredDelivery={mission.desired_delivery_date}
-        />
+        )}
       </div>
 
       <div className="h-px bg-slate-100 dark:bg-slate-800" />

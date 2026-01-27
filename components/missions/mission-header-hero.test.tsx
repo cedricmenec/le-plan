@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { expect, test, describe, vi } from 'vitest'
 import { MissionHeaderHero, MissionHeroBlock } from './mission-header-hero'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -50,12 +50,18 @@ describe('MissionHeaderHero & MissionHeroBlock', () => {
     expect(screen.getByText(/EN COURS/i)).toBeDefined()
   })
 
-  test('renders estimation controls and values in MissionHeroBlock', () => {
+  test('renders estimation controls after clicking toggle', () => {
     render(
       <TooltipProvider>
         <MissionHeroBlock mission={mockMission} onUpdate={async () => {}} />
       </TooltipProvider>
     )
+
+    // Initially closed
+    expect(screen.queryByText(/Estimation ROM/i)).toBeNull()
+
+    // Click toggle button using aria-label
+    fireEvent.click(screen.getByLabelText(/Configuration de l'estimation/i))
 
     // ROM display (M)
     expect(screen.getByText(/M \(~5j\)/i)).toBeDefined()
