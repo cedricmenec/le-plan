@@ -10,7 +10,7 @@ Focus on making the task counter more explicit to avoid confusion.
     - [x] Update the calculation logic to ensure 'X' correctly represents the number of non-completed tasks.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Task Counter' (Protocol in workflow.md)
 
-## Phase 2: Task Visibility Management (Show/Hide Completed)
+## Phase 2: Task Visibility Management (Show/Hide Completed) [checkpoint: d48be00]
 Implement the "Hide by default" behavior for completed tasks with a toggle link.
 
 - [x] Task: Implement filtered task display in `TaskList` bc682fd
@@ -19,7 +19,7 @@ Implement the "Hide by default" behavior for completed tasks with a toggle link.
 - [x] Task: Add the "Voir les tâches terminées" toggle link bc682fd
     - [x] Append a button/link at the bottom of the list when completed tasks are hidden.
     - [x] Ensure the link text changes to "Masquer les tâches terminées" when they are visible.
-- [~] Task: Conductor - User Manual Verification 'Phase 2: Visibility Management' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Visibility Management' (Protocol in workflow.md)
 
 ## Phase 3: Inline Editing for Time Estimation
 Replace the permanent input box with a double-click Popover interaction.
