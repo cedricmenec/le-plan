@@ -47,6 +47,14 @@ vi.mock('@/lib/supabase/client', () => ({
   })),
 }))
 
+// Mock pointer capture for Radix UI
+if (typeof window !== 'undefined') {
+  window.HTMLElement.prototype.hasPointerCapture = vi.fn()
+  window.HTMLElement.prototype.setPointerCapture = vi.fn()
+  window.HTMLElement.prototype.releasePointerCapture = vi.fn()
+  window.HTMLElement.prototype.scrollIntoView = vi.fn()
+}
+
 test('renders task list with status and estimation', async () => {
   render(<TaskList missionId="1" />)
   
@@ -93,7 +101,84 @@ test('double-clicking a task title enters edit mode', async () => {
   fireEvent.change(input, { target: { value: 'Updated Task 1' } })
   fireEvent.keyDown(input, { key: 'Enter' })
   
-  await waitFor(() => {
-    expect(mockUpdateTask).toHaveBeenCalledWith('1', { title: 'Updated Task 1' })
+    await waitFor(() => {
+  
+      expect(mockUpdateTask).toHaveBeenCalledWith('1', { title: 'Updated Task 1' })
+  
+    })
+  
   })
-})
+  
+  
+  
+  test('changing status calls updateTask', async () => {
+  
+  
+  
+    render(<TaskList missionId="1" />)
+  
+  
+  
+    
+  
+  
+  
+    // Find the select trigger for Task 1 (which is "À faire")
+  
+  
+  
+    const statusTrigger = await screen.findByText(/À faire/i)
+  
+  
+  
+    
+  
+  
+  
+    // Open the select
+  
+  
+  
+    fireEvent.click(statusTrigger)
+  
+  
+  
+    
+  
+  
+  
+    // Find "En cours" and click it
+  
+  
+  
+    const option = await screen.findByRole('option', { name: /En cours/i })
+  
+  
+  
+    fireEvent.click(option)
+  
+  
+  
+    
+  
+  
+  
+    await waitFor(() => {
+  
+  
+  
+      expect(mockUpdateTask).toHaveBeenCalledWith('1', { status: 'in_progress' })
+  
+  
+  
+    })
+  
+  
+  
+  })
+  
+  
+  
+  
+  
+  
