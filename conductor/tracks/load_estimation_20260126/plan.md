@@ -23,11 +23,11 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Core Logic & Utilities' (Protocol in workflow.md) 6115bea
 
 ## Phase 3: Subtask UI Enhancements
-- [ ] Task: Update `TaskItem` / `SubtaskForm` components
-    - [ ] Add estimation input field (restricted to 0.5 increments)
-    - [ ] Replace checkbox with status dropdown (Todo, In Progress, Done)
-- [ ] Task: Verify subtask drag & drop still works with new fields
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Subtask UI Enhancements' (Protocol in workflow.md)
+- [x] Task: Update `TaskItem` / `SubtaskForm` components
+    - [x] Add estimation input field (restricted to 0.5 increments)
+    - [x] Replace checkbox with status dropdown (Todo, In Progress, Done)
+- [x] Task: Verify subtask drag & drop still works with new fields
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Subtask UI Enhancements' (Protocol in workflow.md)
 
 ## Phase 4: Mission Detail UI (Estimation Controls)
 - [ ] Task: Implement Estimation Settings Section in Mission Detail

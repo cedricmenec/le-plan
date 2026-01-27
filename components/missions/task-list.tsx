@@ -123,9 +123,9 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
             type="number"
             value={task.estimation}
             step="0.5"
-            min="0.5"
+            min="0"
             className="h-7 w-12 text-[11px] font-bold text-center px-1 bg-slate-50 dark:bg-slate-900 border-none shadow-none"
-            onChange={(e) => onUpdate(task.id, { estimation: parseFloat(e.target.value) || 0.5 })}
+            onChange={(e) => onUpdate(task.id, { estimation: parseFloat(e.target.value) || 0 })}
             disabled={isPending}
           />
           <span className="text-[9px] font-bold text-slate-400 uppercase">J</span>
