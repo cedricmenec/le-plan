@@ -169,11 +169,12 @@ Le projet consiste à développer une **application Web** personnelle de visibil
     *   Facilitation de la priorisation des missions par un **tri automatique par date de livraison estimée** et un **tri alphabétique des projets**.
     *   Système de navigation par breadcrumbs (Inclus).
 *   **Gestion des Projets :** Création, modification et vue détaillée des projets avec support pour une **image d'illustration (Hero Image)**.
-*   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec estimation de charge, score de confiance, **priorité (low, medium, high, critical)**, **objectif principal (Main Goal)**, **notes complémentaires**, ainsi que des **dates de livraison estimées et souhaitées**.
+*   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec un système d'estimation à deux niveaux (**T-Shirt/ROM** pour le flou, **Somme des tâches** pour le précis), score de confiance, **priorité (low, medium, high, critical)**, **objectif principal (Main Goal)**, **notes complémentaires**, ainsi que des **dates de livraison estimées et souhaitées**.
+    *   **Estimation Flexible :** Possibilité de choisir la "Source Officielle" de charge (ROM ou Tâches) pour le pilotage et la capacité.
     *   **Jalons (Milestones) (Inclus) :** Définition d'étapes intermédiaires datées (Cadrage, Review, Livraison) pour améliorer la visibilité court terme.
 *   **Indicateurs de Délai (Inclus) :** Affichage de la durée restante approximative (jours, semaines, mois) basée sur la date de livraison estimée pour faciliter la visibilité immédiate des échéances.
 *   **Timeline de Mission (Inclus) :** Visualisation horizontale interactive dans le détail d'une mission, incluant l'effort restant (Effort restant), les dates clés (Cadrage, Livraison souhaitée, Livraison estimée) et une zone de risque (Risk zone) en cas de retard critique.
-*   **Tâches (Inclus) :** Décomposition des missions en actions simples avec suivi d'état (checkbox), réordonnancement par drag & drop et édition in-line.
+*   **Tâches (Inclus) :** Décomposition des missions en actions simples avec **estimation en demi-journées (0.5j)**, suivi d'état (**À faire, En cours, Terminé**), réordonnancement par drag & drop et édition in-line.
 *   **Authentification (Inclus) :** Sécurisation des données par utilisateur via Supabase Auth.
 *   **Vues Temporelles :**
     *   *Vue Hebdomadaire* pour le pilotage tactique.
