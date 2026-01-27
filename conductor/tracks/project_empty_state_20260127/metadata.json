@@ -1,0 +1,8 @@
+{
+  "track_id": "project_empty_state_20260127",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-27T10:00:00Z",
+  "updated_at": "2026-01-27T10:00:00Z",
+  "description": "Créer un placeholder lorsqu'il n'y a aucune mission d'enregistrée dans le projet (une card ProjectCard, indiquant qu'aucun projet n'existe) + un bouton pour créer la première mission du projet"
+}

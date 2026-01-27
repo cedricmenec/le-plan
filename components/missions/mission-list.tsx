@@ -12,6 +12,7 @@ import { sortMissions } from '@/lib/utils'
 import {
   TooltipProvider,
 } from "@/components/ui/tooltip"
+import { ProjectEmptyState } from '@/components/projects/project-empty-state'
 
 type Mission = Database['public']['Tables']['missions']['Row']
 
@@ -20,13 +21,15 @@ interface MissionListProps {
   onUpdate?: () => void
   layout?: 'grid' | 'split'
   showProjectName?: boolean
+  projectId?: string
 }
 
 export function MissionList({ 
   initialMissions, 
   onUpdate, 
   layout = 'grid',
-  showProjectName = false 
+  showProjectName = false,
+  projectId
 }: MissionListProps) {
   const [missions, setMissions] = useState<MissionWithProject[]>(initialMissions || [])
   const [loading, setLoading] = useState(!initialMissions)
@@ -173,7 +176,7 @@ export function MissionList({
     <TooltipProvider>
       <div className="space-y-10">
         {missions.length === 0 ? (
-          <p className="text-muted-foreground italic">Aucune mission pour le moment.</p>
+          <ProjectEmptyState projectId={projectId} />
         ) : layout === 'split' ? (
           <>
             {/* Active Missions Section */}

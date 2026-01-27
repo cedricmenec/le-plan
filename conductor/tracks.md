@@ -110,6 +110,12 @@ This file tracks all major tracks for the project. Each track has its own detail
 - **ID**: `task_list_enhancements_20260127`
 - **Link**: [conductor/archive/task_list_enhancements_20260127](archive/task_list_enhancements_20260127/)
 
+---
+
+## [~] **Track: Créer un placeholder lorsqu'il n'y a aucune mission d'enregistrée dans le projet**
+- **ID**: `project_empty_state_20260127`
+- **Link**: [./tracks/project_empty_state_20260127/](./tracks/project_empty_state_20260127/)
+
 
 
 

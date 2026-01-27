@@ -24,13 +24,15 @@ const MISSION_TYPES = [
 
 interface MissionFormProps {
   onSuccess?: () => void
+  initialProjectId?: string
 }
 
-export function MissionForm({ onSuccess }: MissionFormProps) {
+export function MissionForm({ onSuccess, initialProjectId }: MissionFormProps) {
   const [loading, setLoading] = useState(false)
   const [projects, setProjects] = useState<Project[]>([])
   const [dateWarning, setDateWarning] = useState<string | null>(null)
   const [priority, setPriority] = useState<PriorityLevel>('medium')
+  const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>(initialProjectId)
   const supabase = createClient()
 
   useEffect(() => {
@@ -195,7 +197,7 @@ export function MissionForm({ onSuccess }: MissionFormProps) {
 
       <div className="space-y-2">
         <Label htmlFor="project_id">Projet (Optionnel)</Label>
-        <Select name="project_id">
+        <Select name="project_id" value={selectedProjectId || "none"} onValueChange={(v) => setSelectedProjectId(v === "none" ? undefined : v)}>
           <SelectTrigger id="project_id">
             <SelectValue placeholder="Aucun projet" />
           </SelectTrigger>

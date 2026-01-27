@@ -119,6 +119,8 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
 
             layout="split"
 
+            projectId={projectId}
+
           />
 
         )}
