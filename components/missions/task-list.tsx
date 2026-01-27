@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Plus, Trash2, GripVertical } from 'lucide-react'
+import { Plus, Trash2, GripVertical, Square, PlayCircle, CheckSquare } from 'lucide-react'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import { updateTask, reorderTasks, createTask, deleteTask as deleteTaskAction } from '@/app/missions/actions'
 import {
@@ -91,17 +91,37 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
           onValueChange={(val: 'todo' | 'in_progress' | 'done') => onUpdate(task.id, { status: val })}
           disabled={isPending}
         >
-          <SelectTrigger className={`h-7 w-fit px-2 text-[10px] font-bold uppercase border-none bg-transparent shadow-none focus:ring-0 ${
-            task.status === 'done' ? 'text-green-600 dark:text-green-400' : 
-            task.status === 'in_progress' ? 'text-blue-600 dark:text-blue-400' : 
-            'text-slate-400'
-          }`}>
-            <SelectValue />
+          <SelectTrigger 
+            className={`h-7 w-fit px-2 border-none bg-transparent shadow-none focus:ring-0 ${
+              task.status === 'done' ? 'text-green-600 dark:text-green-400' : 
+              task.status === 'in_progress' ? 'text-blue-600 dark:text-blue-400' : 
+              'text-slate-400'
+            }`}
+            aria-label={`Statut: ${task.status === 'done' ? 'Terminé' : task.status === 'in_progress' ? 'En cours' : 'À faire'}`}
+          >
+            {task.status === 'todo' && <Square className="h-4 w-4" />}
+            {task.status === 'in_progress' && <PlayCircle className="h-4 w-4" />}
+            {task.status === 'done' && <CheckSquare className="h-4 w-4" />}
           </SelectTrigger>
-          <SelectContent align="start" className="min-w-[100px]">
-            <SelectItem value="todo" className="text-[10px] font-bold uppercase">À faire</SelectItem>
-            <SelectItem value="in_progress" className="text-[10px] font-bold uppercase">En cours</SelectItem>
-            <SelectItem value="done" className="text-[10px] font-bold uppercase">Terminé</SelectItem>
+          <SelectContent align="start" className="min-w-[130px]">
+            <SelectItem value="todo">
+              <div className="flex items-center gap-2">
+                <Square className="h-3.5 w-3.5" />
+                <span>À faire</span>
+              </div>
+            </SelectItem>
+            <SelectItem value="in_progress">
+              <div className="flex items-center gap-2">
+                <PlayCircle className="h-3.5 w-3.5" />
+                <span>En cours</span>
+              </div>
+            </SelectItem>
+            <SelectItem value="done">
+              <div className="flex items-center gap-2">
+                <CheckSquare className="h-3.5 w-3.5" />
+                <span>Terminé</span>
+              </div>
+            </SelectItem>
           </SelectContent>
         </Select>
 

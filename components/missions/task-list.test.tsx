@@ -64,9 +64,9 @@ test('renders task list with status and estimation', async () => {
   expect(task1).toBeDefined()
   expect(task2).toBeDefined()
 
-  // Check for status text (in SelectTrigger)
-  expect(screen.getByText(/À faire/i)).toBeDefined()
-  expect(screen.getByText(/Terminé/i)).toBeDefined()
+  // Check for status via aria-label
+  expect(screen.getByLabelText(/Statut: À faire/i)).toBeDefined()
+  expect(screen.getByLabelText(/Statut: Terminé/i)).toBeDefined()
 
   // Check for estimation values
   expect(screen.getByDisplayValue('0.5')).toBeDefined()
@@ -127,7 +127,7 @@ test('double-clicking a task title enters edit mode', async () => {
   
   
   
-    const statusTrigger = await screen.findByText(/À faire/i)
+    const statusTrigger = await screen.findByLabelText(/Statut: À faire/i)
   
   
   
@@ -140,6 +140,10 @@ test('double-clicking a task title enters edit mode', async () => {
   
   
     fireEvent.click(statusTrigger)
+  
+  
+  
+  
   
   
   
