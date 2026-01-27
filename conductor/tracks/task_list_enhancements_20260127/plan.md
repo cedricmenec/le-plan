@@ -36,7 +36,7 @@ Replace the permanent input box with a double-click Popover interaction.
 ## Phase 4: Final Verification and Polish
 Final review of the integrated features.
 
-- [ ] Task: Run full test suite and verify UI consistency
+- [~] Task: Run full test suite and verify UI consistency
     - [ ] Ensure drag-and-drop still works correctly with the new visibility logic.
     - [ ] Verify responsive behavior on mobile.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Polish' (Protocol in workflow.md)
