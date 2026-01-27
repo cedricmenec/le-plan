@@ -2,13 +2,13 @@
 
 This plan details the improvements to the task list in the Mission Detail page, focusing on visibility management, inline editing for estimations, and counter clarification.
 
-## Phase 1: Task Counter Clarification
+## Phase 1: Task Counter Clarification [checkpoint: 8384e7c]
 Focus on making the task counter more explicit to avoid confusion.
 
 - [x] Task: Update the task counter format in `TaskList` component e7dc629
     - [x] Modify `components/missions/task-list.tsx` to change the counter display from `X / Y` to `X restantes / Y au total`.
     - [x] Update the calculation logic to ensure 'X' correctly represents the number of non-completed tasks.
-- [~] Task: Conductor - User Manual Verification 'Phase 1: Task Counter' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Task Counter' (Protocol in workflow.md)
 
 ## Phase 2: Task Visibility Management (Show/Hide Completed)
 Implement the "Hide by default" behavior for completed tasks with a toggle link.
