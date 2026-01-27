@@ -21,7 +21,7 @@ Implement the "Hide by default" behavior for completed tasks with a toggle link.
     - [x] Ensure the link text changes to "Masquer les tâches terminées" when they are visible.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Visibility Management' (Protocol in workflow.md)
 
-## Phase 3: Inline Editing for Time Estimation
+## Phase 3: Inline Editing for Time Estimation [checkpoint: dae6c09]
 Replace the permanent input box with a double-click Popover interaction.
 
 - [x] Task: Refactor `SortableTaskItem` estimation display a76c578
@@ -31,7 +31,7 @@ Replace the permanent input box with a double-click Popover interaction.
 - [x] Task: Handle estimation updates and Popover closing a76c578
     - [x] Ensure the update is triggered correctly on input change or "Enter" inside the popover.
     - [x] Ensure the Popover closes after a successful update or when clicking outside.
-- [~] Task: Conductor - User Manual Verification 'Phase 3: Inline Editing' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Inline Editing' (Protocol in workflow.md)
 
 ## Phase 4: Final Verification and Polish
 Final review of the integrated features.
