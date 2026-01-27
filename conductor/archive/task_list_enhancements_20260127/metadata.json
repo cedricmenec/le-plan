@@ -1,0 +1,8 @@
+{
+  "track_id": "task_list_enhancements_20260127",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-27T14:52:00Z",
+  "updated_at": "2026-01-27T14:52:00Z",
+  "description": "Dans la liste des tâches de la page de détail d'une Mission, je souhaite: - Masquer par défaut les tâches terminées - Permettre l'édition in-line de l'estimation de temps - Le compteur de tâche est perturbant"
+}

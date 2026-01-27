@@ -107,7 +107,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 ---
 
 ## [x] **Track: Mission Task List Enhancements**
-*Link: [./tracks/task_list_enhancements_20260127/](./tracks/task_list_enhancements_20260127/)*
+- **ID**: `task_list_enhancements_20260127`
+- **Link**: [conductor/archive/task_list_enhancements_20260127](archive/task_list_enhancements_20260127/)
 
 
 
