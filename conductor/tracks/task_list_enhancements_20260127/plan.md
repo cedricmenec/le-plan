@@ -13,13 +13,13 @@ Focus on making the task counter more explicit to avoid confusion.
 ## Phase 2: Task Visibility Management (Show/Hide Completed)
 Implement the "Hide by default" behavior for completed tasks with a toggle link.
 
-- [ ] Task: Implement filtered task display in `TaskList`
-    - [ ] Add `showCompleted` state (defaulting to `false`).
-    - [ ] Filter the `tasks` array displayed in the list based on `showCompleted`.
-- [ ] Task: Add the "Voir les tâches terminées" toggle link
-    - [ ] Append a button/link at the bottom of the list when completed tasks are hidden.
-    - [ ] Ensure the link text changes to "Masquer les tâches terminées" when they are visible.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Visibility Management' (Protocol in workflow.md)
+- [x] Task: Implement filtered task display in `TaskList` bc682fd
+    - [x] Add `showCompleted` state (defaulting to `false`).
+    - [x] Filter the `tasks` array displayed in the list based on `showCompleted`.
+- [x] Task: Add the "Voir les tâches terminées" toggle link bc682fd
+    - [x] Append a button/link at the bottom of the list when completed tasks are hidden.
+    - [x] Ensure the link text changes to "Masquer les tâches terminées" when they are visible.
+- [~] Task: Conductor - User Manual Verification 'Phase 2: Visibility Management' (Protocol in workflow.md)
 
 ## Phase 3: Inline Editing for Time Estimation
 Replace the permanent input box with a double-click Popover interaction.
