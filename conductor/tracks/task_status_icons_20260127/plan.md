@@ -7,13 +7,13 @@ This plan outlines the steps to replace the text-based status selector in the ta
     - [x] Add a test case in `components/missions/task-list.test.tsx` (if it exists) or create it to verify status selection triggers the `onUpdate` callback.
 
 ## Phase 2: UI Implementation
-- [ ] Task: Update `SortableTaskItem` component in `components/missions/task-list.tsx`.
-    - [ ] Import `Square`, `PlayCircle`, and `CheckSquare` from `lucide-react`.
-    - [ ] Refactor `SelectTrigger` to display only the icon corresponding to the current status.
-    - [ ] Ensure the icon maintains its color coding (Slate for todo, Blue for in_progress, Green for done).
-    - [ ] Update `SelectContent` and `SelectItem` to include both the icon and the text in a row.
-    - [ ] Update status text from uppercase (e.g., "À FAIRE") to sentence case (e.g., "À faire").
-    - [ ] Add `aria-label` to the `Select` or `SelectTrigger` for accessibility since text is removed from the visible trigger.
+- [x] Task: Update `SortableTaskItem` component in `components/missions/task-list.tsx`. [c727aaa]
+    - [x] Import `Square`, `PlayCircle`, and `CheckSquare` from `lucide-react`.
+    - [x] Refactor `SelectTrigger` to display only the icon corresponding to the current status.
+    - [x] Ensure the icon maintains its color coding (Slate for todo, Blue for in_progress, Green for done).
+    - [x] Update `SelectContent` and `SelectItem` to include both the icon and the text in a row.
+    - [x] Update status text from uppercase (e.g., "À FAIRE") to sentence case (e.g., "À faire").
+    - [x] Add `aria-label` to the `Select` or `SelectTrigger` for accessibility since text is removed from the visible trigger.
 
 ## Phase 3: Verification & Cleanup
 - [ ] Task: Manual Verification.
