@@ -106,9 +106,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [x] Track: Amélioration de la carte des projets (ProjectCard) : Fix de l'affichage de l'image et ajout d'un overlay de couleur.
-- **ID**: `project_card_ui_fix_20260126`
-- **Link**: [conductor/archive/project_card_ui_fix_20260126](archive/project_card_ui_fix_20260126/)
+## [x] **Track: Mission Task List Enhancements**
+*Link: [./tracks/task_list_enhancements_20260127/](./tracks/task_list_enhancements_20260127/)*
 
 
 
