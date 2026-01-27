@@ -29,14 +29,14 @@
 - [x] Task: Verify subtask drag & drop still works with new fields 051d99d
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Subtask UI Enhancements' (Protocol in workflow.md) eb28fe2
 
-## Phase 4: Mission Detail UI (Estimation Controls)
-- [ ] Task: Implement Estimation Settings Section in Mission Detail
-    - [ ] Add ROM Size selector (XS to XXL)
-    - [ ] Add Load Source toggle (ROM vs Tasks)
-    - [ ] Display both "Current ROM" and "Current Task Sum" for comparison
-- [ ] Task: Implement "Smart Suggestion" alert
-    - [ ] Display suggestion to switch to 'Tasks' if tasks are estimated but source is 'ROM'
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Mission Detail UI' (Protocol in workflow.md)
+## Phase 4: Mission Detail UI (Estimation Controls) [checkpoint: 143eba8]
+- [x] Task: Implement Estimation Settings Section in Mission Detail 143eba8
+    - [x] Add ROM Size selector (XS to XXL)
+    - [x] Add Load Source toggle (ROM vs Tasks)
+    - [x] Display both "Current ROM" and "Current Task Sum" for comparison
+- [x] Task: Implement "Smart Suggestion" alert 143eba8
+    - [x] Display suggestion to switch to 'Tasks' if tasks are estimated but source is 'ROM'
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Mission Detail UI' (Protocol in workflow.md) 143eba8
 
 ## Phase 5: Dashboard & Project List Updates
 - [ ] Task: Update `MissionCard` and `ProjectMissionList`
