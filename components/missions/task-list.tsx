@@ -296,6 +296,22 @@ export function TaskList({ missionId }: TaskListProps) {
           {tasks.filter(t => t.status !== 'done').length} restantes / {tasks.length} au total
         </span>
       </div>
+
+      {hasDoneTasks && (
+        <button
+          onClick={() => setShowCompleted(!showCompleted)}
+          className="w-full py-2 text-[11px] font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center justify-center gap-1.5 border border-transparent hover:border-slate-100 dark:hover:border-slate-800 rounded-lg transition-all mb-2"
+        >
+          {showCompleted ? (
+            'Masquer les tâches terminées'
+          ) : (
+            <>
+              <History className="h-3.5 w-3.5" />
+              VOIR LES TÂCHES TERMINÉES ({tasks.filter(t => t.status === 'done').length})
+            </>
+          )}
+        </button>
+      )}
       
       <DndContext 
         sensors={sensors}
@@ -319,22 +335,6 @@ export function TaskList({ missionId }: TaskListProps) {
           </div>
         </SortableContext>
       </DndContext>
-
-      {hasDoneTasks && (
-        <button
-          onClick={() => setShowCompleted(!showCompleted)}
-          className="w-full py-2 text-[11px] font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center justify-center gap-1.5 border border-transparent hover:border-slate-100 dark:hover:border-slate-800 rounded-lg transition-all"
-        >
-          {showCompleted ? (
-            'Masquer les tâches terminées'
-          ) : (
-            <>
-              <History className="h-3.5 w-3.5" />
-              VOIR LES TÂCHES TERMINÉES ({tasks.filter(t => t.status === 'done').length})
-            </>
-          )}
-        </button>
-      )}
 
       <div className="flex items-center space-x-2 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
         <Input 

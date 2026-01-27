@@ -7,7 +7,7 @@ This track aims to improve the clarity and usability of the task list within the
 
 ### 1. Task Visibility Management
 - **Default State:** The task list should only display tasks that are NOT in the 'done' status.
-- **Toggle Mechanism:** A link/button should be added at the bottom of the task list (similar to the Milestones section) to "Show completed tasks" (Voir les tâches terminées).
+- **Toggle Mechanism:** A link/button should be added at the **top** of the task list (near the header) to "Show completed tasks" (Voir les tâches terminées).
 - **Persistent View:** Once clicked, it should show all tasks. Clicking it again (labeled "Hide completed tasks" / "Masquer les tâches terminées") should revert to the default filtered view.
 
 ### 2. Time Estimation Inline Editing
