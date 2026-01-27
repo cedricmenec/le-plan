@@ -4,7 +4,31 @@ import Link from 'next/link'
 import { MissionTimeline } from './mission-timeline'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import { PriorityBadge } from './priority-badge'
-import { ShieldCheck, AlertTriangle, Smartphone, BookOpen, Wrench, FileText, MoreHorizontal, User, History } from 'lucide-react'
+import { romToDays, calculateTaskRemainingLoad, ROM_MAPPING, ROMSize } from '@/lib/load-utils'
+import { 
+  ShieldCheck, 
+  AlertTriangle, 
+  Smartphone, 
+  BookOpen, 
+  Wrench, 
+  FileText, 
+  MoreHorizontal, 
+  User, 
+  History,
+  Shirt,
+  ListTodo,
+  Info
+} from 'lucide-react'
+
+const ROM_OPTIONS = Object.keys(ROM_MAPPING).map(size => ({
+  label: `${size} (~${ROM_MAPPING[size as ROMSize]}j)`,
+  value: size
+}))
+
+const LOAD_SOURCE_OPTIONS = [
+  { label: 'T-Shirt (ROM)', value: 'rom', icon: Shirt },
+  { label: 'Somme des tâches', value: 'tasks', icon: ListTodo },
+]
 
 const MISSION_TYPES = [
   { label: 'Feature', value: 'feature', icon: Smartphone, color: 'text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-900/20' },
@@ -76,20 +100,92 @@ export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps)
 
 interface MissionHeroBlockProps {
   mission: any
+  onUpdate?: (updates: any) => Promise<void>
 }
 
-export function MissionHeroBlock({ mission }: MissionHeroBlockProps) {
+export function MissionHeroBlock({ mission, onUpdate }: MissionHeroBlockProps) {
   const confidence = mission.confidence || 0
   const isHighConfidence = confidence >= 80
 
+  const romDays = romToDays(mission.rom_size as ROMSize)
+  const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
+  const officialEstimation = mission.load_source === 'tasks' ? tasksDays : romDays
+
+  const showSuggestion = mission.load_source === 'rom' && (mission.subtasks?.length > 0) && tasksDays > 0
+
   return (
     <div className="bg-slate-50/50 dark:bg-slate-900/40 p-8 md:p-10 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-8">
-      {/* Timeline visualization */}
-      <MissionTimeline 
-        estimation={mission.estimation}
-        estimatedDelivery={mission.estimated_delivery_date}
-        desiredDelivery={mission.desired_delivery_date}
-      />
+      {/* Estimation Settings & Suggestion */}
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-6 pb-6 border-b border-slate-100 dark:border-slate-800/50">
+          <div className="flex flex-wrap items-center gap-8">
+            {/* ROM Selection */}
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                <Shirt className="h-3 w-3" />
+                Estimation ROM
+              </label>
+              <InlineEditableField
+                value={mission.rom_size}
+                type="select"
+                options={ROM_OPTIONS}
+                onSave={async (val) => {
+                  onUpdate?.({ rom_size: val })
+                }}
+                placeholder="Choisir Taille..."
+                displayClassName="text-sm font-bold text-slate-700 dark:text-slate-300"
+              />
+            </div>
+
+            {/* Load Source Toggle */}
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                <Info className="h-3 w-3" />
+                Source Officielle
+              </label>
+              <InlineEditableField
+                value={mission.load_source}
+                type="select"
+                options={LOAD_SOURCE_OPTIONS}
+                onSave={async (val) => {
+                  onUpdate?.({ load_source: val })
+                }}
+                displayClassName="text-sm font-bold text-blue-600 dark:text-blue-400"
+              />
+            </div>
+
+            {/* Comparison Display */}
+            <div className="flex items-center gap-4 pt-4 md:pt-0">
+              <div className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col items-center">
+                <span className="text-[9px] font-bold text-slate-400 uppercase">ROM</span>
+                <span className="text-xs font-black text-slate-700 dark:text-slate-300">{romDays}j</span>
+              </div>
+              <div className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col items-center">
+                <span className="text-[9px] font-bold text-slate-400 uppercase">Tâches</span>
+                <span className="text-xs font-black text-slate-700 dark:text-slate-300">{tasksDays}j</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Suggestion Alert */}
+          {showSuggestion && (
+            <div 
+              className="flex items-center gap-3 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-xl text-xs font-medium border border-blue-100 dark:border-blue-900/30 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+              onClick={() => onUpdate?.({ load_source: 'tasks' })}
+            >
+              <ListTodo className="h-4 w-4" />
+              <span>Passer à la charge par tâches ({tasksDays}j) ?</span>
+            </div>
+          )}
+        </div>
+
+        {/* Timeline visualization */}
+        <MissionTimeline 
+          estimation={officialEstimation}
+          estimatedDelivery={mission.estimated_delivery_date}
+          desiredDelivery={mission.desired_delivery_date}
+        />
+      </div>
 
       <div className="h-px bg-slate-100 dark:bg-slate-800" />
 

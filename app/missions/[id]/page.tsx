@@ -88,7 +88,13 @@ export default async function MissionDetailPage({ params }: PageProps) {
               />
             </div>
 
-            <MissionHeroBlock mission={mission} />
+            <MissionHeroBlock 
+              mission={mission} 
+              onUpdate={async (updates) => {
+                'use server'
+                await updateMission(id, updates)
+              }}
+            />
 
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-muted-foreground">
