@@ -5,8 +5,10 @@ import { MissionWithProject } from './mission-card'
 import { MissionActions } from './mission-actions'
 import { PriorityBadge } from './priority-badge'
 import { Badge } from '@/components/ui/badge'
+import { romToDays, calculateTaskRemainingLoad, ROMSize } from '@/lib/load-utils'
 import { 
-  Clock,
+  Shirt,
+  ListTodo,
   LucideIcon
 } from 'lucide-react'
 
@@ -38,6 +40,11 @@ export function CondensedMissionRow({
   const router = useRouter()
   const colorClass = TYPE_COLORS[mission.type] || TYPE_COLORS.other
   const projectName = mission.projects?.name || mission.project_parent
+
+  const romDays = romToDays(mission.rom_size as ROMSize)
+  const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
+  const officialEstimation = mission.load_source === 'tasks' ? tasksDays : romDays
+  const LoadIcon = mission.load_source === 'tasks' ? ListTodo : Shirt
 
   const handleRowClick = () => {
     router.push(`/missions/${mission.id}`)
@@ -71,8 +78,8 @@ export function CondensedMissionRow({
 
       {/* Estimation Column */}
       <div className="flex justify-start items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 px-2">
-        <span className="text-slate-400"><Clock className="h-3.5 w-3.5" /></span>
-        {mission.estimation} jours
+        <span className="text-slate-400"><LoadIcon className="h-3.5 w-3.5" /></span>
+        {officialEstimation} j
       </div>
 
       {/* Priority Column */}

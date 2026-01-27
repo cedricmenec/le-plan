@@ -29,7 +29,12 @@ describe('CondensedMissionRow', () => {
       name: 'Awesome Project'
     },
     estimated_delivery_date: null,
-    desired_delivery_date: null
+    desired_delivery_date: null,
+    rom_size: 'M',
+    load_source: 'tasks',
+    subtasks: [
+      { id: 't1', status: 'todo', estimation: 1, title: 'T1', position: 0, created_at: '', mission_id: '1' }
+    ]
   }
 
   test('renders with basic info', () => {
@@ -43,7 +48,8 @@ describe('CondensedMissionRow', () => {
 
     expect(screen.getByText('Test Condensed Mission')).toBeDefined()
     expect(screen.getByText('feature')).toBeDefined()
-    expect(screen.getByText('1.5 jours')).toBeDefined()
+    // Task source: T1(1j) = 1j
+    expect(screen.getByText(/1 j/i)).toBeDefined()
     // Should NOT show project name by default
     expect(screen.queryByText('Awesome Project')).toBeNull()
   })

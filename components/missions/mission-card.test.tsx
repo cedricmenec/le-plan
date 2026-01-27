@@ -39,7 +39,10 @@ describe('MissionCard', () => {
       name: 'PROJECT A'
     },
     estimated_delivery_date: null,
-    desired_delivery_date: null
+    desired_delivery_date: null,
+    rom_size: 'S',
+    load_source: 'rom',
+    subtasks: []
   }
 
   test('renders mission card with basic info', () => {
@@ -61,6 +64,9 @@ describe('MissionCard', () => {
     
     // Check for status badge and footer status
     expect(screen.getAllByText(/TODO/i).length).toBeGreaterThanOrEqual(2)
+
+    // Check for ROM estimation (Size S = 2j)
+    expect(screen.getByText(/2 J/i)).toBeDefined()
 
     // Ensure "Avancement" is NOT there
     expect(screen.queryByText(/avancement/i)).toBeNull()

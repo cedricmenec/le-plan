@@ -5,6 +5,7 @@ import { useRef, useEffect, useState } from 'react'
 import { MissionActions } from './mission-actions'
 import { Database } from '@/types/database.types'
 import { formatRelativeDuration } from '@/lib/utils'
+import { romToDays, calculateTaskRemainingLoad, ROMSize } from '@/lib/load-utils'
 import {
   Tooltip,
   TooltipContent,
@@ -20,11 +21,17 @@ import {
   AlertTriangle,
   ArrowRight,
   StickyNote,
+  Shirt,
+  ListTodo,
   LucideIcon
 } from 'lucide-react'
 
 export type Mission = Database['public']['Tables']['missions']['Row']
-export type MissionWithProject = Mission & { projects: { name: string } | null }
+export type Subtask = Database['public']['Tables']['subtasks']['Row']
+export type MissionWithProject = Mission & { 
+  projects: { name: string } | null,
+  subtasks?: Subtask[]
+}
 
 const TYPE_ICONS: Record<string, LucideIcon> = {
   feature: Smartphone,
@@ -72,6 +79,11 @@ export function MissionCard({
     done: 'DONE'
   }
   const statusDisplay = statusLabels[mission.status] || mission.status.toUpperCase()
+
+  const romDays = romToDays(mission.rom_size as ROMSize)
+  const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
+  const officialEstimation = mission.load_source === 'tasks' ? tasksDays : romDays
+  const LoadIcon = mission.load_source === 'tasks' ? ListTodo : Shirt
 
   useEffect(() => {
     const checkTruncation = () => {
@@ -181,7 +193,10 @@ export function MissionCard({
               </>
             )}
             <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
-            <span>{mission.estimation} J</span>
+            <div className="flex items-center gap-1">
+              <LoadIcon className="h-3 w-3" />
+              <span>{officialEstimation} J</span>
+            </div>
           </div>
           <Link 
             href={`/missions/${mission.id}`}

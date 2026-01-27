@@ -49,7 +49,7 @@ export function MissionList({
   async function fetchMissions() {
     const { data, error } = await supabase
       .from('missions')
-      .select('*, projects(name)')
+      .select('*, projects(name), subtasks(*)')
       .order('estimated_delivery_date', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: false })
 
