@@ -24,14 +24,14 @@ Implement the "Hide by default" behavior for completed tasks with a toggle link.
 ## Phase 3: Inline Editing for Time Estimation
 Replace the permanent input box with a double-click Popover interaction.
 
-- [ ] Task: Refactor `SortableTaskItem` estimation display
-    - [ ] Replace the `<Input />` for estimation with a static text display.
-    - [ ] Implement a Popover (using shadcn/ui) that triggers on `doubleClick`.
-    - [ ] Move the estimation `<Input />` inside the Popover content.
-- [ ] Task: Handle estimation updates and Popover closing
-    - [ ] Ensure the update is triggered correctly on input change or "Enter" inside the popover.
-    - [ ] Ensure the Popover closes after a successful update or when clicking outside.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Inline Editing' (Protocol in workflow.md)
+- [x] Task: Refactor `SortableTaskItem` estimation display a76c578
+    - [x] Replace the `<Input />` for estimation with a static text display.
+    - [x] Implement a Popover (using shadcn/ui) that triggers on `doubleClick`.
+    - [x] Move the estimation `<Input />` inside the Popover content.
+- [x] Task: Handle estimation updates and Popover closing a76c578
+    - [x] Ensure the update is triggered correctly on input change or "Enter" inside the popover.
+    - [x] Ensure the Popover closes after a successful update or when clicking outside.
+- [~] Task: Conductor - User Manual Verification 'Phase 3: Inline Editing' (Protocol in workflow.md)
 
 ## Phase 4: Final Verification and Polish
 Final review of the integrated features.
