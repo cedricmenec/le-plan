@@ -7,7 +7,14 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Plus, Trash2, GripVertical } from 'lucide-react'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
-import { updateTask, reorderTasks } from '@/app/missions/actions'
+import { updateTask, reorderTasks, createTask, deleteTask as deleteTaskAction } from '@/app/missions/actions'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   DndContext,
   closestCenter,
@@ -29,7 +36,8 @@ import { CSS } from '@dnd-kit/utilities'
 interface Task {
   id: string
   title: string
-  is_completed: boolean
+  status: 'todo' | 'in_progress' | 'done'
+  estimation: number
   position: number
 }
 
@@ -61,11 +69,13 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
     opacity: isDragging ? 0.5 : undefined,
   }
 
+  const isDone = task.status === 'done'
+
   return (
     <div 
       ref={setNodeRef} 
       style={style}
-      className="flex items-center justify-between group py-1 border-b border-slate-50 dark:border-slate-800/50 last:border-0 bg-white dark:bg-slate-950"
+      className="flex items-center justify-between group py-1.5 border-b border-slate-50 dark:border-slate-800/50 last:border-0 bg-white dark:bg-slate-950"
     >
       <div className="flex items-center space-x-3 flex-1 min-w-0">
         <div 
@@ -75,13 +85,26 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
         >
           <GripVertical className="h-4 w-4" />
         </div>
-        <Checkbox 
-          id={task.id} 
-          checked={task.is_completed} 
-          onCheckedChange={() => onUpdate(task.id, { is_completed: !task.is_completed })}
-          className="h-5 w-5"
+        
+        <Select
+          value={task.status}
+          onValueChange={(val: 'todo' | 'in_progress' | 'done') => onUpdate(task.id, { status: val })}
           disabled={isPending}
-        />
+        >
+          <SelectTrigger className={`h-7 w-fit px-2 text-[10px] font-bold uppercase border-none bg-transparent shadow-none focus:ring-0 ${
+            task.status === 'done' ? 'text-green-600 dark:text-green-400' : 
+            task.status === 'in_progress' ? 'text-blue-600 dark:text-blue-400' : 
+            'text-slate-400'
+          }`}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent align="start" className="min-w-[100px]">
+            <SelectItem value="todo" className="text-[10px] font-bold uppercase">À faire</SelectItem>
+            <SelectItem value="in_progress" className="text-[10px] font-bold uppercase">En cours</SelectItem>
+            <SelectItem value="done" className="text-[10px] font-bold uppercase">Terminé</SelectItem>
+          </SelectContent>
+        </Select>
+
         <InlineEditableField
           value={task.title}
           onSave={async (newTitle) => {
@@ -90,19 +113,35 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
           trigger="doubleClick"
           className="flex-1"
           isExternalPending={isPending}
-          displayClassName={task.is_completed ? 'line-through text-muted-foreground' : 'text-slate-700 dark:text-slate-200'}
+          displayClassName={isDone ? 'line-through text-muted-foreground' : 'text-slate-700 dark:text-slate-200'}
         />
       </div>
-      <Button
-        type="button"
-        size="icon"
-        variant="ghost"
-        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity ml-2"
-        onClick={() => onDelete(task.id)}
-        disabled={isPending}
-      >
-        <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-      </Button>
+
+      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
+          <Input
+            type="number"
+            value={task.estimation}
+            step="0.5"
+            min="0.5"
+            className="h-7 w-12 text-[11px] font-bold text-center px-1 bg-slate-50 dark:bg-slate-900 border-none shadow-none"
+            onChange={(e) => onUpdate(task.id, { estimation: parseFloat(e.target.value) || 0.5 })}
+            disabled={isPending}
+          />
+          <span className="text-[9px] font-bold text-slate-400 uppercase">J</span>
+        </div>
+
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={() => onDelete(task.id)}
+          disabled={isPending}
+        >
+          <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+        </Button>
+      </div>
     </div>
   )
 }
@@ -141,25 +180,27 @@ export function TaskList({ missionId }: TaskListProps) {
     if (!newTitle.trim()) return
 
     const maxPosition = tasks.length > 0 ? Math.max(...tasks.map(t => t.position)) : -1
-    const { data, error } = await supabase
-      .from('subtasks')
-      .insert({ 
+    try {
+      const data = await createTask({ 
         mission_id: missionId, 
         title: newTitle,
-        position: maxPosition + 1
+        position: maxPosition + 1,
+        status: 'todo',
+        estimation: 0.5
       })
-      .select()
-      .single()
 
-    if (!error && data) {
-      setTasks([...tasks, data])
-      setNewTitle('')
+      if (data) {
+        setTasks([...tasks, data as Task])
+        setNewTitle('')
+      }
+    } catch (error) {
+      console.error('Error adding task:', error)
     }
   }
 
   async function handleUpdateTask(id: string, updates: Partial<Task>) {
     const previousTasks = [...tasks]
-    setTasks(tasks.map(t => t.id === id ? { ...t, ...updates } : t))
+    setTasks(tasks.map(t => t.id === id ? { ...t, ...updates } as Task : t))
 
     try {
       await updateTask(id, updates)
@@ -170,13 +211,14 @@ export function TaskList({ missionId }: TaskListProps) {
   }
 
   async function deleteTask(id: string) {
-    const { error } = await supabase
-      .from('subtasks')
-      .delete()
-      .eq('id', id)
+    const previousTasks = [...tasks]
+    setTasks(tasks.filter(t => t.id !== id))
 
-    if (!error) {
-      setTasks(tasks.filter(t => t.id !== id))
+    try {
+      await deleteTaskAction(missionId, id)
+    } catch (error) {
+      console.error('Error deleting task:', error)
+      setTasks(previousTasks)
     }
   }
 
@@ -220,7 +262,7 @@ export function TaskList({ missionId }: TaskListProps) {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Tâches</h3>
         <span className="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full font-medium">
-          {tasks.filter(t => t.is_completed).length} / {tasks.length}
+          {tasks.filter(t => t.status === 'done').length} / {tasks.length}
         </span>
       </div>
       
