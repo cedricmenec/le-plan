@@ -33,10 +33,10 @@ Replace the permanent input box with a double-click Popover interaction.
     - [x] Ensure the Popover closes after a successful update or when clicking outside.
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Inline Editing' (Protocol in workflow.md)
 
-## Phase 4: Final Verification and Polish
+## Phase 4: Final Verification and Polish [checkpoint: 0344ebd]
 Final review of the integrated features.
 
-- [~] Task: Run full test suite and verify UI consistency
-    - [ ] Ensure drag-and-drop still works correctly with the new visibility logic.
-    - [ ] Verify responsive behavior on mobile.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Polish' (Protocol in workflow.md)
+- [x] Task: Run full test suite and verify UI consistency 0344ebd
+    - [x] Ensure drag-and-drop still works correctly with the new visibility logic.
+    - [x] Verify responsive behavior on mobile.
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Final Polish' (Protocol in workflow.md)
