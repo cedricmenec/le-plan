@@ -82,7 +82,11 @@ export function MissionCard({
 
   const romDays = romToDays(mission.rom_size as ROMSize)
   const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
-  const officialEstimation = mission.load_source === 'tasks' ? tasksDays : romDays
+  
+  const officialEstimationDisplay = mission.load_source === 'tasks' 
+    ? `${tasksDays} J` 
+    : `${mission.rom_size || '?' } (~${romDays}j)`
+    
   const LoadIcon = mission.load_source === 'tasks' ? ListTodo : Shirt
 
   useEffect(() => {
@@ -195,7 +199,7 @@ export function MissionCard({
             <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
             <div className="flex items-center gap-1">
               <LoadIcon className="h-3 w-3" />
-              <span>{officialEstimation} J</span>
+              <span>{officialEstimationDisplay}</span>
             </div>
           </div>
           <Link 

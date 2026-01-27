@@ -66,7 +66,7 @@ describe('MissionCard', () => {
     expect(screen.getAllByText(/TODO/i).length).toBeGreaterThanOrEqual(2)
 
     // Check for ROM estimation (Size S = 2j)
-    expect(screen.getByText(/2 J/i)).toBeDefined()
+    expect(screen.getByText(/S \(~2j\)/i)).toBeDefined()
 
     // Ensure "Avancement" is NOT there
     expect(screen.queryByText(/avancement/i)).toBeNull()

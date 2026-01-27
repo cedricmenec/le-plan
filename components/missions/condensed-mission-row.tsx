@@ -43,7 +43,11 @@ export function CondensedMissionRow({
 
   const romDays = romToDays(mission.rom_size as ROMSize)
   const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
-  const officialEstimation = mission.load_source === 'tasks' ? tasksDays : romDays
+  
+  const officialEstimationDisplay = mission.load_source === 'tasks' 
+    ? `${tasksDays} j` 
+    : `${mission.rom_size || '?' } (~${romDays}j)`
+    
   const LoadIcon = mission.load_source === 'tasks' ? ListTodo : Shirt
 
   const handleRowClick = () => {
@@ -79,7 +83,7 @@ export function CondensedMissionRow({
       {/* Estimation Column */}
       <div className="flex justify-start items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 px-2">
         <span className="text-slate-400"><LoadIcon className="h-3.5 w-3.5" /></span>
-        {officialEstimation} j
+        {officialEstimationDisplay}
       </div>
 
       {/* Priority Column */}
