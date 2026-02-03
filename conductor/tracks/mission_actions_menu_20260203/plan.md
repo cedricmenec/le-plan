@@ -1,14 +1,14 @@
 # Implementation Plan - Mission Actions Menu
 
 ## Phase 1: Preparation & Component Analysis
-- [x] Task: Conductor - Analyze `MissionHeaderHero` and `EditMissionModal` integration
+- [x] Task: Conductor - Analyze `MissionHeaderHero` and `EditMissionModal` integration 1a349ba
     - [ ] Read `components/missions/mission-header-hero.tsx` to identify the insertion point for the menu.
     - [ ] Read `components/missions/edit-mission-modal.tsx` to understand prop requirements.
     - [ ] Read `components/missions/delete-mission-dialog.tsx` to understand prop requirements.
     - [ ] Identify necessary imports (`DropdownMenu` components, icons, etc.).
 
 ## Phase 2: Implementation (TDD)
-- [ ] Task: Conductor - Create Test for Mission Header Actions
+- [x] Task: Conductor - Create Test for Mission Header Actions
     - [ ] Create `components/missions/mission-header-actions.test.tsx`.
     - [ ] Write tests to verify:
         - The menu trigger (ellipsis icon) renders.
