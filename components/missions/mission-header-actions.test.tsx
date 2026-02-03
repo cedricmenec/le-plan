@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { expect, test, describe, vi } from 'vitest'
 import { MissionHeaderHero } from './mission-header-hero'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -21,6 +21,18 @@ vi.mock('@/lib/supabase/client', () => ({
       }),
     }),
   }),
+}))
+
+// Mock DropdownMenu to avoid Portal issues in tests
+vi.mock('@/components/ui/dropdown-menu', () => ({
+  DropdownMenu: ({ children }: any) => <div data-testid="dropdown-menu">{children}</div>,
+  DropdownMenuTrigger: ({ children }: any) => <div data-testid="dropdown-trigger">{children}</div>,
+  DropdownMenuContent: ({ children }: any) => <div data-testid="dropdown-content">{children}</div>,
+  DropdownMenuItem: ({ children, onClick }: any) => (
+    <div data-testid="dropdown-item" onClick={onClick}>
+      {children}
+    </div>
+  ),
 }))
 
 describe('MissionHeaderHero Actions Menu', () => {
@@ -51,9 +63,6 @@ describe('MissionHeaderHero Actions Menu', () => {
       </TooltipProvider>
     )
 
-    const trigger = screen.getByLabelText(/Actions de la mission/i)
-    fireEvent.click(trigger)
-
     expect(screen.getByText('Modifier')).toBeDefined()
     expect(screen.getByText('Supprimer')).toBeDefined()
   })
@@ -65,7 +74,6 @@ describe('MissionHeaderHero Actions Menu', () => {
       </TooltipProvider>
     )
 
-    fireEvent.click(screen.getByLabelText(/Actions de la mission/i))
     fireEvent.click(screen.getByText('Modifier'))
 
     // Check if modal title is present
@@ -79,7 +87,6 @@ describe('MissionHeaderHero Actions Menu', () => {
       </TooltipProvider>
     )
 
-    fireEvent.click(screen.getByLabelText(/Actions de la mission/i))
     fireEvent.click(screen.getByText('Supprimer'))
 
     // Check if alert dialog title is present

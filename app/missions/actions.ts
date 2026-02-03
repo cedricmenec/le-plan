@@ -221,3 +221,30 @@ export async function deleteMilestone(missionId: string, id: string) {
   revalidatePath(`/missions/${missionId}`)
 }
 
+export async function deleteMission(id: string) {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  // Get mission data first for revalidation
+  const { data: mission } = await supabase
+    .from('missions')
+    .select('project_id')
+    .eq('id', id)
+    .single()
+
+  const { error } = await supabase
+    .from('missions')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw error
+  
+  revalidatePath('/')
+  revalidatePath('/projects')
+  if (mission?.project_id) {
+    revalidatePath(`/projects/${mission.project_id}`)
+  }
+}
+

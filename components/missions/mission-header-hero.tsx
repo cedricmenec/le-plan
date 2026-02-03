@@ -2,10 +2,21 @@
 
 import React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { MissionTimeline } from './mission-timeline'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import { PriorityBadge } from './priority-badge'
 import { Button } from '@/components/ui/button'
+import { EditMissionModal } from './edit-mission-modal'
+import { DeleteMissionDialog } from './delete-mission-dialog'
+import { deleteMission } from '@/app/missions/actions'
+import { useToast } from '@/components/ui/use-toast'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { romToDays, calculateTaskRemainingLoad, ROM_MAPPING, ROMSize } from '@/lib/load-utils'
 import { 
   ShieldCheck, 
@@ -15,13 +26,16 @@ import {
   Wrench, 
   FileText, 
   MoreHorizontal, 
+  MoreVertical,
   User, 
   History,
   Shirt,
   ListTodo,
   Info,
   Settings2,
-  X
+  X,
+  Pencil,
+  Trash2
 } from 'lucide-react'
 
 const ROM_OPTIONS = Object.keys(ROM_MAPPING).map(size => ({
@@ -54,39 +68,94 @@ interface MissionHeaderHeroProps {
 }
 
 export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps) {
+  const router = useRouter()
+  const { toast } = useToast()
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
+  const [isDeleting, setIsDeleting] = React.useState(false)
+
   const currentType = MISSION_TYPES.find(t => t.value === mission.type) || MISSION_TYPES[4]
   const TypeIcon = currentType.icon
+
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true)
+      await deleteMission(mission.id)
+      toast({
+        title: 'Mission supprimée',
+        description: 'La mission a été supprimée avec succès.',
+      })
+      router.push(mission.project_id ? `/projects/${mission.project_id}` : '/')
+    } catch (error) {
+      toast({
+        title: 'Erreur',
+        description: 'Une erreur est survenue lors de la suppression.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsDeleting(false)
+      setIsDeleteOpen(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
       {/* Metadata Row: Project, Type, and Status */}
-      <div className="flex flex-wrap items-center gap-4">
-        {mission.projects && (
-          <div className="flex items-center gap-2">
-            <Link 
-              href={`/projects/${mission.project_id}`}
-              className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] hover:text-primary transition-colors"
-            >
-              {mission.projects.name}
-            </Link>
-            <span className="text-[10px] text-slate-300">/</span>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-4">
+          {mission.projects && (
+            <div className="flex items-center gap-2">
+              <Link 
+                href={`/projects/${mission.project_id}`}
+                className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] hover:text-primary transition-colors"
+              >
+                {mission.projects.name}
+              </Link>
+              <span className="text-[10px] text-slate-300">/</span>
+            </div>
+          )}
+          
+          <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${currentType.color}`}>
+            <TypeIcon className="h-3.5 w-3.5" />
+            <span>{currentType.label}</span>
           </div>
-        )}
-        
-        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${currentType.color}`}>
-          <TypeIcon className="h-3.5 w-3.5" />
-          <span>{currentType.label}</span>
+
+          <InlineEditableField
+            value={mission.status}
+            type="select"
+            options={MISSION_STATUSES}
+            onSave={async (val) => {
+              await onUpdate({ status: val })
+            }}
+            displayClassName="text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+          />
         </div>
 
-        <InlineEditableField
-          value={mission.status}
-          type="select"
-          options={MISSION_STATUSES}
-          onSave={async (val) => {
-            await onUpdate({ status: val })
-          }}
-          displayClassName="text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
-        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+              aria-label="Actions de la mission"
+            >
+              <MoreVertical className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
+              <Pencil className="mr-2 h-4 w-4" />
+              <span>Modifier</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={() => setIsDeleteOpen(true)}
+              className="text-destructive focus:text-destructive"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              <span>Supprimer</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Title */}
@@ -97,6 +166,23 @@ export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps)
         }}
         displayClassName="text-3xl font-extrabold tracking-tight h-auto py-1 text-slate-900 dark:text-white"
         className="text-3xl"
+      />
+
+      <EditMissionModal
+        mission={mission}
+        open={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        onSubmit={async (updates) => {
+          await onUpdate(updates)
+          setIsEditModalOpen(false)
+        }}
+      />
+
+      <DeleteMissionDialog
+        open={isDeleteOpen}
+        onOpenChange={setIsDeleteOpen}
+        onConfirm={handleDelete}
+        loading={isDeleting}
       />
     </div>
   )

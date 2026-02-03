@@ -8,7 +8,7 @@
     - [ ] Identify necessary imports (`DropdownMenu` components, icons, etc.).
 
 ## Phase 2: Implementation (TDD)
-- [x] Task: Conductor - Create Test for Mission Header Actions
+- [x] Task: Conductor - Create Test for Mission Header Actions bc76e34
     - [ ] Create `components/missions/mission-header-actions.test.tsx`.
     - [ ] Write tests to verify:
         - The menu trigger (ellipsis icon) renders.
@@ -17,7 +17,7 @@
         - Clicking "Modifier" triggers the edit callback/modal.
         - Clicking "Supprimer" triggers the delete callback/dialog.
     - [ ] Run tests (Red phase).
-- [ ] Task: Conductor - Implement Mission Header Actions
+- [x] Task: Conductor - Implement Mission Header Actions
     - [ ] Modify `components/missions/mission-header-hero.tsx` (or create a sub-component if cleaner) to include the `DropdownMenu`.
     - [ ] Integrate `EditMissionModal` state and handlers.
     - [ ] Integrate `DeleteMissionDialog` state and handlers.
