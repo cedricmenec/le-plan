@@ -42,7 +42,7 @@ const mockMilestones: Milestone[] = [
     id: '1',
     mission_id: 'm1',
     type_id: 't1',
-    date: '2026-02-01',
+    date: '2026-12-01',
     title: 'Future Milestone',
     note: 'Note 1',
     created_at: '',

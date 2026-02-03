@@ -3,6 +3,26 @@ import { expect, test, describe, vi } from 'vitest'
 import { MissionHeaderHero, MissionHeroBlock } from './mission-header-hero'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
+// Mock useRouter
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+  }),
+}))
+
+// Mock Supabase client
+vi.mock('@/lib/supabase/client', () => ({
+  createClient: () => ({
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          order: () => Promise.resolve({ data: [] }),
+        }),
+      }),
+    }),
+  }),
+}))
+
 // Mock MissionTimeline to simplify testing
 vi.mock('./mission-timeline', () => ({
   MissionTimeline: () => <div data-testid="mission-timeline" />

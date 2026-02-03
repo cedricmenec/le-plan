@@ -110,7 +110,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 - **ID**: `task_list_enhancements_20260127`
 - **Link**: [conductor/archive/task_list_enhancements_20260127](archive/task_list_enhancements_20260127/)
 
+---
 
-
-
-
+- [~] **Track: Dans la page de détail d'un mission, ajouter un menu "action" permettant la suppression et la modification d'une Mission. - L'action de modification ouvre la dialogue "EditMissionModal".**
+*Link: [./tracks/mission_actions_menu_20260203/](./tracks/mission_actions_menu_20260203/)*

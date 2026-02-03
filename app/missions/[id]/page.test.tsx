@@ -2,6 +2,26 @@ import { render, screen } from '@testing-library/react'
 import MissionDetailPage from './page'
 import { expect, test, vi } from 'vitest'
 
+// Mock useRouter
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+  }),
+}))
+
+// Mock Supabase client
+vi.mock('@/lib/supabase/client', () => ({
+  createClient: () => ({
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          order: () => Promise.resolve({ data: [] }),
+        }),
+      }),
+    }),
+  }),
+}))
+
 // Mock the server components/actions
 vi.mock('../actions', () => ({
   getMission: vi.fn(() => Promise.resolve({

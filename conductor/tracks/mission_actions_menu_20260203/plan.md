@@ -17,7 +17,7 @@
         - Clicking "Modifier" triggers the edit callback/modal.
         - Clicking "Supprimer" triggers the delete callback/dialog.
     - [ ] Run tests (Red phase).
-- [x] Task: Conductor - Implement Mission Header Actions
+- [x] Task: Conductor - Implement Mission Header Actions 92d35e1
     - [ ] Modify `components/missions/mission-header-hero.tsx` (or create a sub-component if cleaner) to include the `DropdownMenu`.
     - [ ] Integrate `EditMissionModal` state and handlers.
     - [ ] Integrate `DeleteMissionDialog` state and handlers.

@@ -1,5 +1,5 @@
 import { expect, test, vi, beforeEach } from 'vitest'
-import { getMission, createMission, updateMission, updateTask, createTask, deleteTask, reorderTasks } from './actions'
+import { getMission, createMission, updateMission, updateTask, createTask, deleteTask, reorderTasks, deleteMission } from './actions'
 
 // Mock the supabase server client
 const mockInsert = vi.fn(() => ({
@@ -110,6 +110,11 @@ test('createTask creates a task', async () => {
 
 test('deleteTask deletes a task', async () => {
   await deleteTask('m1', 't1')
+  expect(mockDelete).toHaveBeenCalled()
+})
+
+test('deleteMission deletes a mission', async () => {
+  await deleteMission('m1')
   expect(mockDelete).toHaveBeenCalled()
 })
 
