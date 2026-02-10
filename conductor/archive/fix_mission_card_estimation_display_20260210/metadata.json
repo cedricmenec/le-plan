@@ -1,0 +1,8 @@
+{
+  "track_id": "fix_mission_card_estimation_display_20260210",
+  "type": "bug",
+  "status": "completed",
+  "created_at": "2026-02-10T10:00:00Z",
+  "updated_at": "2026-02-10T10:16:00Z",
+  "description": "Dans la liste des missions d'un projet (MissionList), le composant MissionCard n'affiche pas la bonne estimation de temps restant (ROM ou réelle). Actuellement la valeur 0 est toujours affichée. Je souhaite qu'en fonction de l'estimation officielle à prendre en compte (officialEstimationDisplay) le bon icon soit affiché. Et que la bonne valeur d'estimation de temps restant soit affichée."
+}
