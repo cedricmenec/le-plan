@@ -31,7 +31,7 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
 
       .from('missions')
 
-      .select('*, projects(name)')
+      .select('*, projects(name), subtasks(*)')
 
       .eq('project_id', projectId)
 
@@ -102,31 +102,20 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
       </div>
 
 
-
       <div className="space-y-4">
 
         {loading && missions.length === 0 ? (
-
           <p className="text-muted-foreground animate-pulse">Chargement des missions...</p>
-
         ) : (
-
-          <MissionList 
-
-            initialMissions={filteredMissions} 
-
+          <MissionList
+            initialMissions={filteredMissions}
             onUpdate={fetchMissions}
-
             layout="split"
-
             projectId={projectId}
-
           />
 
         )}
-
       </div>
-
     </div>
 
   )
