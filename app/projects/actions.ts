@@ -12,7 +12,7 @@ export async function getProjects() {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('projects')
-    .select('*, missions(*)')
+    .select('*, missions(*, subtasks(*))')
     .order('name', { ascending: true })
 
   if (error) throw error
@@ -23,7 +23,7 @@ export async function getProject(id: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('projects')
-    .select('*, missions(*, projects(name))')
+    .select('*, missions(*, projects(name), subtasks(*))')
     .eq('id', id)
     .single()
 
