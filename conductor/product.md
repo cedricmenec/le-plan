@@ -167,7 +167,7 @@ Le projet consiste à développer une **application Web** personnelle de visibil
 *   **Gestion des Projets :** Création, modification et vue détaillée des projets.
     *   **Vue détaillée (Inclus) :** Visualisation de toutes les missions non-terminées d'un projet (actives et à venir) avec des indicateurs visuels de capacité (Grid Placeholders), de **priorité** et de **délais relatifs**.
         *   **État vide (Inclus) :** Affichage d'un "Ghost Grid" (skeleton cards) avec un bouton d'action pour créer la première mission si aucune n'existe.
-    *   Facilitation de la priorisation des missions par un **tri automatique par date de livraison estimée** et un **tri alphabétique des projets**.
+    *   Facilitation de la priorisation des missions par un **tri automatique par date de livraison estimée**, un **tri alphabétique des projets**, et un **affichage dynamique de la charge restante** (ROM ou tâches) directement sur les cartes de mission.
     *   Système de navigation par breadcrumbs (Inclus).
 *   **Gestion des Projets :** Création, modification et vue détaillée des projets avec support pour une **image d'illustration (Hero Image)**.
 *   **Gestion des Missions :** Création, lecture et suivi de missions (Feature, Étude, Support, Docs) avec un système d'estimation à deux niveaux (**T-Shirt/ROM** pour le flou, **Somme des tâches** pour le précis), score de confiance, **priorité (low, medium, high, critical)**, **objectif principal (Main Goal)**, **notes complémentaires**, ainsi que des **dates de livraison estimées et souhaitées**.
