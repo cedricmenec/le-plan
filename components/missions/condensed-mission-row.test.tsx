@@ -49,7 +49,7 @@ describe('CondensedMissionRow', () => {
     expect(screen.getByText('Test Condensed Mission')).toBeDefined()
     expect(screen.getByText('feature')).toBeDefined()
     // Task source: T1(1j) = 1j
-    expect(screen.getByText(/1 j/i)).toBeDefined()
+    expect(screen.getByText('1j')).toBeDefined()
     // Should NOT show project name by default
     expect(screen.queryByText('Awesome Project')).toBeNull()
   })
@@ -65,5 +65,44 @@ describe('CondensedMissionRow', () => {
     )
 
     expect(screen.getByText('Awesome Project')).toBeDefined()
+  })
+
+  test('displays ROM estimation correctly according to spec', () => {
+    const romMission: MissionWithProject = {
+      ...mockMission,
+      load_source: 'rom',
+      rom_size: 'M', // M = 5j
+    }
+    render(
+      <CondensedMissionRow 
+        mission={romMission} 
+        onEdit={() => {}} 
+        onDelete={() => {}} 
+      />
+    )
+
+    expect(screen.getByText('5j')).toBeDefined()
+    expect(screen.queryByText(/M \(~5j\)/i)).toBeNull()
+  })
+
+  test('displays Tasks estimation correctly according to spec', () => {
+    const tasksMission: MissionWithProject = {
+      ...mockMission,
+      load_source: 'tasks',
+      subtasks: [
+        { id: 's1', title: 'T1', estimation: 1, status: 'todo' } as any,
+        { id: 's2', title: 'T2', estimation: 0.5, status: 'in_progress' } as any,
+      ]
+    }
+    render(
+      <CondensedMissionRow 
+        mission={tasksMission} 
+        onEdit={() => {}} 
+        onDelete={() => {}} 
+      />
+    )
+
+    // Sum of remaining: 1 + 0.5 = 1.5j
+    expect(screen.getByText('1.5j')).toBeDefined()
   })
 })

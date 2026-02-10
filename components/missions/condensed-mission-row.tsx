@@ -45,8 +45,8 @@ export function CondensedMissionRow({
   const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
   
   const officialEstimationDisplay = mission.load_source === 'tasks' 
-    ? `${tasksDays} j` 
-    : `${mission.rom_size || '?' } (~${romDays}j)`
+    ? `${tasksDays}j` 
+    : `${romDays}j`
     
   const LoadIcon = mission.load_source === 'tasks' ? ListTodo : Shirt
 

@@ -66,13 +66,57 @@ describe('MissionCard', () => {
     expect(screen.getAllByText(/TODO/i).length).toBeGreaterThanOrEqual(2)
 
     // Check for ROM estimation (Size S = 2j)
-    expect(screen.getByText(/S \(~2j\)/i)).toBeDefined()
+    expect(screen.getByText('2j')).toBeDefined()
 
     // Ensure "Avancement" is NOT there
     expect(screen.queryByText(/avancement/i)).toBeNull()
     
     const detailsLink = screen.getByRole('link', { name: /DETAILS/i })
     expect(detailsLink.getAttribute('href')).toBe('/missions/1')
+  })
+
+  test('displays ROM estimation correctly according to spec', () => {
+    const romMission: MissionWithProject = {
+      ...mockMission,
+      load_source: 'rom',
+      rom_size: 'M', // M = 5j
+    }
+    render(
+      <TooltipProvider>
+        <MissionCard 
+          mission={romMission} 
+          onEdit={() => {}} 
+          onDelete={() => {}} 
+        />
+      </TooltipProvider>
+    )
+
+    expect(screen.getByText('5j')).toBeDefined()
+    expect(screen.queryByText(/M \(~5j\)/i)).toBeNull()
+  })
+
+  test('displays Tasks estimation correctly according to spec', () => {
+    const tasksMission: MissionWithProject = {
+      ...mockMission,
+      load_source: 'tasks',
+      subtasks: [
+        { id: 's1', title: 'T1', estimation: 1, status: 'todo' } as any,
+        { id: 's2', title: 'T2', estimation: 0.5, status: 'in_progress' } as any,
+        { id: 's3', title: 'T3', estimation: 2, status: 'done' } as any,
+      ]
+    }
+    render(
+      <TooltipProvider>
+        <MissionCard 
+          mission={tasksMission} 
+          onEdit={() => {}} 
+          onDelete={() => {}} 
+        />
+      </TooltipProvider>
+    )
+
+    // Sum of remaining: 1 + 0.5 = 1.5j
+    expect(screen.getByText('1.5j')).toBeDefined()
   })
 
   test('displays relative delivery duration when estimated_delivery_date is set', () => {
