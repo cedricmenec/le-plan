@@ -64,6 +64,8 @@ export type Database = {
           priority: 'low' | 'medium' | 'high' | 'critical'
           rom_size: string | null
           load_source: 'rom' | 'tasks'
+          completed_at: string | null
+          started_at: string | null
         }
         Insert: {
           id?: string
@@ -83,6 +85,8 @@ export type Database = {
           priority?: 'low' | 'medium' | 'high' | 'critical'
           rom_size?: string | null
           load_source?: 'rom' | 'tasks'
+          completed_at?: string | null
+          started_at?: string | null
         }
         Update: {
           id?: string
@@ -102,6 +106,8 @@ export type Database = {
           priority?: 'low' | 'medium' | 'high' | 'critical'
           rom_size?: string | null
           load_source?: 'rom' | 'tasks'
+          completed_at?: string | null
+          started_at?: string | null
         }
         Relationships: [
           {

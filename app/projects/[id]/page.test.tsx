@@ -10,7 +10,8 @@ vi.mock('../actions', () => ({
     missions: [
       { id: 'm1', title: 'Mission 1', status: 'in_progress', type: 'feature', estimation: 5 }
     ]
-  }))
+  })),
+  getRecentlyCompletedMissions: vi.fn(() => Promise.resolve([]))
 }))
 
 vi.mock('@/lib/supabase/server', () => ({

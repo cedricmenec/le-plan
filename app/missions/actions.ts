@@ -47,14 +47,54 @@ export async function updateMission(id: string, updates: Omit<UpdateMission, 'id
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
+  // Get current mission state to check for status transitions
+  const { data: currentMission } = await supabase
+    .from('missions')
+    .select('status, started_at, completed_at')
+    .eq('id', id)
+    .single()
+
+  const finalUpdates = { ...updates }
+
+  if (updates.status && currentMission) {
+    // If transitioning to in_progress and not already started
+    if (updates.status === 'in_progress' && !currentMission.started_at) {
+      finalUpdates.started_at = new Date().toISOString()
+    }
+    // If transitioning to completed and not already completed
+    if (updates.status === 'completed' && !currentMission.completed_at) {
+      finalUpdates.completed_at = new Date().toISOString()
+    }
+    // Reset completed_at if moving back from completed
+    if (currentMission.status === 'completed' && updates.status !== 'completed') {
+      finalUpdates.completed_at = null
+    }
+  }
+
   const { data, error } = await supabase
     .from('missions')
-    .update(updates)
+    .update(finalUpdates)
     .eq('id', id)
     .select()
     .single()
 
-  if (error) throw error
+  if (error) {
+    // If columns don't exist, try updating without them
+    if (error.code === '42703') {
+      console.warn('Database columns completed_at/started_at are missing. Updating without them.')
+      const { started_at, completed_at, ...safeUpdates } = finalUpdates as any
+      const { data: retryData, error: retryError } = await supabase
+        .from('missions')
+        .update(safeUpdates)
+        .eq('id', id)
+        .select()
+        .single()
+      
+      if (retryError) throw retryError
+      return retryData
+    }
+    throw error
+  }
   revalidatePath(`/missions/${id}`)
   revalidatePath('/')
   revalidatePath('/projects')

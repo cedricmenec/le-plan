@@ -92,3 +92,40 @@ export async function deleteProject(id: string) {
   if (error) throw error
   revalidatePath('/projects')
 }
+
+export async function getRecentlyCompletedMissions(projectId: string, days: number) {
+  const supabase = await createClient()
+  
+  let query = supabase
+    .from('missions')
+    .select('*, subtasks(*)')
+    .eq('project_id', projectId)
+    .eq('status', 'completed')
+
+  // If days > 0, apply date filter. If 0 or -1, fetch all.
+  if (days > 0) {
+    const dateLimit = new Date()
+    dateLimit.setDate(dateLimit.getDate() - days)
+    query = query.gte('completed_at', dateLimit.toISOString())
+  }
+  
+  const { data, error } = await query.order('completed_at', { ascending: false }).order('created_at', { ascending: false })
+
+  if (error) {
+    // If columns don't exist yet, return empty array instead of crashing
+    if (error.code === '42703') {
+      // Fallback: try fetching without completed_at filter if it fails
+      const { data: fallbackData, error: fallbackError } = await supabase
+        .from('missions')
+        .select('*, subtasks(*)')
+        .eq('project_id', projectId)
+        .eq('status', 'completed')
+        .order('created_at', { ascending: false })
+      
+      if (fallbackError) throw fallbackError
+      return fallbackData
+    }
+    throw error
+  }
+  return data
+}

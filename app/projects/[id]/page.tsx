@@ -1,8 +1,9 @@
-import { getProject } from '../actions'
+import { getProject, getRecentlyCompletedMissions } from '../actions'
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { ProjectMissionList } from '@/components/projects/project-mission-list'
+import { RecentlyCompletedMissions } from '@/components/missions/recently-completed-missions'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -21,11 +22,17 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   }
 
   let project;
+  let recentlyCompleted;
   try {
-    project = await getProject(id)
+    const [projectData, completedData] = await Promise.all([
+      getProject(id),
+      getRecentlyCompletedMissions(id, -1)
+    ])
+    project = projectData
+    recentlyCompleted = completedData
   } catch (error) {
-    console.error('Error fetching project:', error)
-    return notFound()
+    console.error('Error fetching project details:', error);
+    return notFound();
   }
 
   if (!project) {
@@ -60,6 +67,11 @@ export default async function ProjectDetailPage({ params }: PageProps) {
       <ProjectMissionList 
         projectId={id} 
         initialMissions={initialMissions} 
+      />
+
+      <RecentlyCompletedMissions 
+        projectId={id} 
+        initialMissions={recentlyCompleted as any} 
       />
     </div>
   )
