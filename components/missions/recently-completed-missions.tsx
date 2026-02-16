@@ -80,13 +80,12 @@ export function RecentlyCompletedMissions({
         )}
 
         {/* Table Header */}
-        <div className="grid grid-cols-[100px_1fr_120px_120px] items-center px-4 py-3 bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-          <div className="text-center">Type</div>
-          <div>Mission</div>
-          <div className="text-left px-2">Charge réel</div>
-          <div className="text-center">Durée</div>
-        </div>
-
+                <div className="grid grid-cols-[100px_1fr_120px_120px] items-center px-4 py-3 bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  <div className="text-center">Type</div>
+                  <div>Mission</div>
+                  <div className="text-left px-2">Charge réelle</div>
+                  <div className="text-center">Durée</div>
+                </div>
         {/* Table Body */}
         <div className="divide-y divide-slate-100 dark:divide-slate-800">
           {missions.length === 0 ? (

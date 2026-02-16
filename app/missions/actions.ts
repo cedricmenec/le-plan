@@ -82,7 +82,7 @@ export async function updateMission(id: string, updates: Omit<UpdateMission, 'id
     // If columns don't exist, try updating without them
     if (error.code === '42703') {
       console.warn('Database columns completed_at/started_at are missing. Updating without them.')
-      const { started_at, completed_at, ...safeUpdates } = finalUpdates as any
+      const { started_at: _s, completed_at: _c, ...safeUpdates } = finalUpdates as UpdateMission
       const { data: retryData, error: retryError } = await supabase
         .from('missions')
         .update(safeUpdates)

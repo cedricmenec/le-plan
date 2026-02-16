@@ -42,6 +42,8 @@ describe('MissionCard', () => {
     desired_delivery_date: null,
     rom_size: 'S',
     load_source: 'rom',
+    completed_at: null,
+    started_at: null,
     subtasks: []
   }
 

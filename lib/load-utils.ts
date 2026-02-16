@@ -1,3 +1,5 @@
+import { differenceInDays, parseISO } from 'date-fns'
+
 export type ROMSize = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL'
 
 export const ROM_MAPPING: Record<ROMSize, number> = {
@@ -28,8 +30,6 @@ export function calculateTotalLoad(tasks: TaskWithEstimation[]): number {
   return tasks.reduce((sum, task) => sum + (Number(task.estimation) || 0), 0)
 }
 
-import { differenceInDays, parseISO } from 'date-fns'
-
 export function calculateMissionDuration(startedAt: string | null | undefined, completedAt: string | null | undefined): string {
   if (!startedAt || !completedAt) return 'n/a'
   
@@ -40,7 +40,7 @@ export function calculateMissionDuration(startedAt: string | null | undefined, c
     
     if (diff < 0) return '0 days'
     return `${diff} days`
-  } catch (e) {
+  } catch (_e) {
     return 'n/a'
   }
 }

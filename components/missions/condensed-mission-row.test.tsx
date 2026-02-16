@@ -33,8 +33,10 @@ describe('CondensedMissionRow', () => {
     rom_size: 'M',
     load_source: 'tasks',
     subtasks: [
-      { id: 't1', status: 'todo', estimation: 1, title: 'T1', position: 0, created_at: '', mission_id: '1' }
-    ]
+      { id: 't1', status: 'todo', estimation: 1, title: 'T1', position: 0, created_at: '', mission_id: '1', is_completed: false }
+    ],
+    completed_at: null,
+    started_at: null
   }
 
   test('renders with basic info', () => {

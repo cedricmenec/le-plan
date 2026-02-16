@@ -34,7 +34,11 @@ const mockMissions: Mission[] = [
     notes: null,
     desired_delivery_date: null,
     priority: 'medium',
-    project_parent: null
+    project_parent: null,
+    rom_size: null,
+    load_source: 'tasks',
+    completed_at: null,
+    started_at: null
   },
   {
     id: 'm2',
@@ -51,7 +55,11 @@ const mockMissions: Mission[] = [
     notes: null,
     desired_delivery_date: null,
     priority: 'low',
-    project_parent: null
+    project_parent: null,
+    rom_size: null,
+    load_source: 'tasks',
+    completed_at: null,
+    started_at: null
   }
 ]
 

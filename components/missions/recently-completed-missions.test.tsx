@@ -30,9 +30,21 @@ describe('RecentlyCompletedMissions', () => {
         completed_at: '2026-02-10T10:00:00Z',
         subtasks: [{ estimation: 2, status: 'done' }],
         project_id: '1',
+        user_id: 'u1',
+        created_at: '2026-02-01T10:00:00Z',
+        goal: null,
+        notes: null,
+        confidence: null,
+        project_parent: null,
+        estimated_delivery_date: null,
+        desired_delivery_date: null,
+        priority: 'medium',
+        rom_size: null,
+        load_source: 'tasks',
+        estimation: 0,
       }
     ]
-    render(<RecentlyCompletedMissions projectId="1" initialMissions={mockMissions as any} />)
+    render(<RecentlyCompletedMissions projectId="1" initialMissions={mockMissions as never} />)
     expect(screen.getByText('Mission 1')).toBeDefined()
     expect(screen.getByText('Feature')).toBeDefined()
     expect(screen.getByText('2j')).toBeDefined() // Actual Load

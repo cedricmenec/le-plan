@@ -71,7 +71,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
       <RecentlyCompletedMissions 
         projectId={id} 
-        initialMissions={recentlyCompleted as any} 
+        initialMissions={recentlyCompleted || []} 
       />
     </div>
   )
