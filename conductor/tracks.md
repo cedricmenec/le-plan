@@ -118,5 +118,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Composant pour les missions récemment terminées**
-*Link: [./tracks/recently_completed_missions_20260216/](./tracks/recently_completed_missions_20260216/)*
+## [x] Track: Composant pour les missions récemment terminées
+- **ID**: `recently_completed_missions_20260216`
+- **Link**: [conductor/archive/recently_completed_missions_20260216](archive/recently_completed_missions_20260216/)
