@@ -61,12 +61,12 @@ export async function updateMission(id: string, updates: Omit<UpdateMission, 'id
     if (updates.status === 'in_progress' && !currentMission.started_at) {
       finalUpdates.started_at = new Date().toISOString()
     }
-    // If transitioning to completed and not already completed
-    if (updates.status === 'completed' && !currentMission.completed_at) {
+    // If transitioning to done and not already completed
+    if (updates.status === 'done' && !currentMission.completed_at) {
       finalUpdates.completed_at = new Date().toISOString()
     }
-    // Reset completed_at if moving back from completed
-    if (currentMission.status === 'completed' && updates.status !== 'completed') {
+    // Reset completed_at if moving back from done
+    if (currentMission.status === 'done' && updates.status !== 'done') {
       finalUpdates.completed_at = null
     }
   }

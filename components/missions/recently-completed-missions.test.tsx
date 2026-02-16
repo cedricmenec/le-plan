@@ -25,7 +25,7 @@ describe('RecentlyCompletedMissions', () => {
         id: '1',
         title: 'Mission 1',
         type: 'Feature',
-        status: 'completed',
+        status: 'done',
         started_at: '2026-02-01T10:00:00Z',
         completed_at: '2026-02-10T10:00:00Z',
         subtasks: [{ estimation: 2, status: 'done' }],

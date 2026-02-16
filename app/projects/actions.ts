@@ -100,7 +100,7 @@ export async function getRecentlyCompletedMissions(projectId: string, days: numb
     .from('missions')
     .select('*, subtasks(*)')
     .eq('project_id', projectId)
-    .eq('status', 'completed')
+    .eq('status', 'done')
 
   // If days > 0, apply date filter. If 0 or -1, fetch all.
   if (days > 0) {
@@ -119,7 +119,7 @@ export async function getRecentlyCompletedMissions(projectId: string, days: numb
         .from('missions')
         .select('*, subtasks(*)')
         .eq('project_id', projectId)
-        .eq('status', 'completed')
+        .eq('status', 'done')
         .order('created_at', { ascending: false })
       
       if (fallbackError) throw fallbackError
