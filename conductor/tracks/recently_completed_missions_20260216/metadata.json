@@ -1,0 +1,8 @@
+{
+  "track_id": "recently_completed_missions_20260216",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-02-16T12:00:00Z",
+  "updated_at": "2026-02-16T12:00:00Z",
+  "description": "Je souhaite créer un nouveau composant permettant d'afficher les missions récemment terminées. Par défaut, il s'agira des missions terminées dans les 15 derniers jours, mais le composant peut permettre un filtre plus paramétrable. Par défaut : 7 jours, 15 jours, 1 mois. Ce composant de type liste, dans le même esprit que celui des missions non commencées, sera affiché sur la page de détail d'un projet."
+}
