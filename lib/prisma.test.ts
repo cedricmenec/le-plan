@@ -17,3 +17,4 @@ describe('Prisma Client Singleton', () => {
     expect(prisma1).toBe(prisma2);
   });
 });
+

@@ -11,3 +11,4 @@ describe('Prisma Connectivity', () => {
     expect(Array.isArray(projects)).toBe(true);
   });
 });
+
