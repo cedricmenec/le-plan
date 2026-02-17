@@ -18,9 +18,9 @@ This plan outlines the steps to integrate Prisma and Prisma Migrate into the pro
 - [x] Task: [TDD] Create `lib/prisma.ts` singleton and verify its instantiation fdbb08f
     - [ ] Write test to ensure `prisma` instance is a singleton in development
     - [ ] Implement `lib/prisma.ts`
-- [ ] Task: [TDD] Verify database connectivity via Prisma Client
-    - [ ] Write a test/script that performs a simple query (e.g., `prisma.project.findMany()`)
-    - [ ] Ensure types are correctly generated and accessible
+- [x] Task: [TDD] Verify database connectivity via Prisma Client 2f88862
+    - [x] Write a test/script that performs a simple query (e.g., `prisma.project.findMany()`)
+    - [x] Ensure types are correctly generated and accessible
 - [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
 ## Phase 4: Finalization & Documentation
