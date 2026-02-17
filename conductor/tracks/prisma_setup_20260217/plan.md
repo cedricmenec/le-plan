@@ -24,6 +24,6 @@ This plan outlines the steps to integrate Prisma and Prisma Migrate into the pro
 - [x] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md) 9ed57b8
 
 ## Phase 4: Finalization & Documentation
-- [ ] Task: Update README with Prisma usage instructions (migrations, client usage)
+- [x] Task: Update README with Prisma usage instructions (migrations, client usage) a377e87
 - [ ] Task: Verify overall migration status (`npx prisma migrate status`)
 - [ ] Task: Conductor - User Manual Verification 'Phase 4' (Protocol in workflow.md)
