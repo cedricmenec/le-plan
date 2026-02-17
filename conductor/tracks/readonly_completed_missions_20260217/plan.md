@@ -5,9 +5,9 @@ This plan details the steps to implement a dedicated read-only view for complete
 ## Phase 1: Logic & Actions
 Focus on the backend transitions and ensuring we can fetch the data needed for the read-only view.
 
-- [ ] Task: Update mission actions to support the "Re-open" transition.
-    - [ ] Write tests for a new `reopenMission` action that transitions from `Terminated` to `Next Up`.
-    - [ ] Implement `reopenMission` in `app/missions/actions.ts` using Prisma.
+- [x] Task: Update mission actions to support the "Re-open" transition. c3868fa
+    - [x] Write tests for a new `reopenMission` action that transitions from `Terminated` to `Next Up`.
+    - [x] Implement `reopenMission` in `app/missions/actions.ts` using Prisma.
 - [ ] Task: Ensure data fetching for completed missions includes all necessary historical data (tasks, milestones).
     - [ ] Verify that existing fetching logic in `app/missions/[id]` retrieves completed tasks and milestones correctly.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Logic & Actions' (Protocol in workflow.md)
