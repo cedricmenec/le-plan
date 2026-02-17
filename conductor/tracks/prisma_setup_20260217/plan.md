@@ -14,14 +14,14 @@ This plan outlines the steps to integrate Prisma and Prisma Migrate into the pro
 - [x] Task: Mark migration as applied in Supabase (`npx prisma migrate resolve --applied "..._init"`) caed7de
 - [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md) caed7de
 
-## Phase 3: Prisma Client Implementation
+## Phase 3: Prisma Client Implementation [checkpoint: 9ed57b8]
 - [x] Task: [TDD] Create `lib/prisma.ts` singleton and verify its instantiation fdbb08f
-    - [ ] Write test to ensure `prisma` instance is a singleton in development
-    - [ ] Implement `lib/prisma.ts`
+    - [x] Write test to ensure `prisma` instance is a singleton in development
+    - [x] Implement `lib/prisma.ts`
 - [x] Task: [TDD] Verify database connectivity via Prisma Client 2f88862
     - [x] Write a test/script that performs a simple query (e.g., `prisma.project.findMany()`)
     - [x] Ensure types are correctly generated and accessible
-- [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md) 9ed57b8
 
 ## Phase 4: Finalization & Documentation
 - [ ] Task: Update README with Prisma usage instructions (migrations, client usage)
