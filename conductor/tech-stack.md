@@ -11,9 +11,9 @@
 *   **Logique de Charge :** Utilitaires de calcul personnalisés (`lib/load-utils.ts`) pour le mapping ROM et la somme des tâches.
 
 ## 2. Backend & Base de données
-*   **Infrastructure/BaaS :** [Supabase](https://supabase.com/) - Pour l'authentification, la base de données PostgreSQL et le stockage.
+*   **Infrastructure/BaaS :** [Supabase](https://supabase.com/) - Pour l'authentification et l'hébergement de la base de données PostgreSQL.
 *   **Base de données :** PostgreSQL (via Supabase) - Pour la gestion structurée des missions et de la charge de travail.
-*   **ORM / Client DB :** [Prisma](https://www.prisma.io/) avec `@prisma/adapter-pg` pour la gestion des migrations et l'accès type-safe aux données.
+*   **ORM / Client DB :** [Prisma](https://www.prisma.io/) - Désormais l'ORM principal pour toutes les opérations de données, garantissant la sécurité du typage et des transitions d'état complexes.
 
 ## 3. Déploiement & Outils
 *   **Hébergement :** Vercel (optimisé pour Next.js).
