@@ -1,0 +1,23 @@
+# Plan: Add Mission from Project Page
+
+## Phase 1: Preparation & Component Refactoring
+- [ ] Task: Update `AddMissionDialog` to support a pre-selected and locked `projectId`.
+    - [ ] Create/Update tests for `AddMissionDialog` to verify it can receive a `defaultProjectId` and that it disables/hides the selection in that case.
+    - [ ] Modify `AddMissionDialog` and `MissionForm` to accept `defaultProjectId` and `isProjectLocked` props.
+- [ ] Task: Enhance `useToast` or the toast implementation to support actionable links.
+    - [ ] Verify if current toast supports a `link` or `action` prop. If not, add support.
+- [ ] Task: Conductor - User Manual Verification 'Phase 1: Preparation' (Protocol in workflow.md)
+
+## Phase 2: Project Page Integration
+- [ ] Task: Add "Add Mission" button to the Project Detail page header.
+    - [ ] Write tests for the Project Page header to ensure the new button exists and is only visible when the user has appropriate permissions (if applicable).
+    - [ ] Implement the `AddMissionDialog` trigger in `app/projects/[id]/page.tsx`.
+- [ ] Task: Conductor - User Manual Verification 'Phase 2: Project Page Integration' (Protocol in workflow.md)
+
+## Phase 3: Polish & Success Flow
+- [ ] Task: Implement the success toast with "View Mission" link.
+    - [ ] Update the `addMission` action or the form submission handler to return the new mission ID.
+    - [ ] Update the UI to show the toast with the dynamic link after successful creation.
+- [ ] Task: Verify list refresh on the Project Page.
+    - [ ] Ensure `revalidatePath` is called for the project page after mission creation.
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: Polish & Success Flow' (Protocol in workflow.md)
