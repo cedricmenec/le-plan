@@ -142,5 +142,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Permettre directement depuis la page de gestion d'un projet d'ajouter une nouvelle mission pour ce projet.**
+- [x] **Track: Permettre directement depuis la page de gestion d'un projet d'ajouter une nouvelle mission pour ce projet.**
 *Link: [./tracks/add_mission_from_project_20260217/](./tracks/add_mission_from_project_20260217/)*
