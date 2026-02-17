@@ -29,9 +29,9 @@ Update the frontend components to display the new semantic labels and handle sta
 - [x] Task: Update any filtering logic (e.g., in Project Detail view) that relies on mission status. 8216227
 - [x] Task: Conductor - User Manual Verification 'UI/UX Refactoring' (Protocol in workflow.md) 0e03e41
 
-## Phase 4: Cleanup & Finalization
+## Phase 4: Cleanup & Finalization [checkpoint: 7851f2a]
 Remove legacy code and ensure the system is fully aligned with the new model.
 
-- [ ] Task: Remove the legacy `status` column from the `missions` table and update all remaining references in the codebase.
-- [ ] Task: Perform a final end-to-end verification of mission lifecycle (Creation -> Queued -> Active -> Suspended -> Terminated).
-- [ ] Task: Conductor - User Manual Verification 'Cleanup & Finalization' (Protocol in workflow.md)
+- [x] Task: Remove the legacy `status` column from the `missions` table and update all remaining references in the codebase. 587d8f9
+- [x] Task: Perform a final end-to-end verification of mission lifecycle (Creation -> Queued -> Active -> Suspended -> Terminated). 587d8f9
+- [x] Task: Conductor - User Manual Verification 'Cleanup & Finalization' (Protocol in workflow.md) 7851f2a
