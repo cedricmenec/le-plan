@@ -25,9 +25,10 @@ const MISSION_TYPES = [
 interface MissionFormProps {
   onSuccess?: () => void
   initialProjectId?: string
+  isProjectLocked?: boolean
 }
 
-export function MissionForm({ onSuccess, initialProjectId }: MissionFormProps) {
+export function MissionForm({ onSuccess, initialProjectId, isProjectLocked }: MissionFormProps) {
   const [loading, setLoading] = useState(false)
   const [projects, setProjects] = useState<Project[]>([])
   const [dateWarning, setDateWarning] = useState<string | null>(null)
@@ -47,6 +48,8 @@ export function MissionForm({ onSuccess, initialProjectId }: MissionFormProps) {
     }
     fetchProjects()
   }, [supabase])
+
+  const currentProject = projects.find(p => p.id === selectedProjectId)
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -197,19 +200,28 @@ export function MissionForm({ onSuccess, initialProjectId }: MissionFormProps) {
 
       <div className="space-y-2">
         <Label htmlFor="project_id">Projet (Optionnel)</Label>
-        <Select name="project_id" value={selectedProjectId || "none"} onValueChange={(v) => setSelectedProjectId(v === "none" ? undefined : v)}>
-          <SelectTrigger id="project_id">
-            <SelectValue placeholder="Aucun projet" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="none">Aucun projet</SelectItem>
-            {projects.map((p) => (
-              <SelectItem key={p.id} value={p.id}>
-                {p.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {isProjectLocked ? (
+          <div className="flex items-center gap-2">
+            <div className="h-9 w-full rounded-md border border-input bg-muted/50 px-3 py-1 text-sm flex items-center text-muted-foreground">
+              {currentProject?.name || 'Chargement...'}
+            </div>
+            <input type="hidden" name="project_id" value={selectedProjectId} />
+          </div>
+        ) : (
+          <Select name="project_id" value={selectedProjectId || "none"} onValueChange={(v) => setSelectedProjectId(v === "none" ? undefined : v)}>
+            <SelectTrigger id="project_id">
+              <SelectValue placeholder="Aucun projet" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Aucun projet</SelectItem>
+              {projects.map((p) => (
+                <SelectItem key={p.id} value={p.id}>
+                  {p.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </div>
 
       <Button type="submit" className="w-full" disabled={loading}>

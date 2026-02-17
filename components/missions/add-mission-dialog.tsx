@@ -11,57 +11,35 @@ import {
 import { MissionForm } from './mission-form'
 
 interface AddMissionDialogProps {
-
   children: React.ReactNode
-
-  projectId?: string
-
+  initialProjectId?: string
+  isProjectLocked?: boolean
 }
 
-
-
-export function AddMissionDialog({ children, projectId }: AddMissionDialogProps) {
-
+export function AddMissionDialog({ children, initialProjectId, isProjectLocked }: AddMissionDialogProps) {
   const [open, setOpen] = useState(false)
 
-
-
   const handleSuccess = () => {
-
     setOpen(false)
-
     // Dispatch event to refresh list (existing pattern in project)
-
     window.dispatchEvent(new Event('missions:created'))
-
   }
 
-
-
   return (
-
     <Dialog open={open} onOpenChange={setOpen}>
-
       <DialogTrigger asChild>
-
         {children}
-
       </DialogTrigger>
-
       <DialogContent className="sm:max-w-[425px]">
-
         <DialogHeader>
-
           <DialogTitle>Add New Mission</DialogTitle>
-
         </DialogHeader>
-
-        <MissionForm onSuccess={handleSuccess} initialProjectId={projectId} />
-
+        <MissionForm 
+          onSuccess={handleSuccess} 
+          initialProjectId={initialProjectId} 
+          isProjectLocked={isProjectLocked}
+        />
       </DialogContent>
-
     </Dialog>
-
   )
-
 }

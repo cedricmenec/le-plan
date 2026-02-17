@@ -4,16 +4,23 @@ import { describe, it, expect, vi } from 'vitest'
 
 // Mock MissionForm
 vi.mock('./mission-form', () => ({
-  MissionForm: ({ onSuccess }: { onSuccess: () => void }) => (
-    <form
-      data-testid="mission-form"
-      onSubmit={(e) => {
-        e.preventDefault()
-        onSuccess()
-      }}
-    >
-      <button type="submit">Submit</button>
-    </form>
+  MissionForm: ({ onSuccess, initialProjectId, isProjectLocked }: { 
+    onSuccess: () => void, 
+    initialProjectId?: string,
+    isProjectLocked?: boolean
+  }) => (
+    <div data-testid="mission-form">
+      <div data-testid="initial-project-id">{initialProjectId}</div>
+      <div data-testid="is-project-locked">{isProjectLocked ? 'true' : 'false'}</div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          onSuccess()
+        }}
+      >
+        <button type="submit">Submit</button>
+      </form>
+    </div>
   ),
 }))
 
@@ -30,6 +37,21 @@ describe('AddMissionDialog', () => {
     
     await waitFor(() => {
       expect(screen.getByTestId('mission-form')).toBeDefined()
+    })
+  })
+
+  it('passes initialProjectId and isProjectLocked to MissionForm', async () => {
+    render(
+      <AddMissionDialog initialProjectId="project-1" isProjectLocked={true}>
+        <button>Trigger</button>
+      </AddMissionDialog>
+    )
+    
+    fireEvent.click(screen.getByText('Trigger'))
+    
+    await waitFor(() => {
+      expect(screen.getByTestId('initial-project-id').textContent).toBe('project-1')
+      expect(screen.getByTestId('is-project-locked').textContent).toBe('true')
     })
   })
 
