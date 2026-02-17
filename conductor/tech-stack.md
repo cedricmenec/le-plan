@@ -13,7 +13,7 @@
 ## 2. Backend & Base de données
 *   **Infrastructure/BaaS :** [Supabase](https://supabase.com/) - Pour l'authentification, la base de données PostgreSQL et le stockage.
 *   **Base de données :** PostgreSQL (via Supabase) - Pour la gestion structurée des missions et de la charge de travail.
-*   **ORM / Client DB :** [Prisma](https://www.prisma.io/) ou Supabase Client.
+*   **ORM / Client DB :** [Prisma](https://www.prisma.io/) avec `@prisma/adapter-pg` pour la gestion des migrations et l'accès type-safe aux données.
 
 ## 3. Déploiement & Outils
 *   **Hébergement :** Vercel (optimisé pour Next.js).
