@@ -138,4 +138,4 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## [x] **Track: Refactor the mission state management to use an explicit macro-state model (Backlog, Queued, Active, Suspended, Terminated) with strict transition rules.**
 - **ID**: `mission_state_refactor_20260217`
-- **Link**: [./tracks/mission_state_refactor_20260217/](./tracks/mission_state_refactor_20260217/)
+- **Link**: [conductor/archive/mission_state_refactor_20260217](archive/mission_state_refactor_20260217/)
