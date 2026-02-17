@@ -1,129 +1,247 @@
-import { expect, test, vi, beforeEach } from 'vitest'
-import { getMission, createMission, updateMission, updateTask, createTask, deleteTask, reorderTasks, deleteMission } from './actions'
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { 
+  createMission, 
+  updateMission, 
+  getMission,
+  createTask,
+  updateTask,
+  deleteTask,
+  reorderTasks,
+  getMilestoneTypes,
+  getMilestones,
+  createMilestone,
+  updateMilestone,
+  deleteMilestone,
+  deleteMission
+} from './actions';
+import { prisma } from '@/lib/prisma';
+import { MissionStateMachine } from '@/lib/missions/state-machine';
+import { MissionState, MissionReason } from '@prisma/client';
+import { createClient } from '@/lib/supabase/server';
 
-// Mock the supabase server client
-const mockInsert = vi.fn(() => ({
-  select: vi.fn(() => ({
-    single: vi.fn(() => Promise.resolve({
-      data: { id: 'm2', title: 'New Mission', project_id: 'p1', mission_id: 'm1' },
-      error: null
-    }))
-  }))
-}))
-
-const mockUpdate = vi.fn(() => ({
-  eq: vi.fn(() => ({
-    select: vi.fn(() => ({
-      single: vi.fn(() => Promise.resolve({
-        data: { id: 'm1', title: 'Updated Mission', mission_id: 'm1' },
-        error: null
-      }))
-    }))
-  }))
-}))
-
-const mockDelete = vi.fn(() => ({
-  eq: vi.fn(() => Promise.resolve({ error: null }))
-}))
+vi.mock('@/lib/prisma', () => ({
+  prisma: {
+    missions: {
+      create: vi.fn(),
+      update: vi.fn(),
+      findUnique: vi.fn(),
+      delete: vi.fn(),
+    },
+    subtasks: {
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
+    milestone_types: {
+      findMany: vi.fn(),
+    },
+    milestones: {
+      create: vi.fn(),
+      update: vi.fn(),
+      findMany: vi.fn(),
+      delete: vi.fn(),
+    },
+    $transaction: vi.fn((promises) => Promise.all(promises)),
+  },
+}));
 
 vi.mock('@/lib/supabase/server', () => ({
-  createClient: vi.fn(() => Promise.resolve({
-    from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          single: vi.fn(() => Promise.resolve({
-            data: { id: 'm1', title: 'Test Mission' },
-            error: null
-          }))
-        }))
-      })),
-      insert: mockInsert,
-      update: mockUpdate,
-      delete: mockDelete
-    })),
+  createClient: vi.fn(() => ({
     auth: {
-      getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'u1' } } }))
-    }
-  }))
-}))
+      getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-1' } } })),
+    },
+  })),
+}));
 
-// Mock next/cache
 vi.mock('next/cache', () => ({
-  revalidatePath: vi.fn()
-}))
+  revalidatePath: vi.fn(),
+}));
 
-beforeEach(() => {
-  vi.clearAllMocks()
-})
+describe('Mission Actions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-test('getMission fetches a mission', async () => {
-  const mission = await getMission('m1')
-  expect(mission.id).toBe('m1')
-  expect(mission.title).toBe('Test Mission')
-})
+  describe('createMission', () => {
+    it('should create a mission in Backlog state by default', async () => {
+      const missionData = { title: 'New Mission', type: 'feat' };
+      (prisma.missions.create as any).mockResolvedValue({ id: '1', ...missionData, state: MissionState.Backlog });
 
-test('createMission creates a mission', async () => {
-  const mission = {
-    title: 'New Mission',
-    type: 'feature',
-    estimation: 3,
-    priority: 'high' as const
-  }
-  const result = await createMission(mission)
-  expect(result.id).toBe('m2')
-  expect(mockInsert).toHaveBeenCalledWith({ ...mission, user_id: 'u1' })
-})
+      await createMission(missionData);
 
-test('updateMission updates a mission with delivery dates and priority', async () => {
-  const updates = { 
-    title: 'Updated Mission',
-    estimated_delivery_date: '2026-06-01',
-    desired_delivery_date: '2026-06-15',
-    priority: 'critical' as const
-  }
-  await updateMission('m1', updates)
-  expect(mockUpdate).toHaveBeenCalledWith(updates)
-})
+      expect(prisma.missions.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          state: MissionState.Backlog,
+          status: 'todo',
+        }),
+      });
+    });
 
-test('updateMission updates a mission with ROM size and load source', async () => {
-  const updates = { 
-    rom_size: 'M',
-    load_source: 'tasks' as const
-  }
-  await updateMission('m1', updates)
-  expect(mockUpdate).toHaveBeenLastCalledWith(updates)
-})
+    it('should allow creating a mission in Active state', async () => {
+      const missionData = { title: 'New Mission', type: 'feat', state: MissionState.Active };
+      (prisma.missions.create as any).mockResolvedValue({ id: '1', ...missionData });
 
-test('updateTask updates a task', async () => {
-  const updates = { title: 'Updated Task', estimation: 1, status: 'in_progress' as const }
-  const task = await updateTask('t1', updates)
-  expect(task.title).toBe('Updated Mission') // Based on mock data
-  expect(mockUpdate).toHaveBeenCalledWith(updates)
-})
+      await createMission(missionData);
 
-test('createTask creates a task', async () => {
-  const newTask = { mission_id: 'm1', title: 'New Task', position: 0 }
-  const result = await createTask(newTask)
-  expect(result.id).toBe('m2')
-  expect(mockInsert).toHaveBeenCalledWith(newTask)
-})
+      expect(prisma.missions.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          state: MissionState.Active,
+          status: 'in_progress',
+        }),
+      });
+    });
 
-test('deleteTask deletes a task', async () => {
-  await deleteTask('m1', 't1')
-  expect(mockDelete).toHaveBeenCalled()
-})
+    it('should throw error for invalid state/reason combination', async () => {
+      const missionData = { title: 'New Mission', type: 'feat', state: MissionState.Suspended, reason: null };
+      
+      await expect(createMission(missionData as any)).rejects.toThrow(/Invalid reason/);
+    });
+  });
 
-test('deleteMission deletes a mission', async () => {
-  await deleteMission('m1')
-  expect(mockDelete).toHaveBeenCalled()
-})
+  describe('updateMission', () => {
+    it('should validate transition and update mission', async () => {
+      const missionId = '1';
+      const updates = { state: MissionState.Active };
+      (prisma.missions.findUnique as any).mockResolvedValue({ id: missionId, state: MissionState.Backlog, reason: null });
+      (prisma.missions.update as any).mockResolvedValue({ id: missionId, ...updates });
 
-test('reorderTasks updates multiple tasks', async () => {
-  await reorderTasks('m1', [
-    { id: 't1', position: 0 },
-    { id: 't2', position: 1 }
-  ])
-  expect(mockUpdate).toHaveBeenCalledTimes(2) // 2 from reorderTasks
-})
+      await updateMission(missionId, updates);
 
+      expect(prisma.missions.update).toHaveBeenCalledWith({
+        where: { id: missionId },
+        data: expect.objectContaining({
+          state: MissionState.Active,
+          status: 'in_progress',
+        }),
+      });
+    });
 
+    it('should throw error for invalid transition', async () => {
+      const missionId = '1';
+      const updates = { state: MissionState.Terminated };
+      (prisma.missions.findUnique as any).mockResolvedValue({ id: missionId, state: MissionState.Backlog, reason: null });
+
+      await expect(updateMission(missionId, updates)).rejects.toThrow(/Invalid transition/);
+    });
+
+    it('should require a reason when moving to Suspended', async () => {
+      const missionId = '1';
+      const updates = { state: MissionState.Suspended };
+      (prisma.missions.findUnique as any).mockResolvedValue({ id: missionId, state: MissionState.Active, reason: null });
+
+      await expect(updateMission(missionId, updates)).rejects.toThrow(/Invalid reason/);
+    });
+
+    it('should allow move to Suspended with a reason', async () => {
+      const missionId = '1';
+      const updates = { state: MissionState.Suspended, reason: MissionReason.Blocked };
+      (prisma.missions.findUnique as any).mockResolvedValue({ id: missionId, state: MissionState.Active, reason: null });
+      (prisma.missions.update as any).mockResolvedValue({ id: missionId, ...updates });
+
+      await updateMission(missionId, updates);
+
+      expect(prisma.missions.update).toHaveBeenCalledWith({
+        where: { id: missionId },
+        data: expect.objectContaining({
+          state: MissionState.Suspended,
+          reason: MissionReason.Blocked,
+          status: 'todo',
+        }),
+      });
+    });
+  });
+
+  describe('getMission', () => {
+    it('should fetch mission with projects and subtasks', async () => {
+      const id = '1';
+      (prisma.missions.findUnique as any).mockResolvedValue({ id, title: 'Test' });
+
+      const result = await getMission(id);
+
+      expect(result).toEqual({ id, title: 'Test' });
+      expect(prisma.missions.findUnique).toHaveBeenCalledWith({
+        where: { id },
+        include: expect.anything()
+      });
+    });
+
+    it('should throw if mission not found', async () => {
+      (prisma.missions.findUnique as any).mockResolvedValue(null);
+      await expect(getMission('invalid')).rejects.toThrow('Mission not found');
+    });
+  });
+
+  describe('tasks', () => {
+    it('should create a task', async () => {
+      const taskData = { mission_id: '1', title: 'Task' };
+      (prisma.subtasks.create as any).mockResolvedValue({ id: 't1', ...taskData });
+
+      await createTask(taskData as any);
+
+      expect(prisma.subtasks.create).toHaveBeenCalledWith({ data: taskData });
+    });
+
+    it('should update a task', async () => {
+      const id = 't1';
+      const updates = { title: 'Updated' };
+      (prisma.subtasks.update as any).mockResolvedValue({ id, mission_id: 'm1', ...updates });
+
+      await updateTask(id, updates);
+
+      expect(prisma.subtasks.update).toHaveBeenCalledWith({ where: { id }, data: updates });
+    });
+
+    it('should delete a task', async () => {
+      await deleteTask('m1', 't1');
+      expect(prisma.subtasks.delete).toHaveBeenCalledWith({ where: { id: 't1' } });
+    });
+
+    it('should reorder tasks in a transaction', async () => {
+      (prisma.$transaction as any) = vi.fn(async (ops) => ops);
+      const tasks = [{ id: '1', position: 1 }, { id: '2', position: 2 }];
+      
+      await reorderTasks('m1', tasks);
+
+      expect(prisma.$transaction).toHaveBeenCalled();
+    });
+  });
+
+  describe('milestones', () => {
+    it('should fetch milestone types', async () => {
+      (prisma.milestone_types.findMany as any).mockResolvedValue([{ id: '1', name: 'Type' }]);
+      const result = await getMilestoneTypes();
+      expect(result).toHaveLength(1);
+    });
+
+    it('should fetch milestones for a mission', async () => {
+      (prisma.milestones.findMany as any).mockResolvedValue([]);
+      await getMilestones('m1');
+      expect(prisma.milestones.findMany).toHaveBeenCalledWith({
+        where: { mission_id: 'm1' },
+        include: expect.anything(),
+        orderBy: expect.anything()
+      });
+    });
+
+    it('should create, update and delete milestones', async () => {
+      (prisma.milestones.create as any).mockResolvedValue({ id: 'mil1' });
+      await createMilestone('m1', { title: 'M', date: new Date(), type_id: 't1' } as any);
+      expect(prisma.milestones.create).toHaveBeenCalled();
+
+      (prisma.milestones.update as any).mockResolvedValue({ id: 'mil1' });
+      await updateMilestone('m1', 'mil1', { title: 'M2' });
+      expect(prisma.milestones.update).toHaveBeenCalled();
+
+      await deleteMilestone('m1', 'mil1');
+      expect(prisma.milestones.delete).toHaveBeenCalledWith({ where: { id: 'mil1' } });
+    });
+  });
+
+  describe('deleteMission', () => {
+    it('should delete mission and its related project revalidation', async () => {
+      (prisma.missions.findUnique as any).mockResolvedValue({ id: '1', project_id: 'p1' });
+      await deleteMission('1');
+      expect(prisma.missions.delete).toHaveBeenCalledWith({ where: { id: '1' } });
+    });
+  });
+});

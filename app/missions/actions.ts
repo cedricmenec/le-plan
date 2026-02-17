@@ -2,146 +2,165 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
-import { Database } from '@/types/database.types'
+import { prisma } from '@/lib/prisma'
+import { MissionStateMachine } from '@/lib/missions/state-machine'
+import { MissionState, MissionReason, Prisma } from '@prisma/client'
 
-type Mission = Database['public']['Tables']['missions']['Row']
-type InsertMission = Database['public']['Tables']['missions']['Insert']
-type UpdateMission = Database['public']['Tables']['missions']['Update']
+export type Mission = Prisma.missionsGetPayload<{
+  include: { projects: true; subtasks: true }
+}>
 
 export async function getMission(id: string) {
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('missions')
-    .select('*, projects(name), subtasks(*)')
-    .eq('id', id)
-    .single()
+  const mission = await prisma.missions.findUnique({
+    where: { id },
+    include: {
+      projects: {
+        select: { name: true }
+      },
+      subtasks: true
+    }
+  })
 
-  if (error) throw error
-  return data
+  if (!mission) throw new Error('Mission not found')
+  return mission
 }
 
-export async function createMission(mission: Omit<InsertMission, 'id' | 'created_at' | 'user_id'>) {
+export async function createMission(data: {
+  title: string
+  type: string
+  project_id?: string
+  priority?: string
+  goal?: string
+  notes?: string
+  estimation?: number
+  confidence?: number
+  rom_size?: string
+  load_source?: string
+  state?: MissionState
+  reason?: MissionReason | null
+}) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  const { data, error } = await supabase
-    .from('missions')
-    .insert({ ...mission, user_id: user.id })
-    .select()
-    .single()
+  const missionState = data.state || MissionState.Backlog
+  const missionReason = data.reason || null
 
-  if (error) throw error
+  if (!MissionStateMachine.validateStateAndReason(missionState, missionReason)) {
+    throw new Error(`Invalid reason ${missionReason} for state ${missionState}`)
+  }
+
+  const mission = await prisma.missions.create({
+    data: {
+      ...data,
+      user_id: user.id,
+      state: missionState,
+      reason: missionReason,
+      // Temporarily mapping state to status for backward compatibility in UI
+      status: missionState === MissionState.Terminated && missionReason === MissionReason.Done ? 'done' : 
+              missionState === MissionState.Active ? 'in_progress' : 'todo'
+    }
+  })
+
   revalidatePath('/')
   revalidatePath('/projects')
-  if (data.project_id) {
-    revalidatePath(`/projects/${data.project_id}`)
+  if (mission.project_id) {
+    revalidatePath(`/projects/${mission.project_id}`)
   }
-  return data
+  return mission
 }
 
-export async function updateMission(id: string, updates: Omit<UpdateMission, 'id' | 'created_at' | 'user_id'>) {
+export async function updateMission(id: string, updates: {
+  title?: string
+  type?: string
+  project_id?: string | null
+  priority?: string
+  goal?: string | null
+  notes?: string | null
+  estimation?: number
+  confidence?: number | null
+  rom_size?: string | null
+  load_source?: string
+  state?: MissionState
+  reason?: MissionReason | null
+}) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  // Get current mission state to check for status transitions
-  const { data: currentMission } = await supabase
-    .from('missions')
-    .select('status, started_at, completed_at')
-    .eq('id', id)
-    .single()
+  const currentMission = await prisma.missions.findUnique({
+    where: { id },
+    select: { state: true, reason: true, project_id: true }
+  })
 
-  const finalUpdates = { ...updates }
+  if (!currentMission) throw new Error('Mission not found')
 
-  if (updates.status && currentMission) {
-    // If transitioning to in_progress and not already started
-    if (updates.status === 'in_progress' && !currentMission.started_at) {
-      finalUpdates.started_at = new Date().toISOString()
+  const finalUpdates: any = { ...updates }
+
+  if (updates.state) {
+    if (!MissionStateMachine.isValidTransition(currentMission.state, updates.state)) {
+      throw new Error(`Invalid transition from ${currentMission.state} to ${updates.state}`)
     }
-    // If transitioning to done and not already completed
-    if (updates.status === 'done' && !currentMission.completed_at) {
-      finalUpdates.completed_at = new Date().toISOString()
+
+    const nextReason = updates.hasOwnProperty('reason') ? updates.reason : currentMission.reason
+    if (!MissionStateMachine.validateStateAndReason(updates.state, nextReason as MissionReason | null)) {
+      throw new Error(`Invalid reason ${nextReason} for state ${updates.state}`)
     }
-    // Reset completed_at if moving back from done
-    if (currentMission.status === 'done' && updates.status !== 'done') {
-      finalUpdates.completed_at = null
-    }
+
+    // Mapping state to legacy status for UI
+    finalUpdates.status = updates.state === MissionState.Terminated && nextReason === MissionReason.Done ? 'done' : 
+                          updates.state === MissionState.Active ? 'in_progress' : 'todo'
   }
 
-  const { data, error } = await supabase
-    .from('missions')
-    .update(finalUpdates)
-    .eq('id', id)
-    .select()
-    .single()
+  const mission = await prisma.missions.update({
+    where: { id },
+    data: finalUpdates
+  })
 
-  if (error) {
-    // If columns don't exist, try updating without them
-    if (error.code === '42703') {
-      console.warn('Database columns completed_at/started_at are missing. Updating without them.')
-      const { started_at: _s, completed_at: _c, ...safeUpdates } = finalUpdates as UpdateMission
-      const { data: retryData, error: retryError } = await supabase
-        .from('missions')
-        .update(safeUpdates)
-        .eq('id', id)
-        .select()
-        .single()
-      
-      if (retryError) throw retryError
-      return retryData
-    }
-    throw error
-  }
   revalidatePath(`/missions/${id}`)
   revalidatePath('/')
   revalidatePath('/projects')
-  if (data.project_id) {
-    revalidatePath(`/projects/${data.project_id}`)
+  if (mission.project_id) {
+    revalidatePath(`/projects/${mission.project_id}`)
   }
-  return data
+  if (currentMission.project_id && currentMission.project_id !== mission.project_id) {
+    revalidatePath(`/projects/${currentMission.project_id}`)
+  }
+  return mission
 }
 
-export async function updateTask(id: string, updates: Database['public']['Tables']['subtasks']['Update']) {
+export async function updateTask(id: string, updates: Prisma.subtasksUpdateInput) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  const { data, error } = await supabase
-    .from('subtasks')
-    .update(updates)
-    .eq('id', id)
-    .select()
-    .single()
+  const task = await prisma.subtasks.update({
+    where: { id },
+    data: updates
+  })
 
-  if (error) throw error
-  
-  if (data.mission_id) {
-    revalidatePath(`/missions/${data.mission_id}`)
+  if (task.mission_id) {
+    revalidatePath(`/missions/${task.mission_id}`)
   }
 
-  return data
+  return task
 }
 
-export async function createTask(task: Omit<Database['public']['Tables']['subtasks']['Insert'], 'id' | 'created_at'>) {
+export async function createTask(task: Prisma.subtasksCreateUncheckedInput) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  const { data, error } = await supabase
-    .from('subtasks')
-    .insert(task)
-    .select()
-    .single()
-
-  if (error) throw error
+  const newTask = await prisma.subtasks.create({
+    data: task
+  })
   
-  revalidatePath(`/missions/${data.mission_id}`)
-  return data
+  revalidatePath(`/missions/${newTask.mission_id}`)
+  return newTask
 }
 
 export async function deleteTask(missionId: string, id: string) {
@@ -150,12 +169,9 @@ export async function deleteTask(missionId: string, id: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  const { error } = await supabase
-    .from('subtasks')
-    .delete()
-    .eq('id', id)
-
-  if (error) throw error
+  await prisma.subtasks.delete({
+    where: { id }
+  })
   
   revalidatePath(`/missions/${missionId}`)
 }
@@ -166,83 +182,60 @@ export async function reorderTasks(missionId: string, tasks: { id: string, posit
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  // Bulk update positions
-  // Note: Supabase doesn't have a single call for different updates per row easily without a function
-  // But for short lists, we can do multiple updates or a single upsert if we have all data.
-  // Using upsert with only id and position might work if other fields are allowed to be missing or have defaults.
-  // Better to use a sequence of updates for safety in a transaction if possible, 
-  // but here we'll just loop for simplicity as typical subtask lists are small (< 20 items).
-  
-  for (const task of tasks) {
-    const { error } = await supabase
-      .from('subtasks')
-      .update({ position: task.position })
-      .eq('id', task.id)
-    
-    if (error) throw error
-  }
+  // Using a transaction for bulk update
+  await prisma.$transaction(
+    tasks.map(task => 
+      prisma.subtasks.update({
+        where: { id: task.id },
+        data: { position: task.position }
+      })
+    )
+  )
 
   revalidatePath(`/missions/${missionId}`)
 }
 
 export async function getMilestoneTypes() {
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('milestone_types')
-    .select('*')
-    .order('name')
-
-  if (error) throw error
-  return data
+  return prisma.milestone_types.findMany({
+    orderBy: { name: 'asc' }
+  })
 }
 
 export async function getMilestones(missionId: string) {
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('milestones')
-    .select('*, milestone_types(name)')
-    .eq('mission_id', missionId)
-    .order('date', { ascending: true })
-
-  if (error) throw error
-  return data
+  return prisma.milestones.findMany({
+    where: { mission_id: missionId },
+    include: { milestone_types: true },
+    orderBy: { date: 'asc' }
+  })
 }
 
-export async function createMilestone(missionId: string, milestone: Omit<Database['public']['Tables']['milestones']['Insert'], 'id' | 'created_at' | 'mission_id'>) {
+export async function createMilestone(missionId: string, milestone: Prisma.milestonesCreateUncheckedInput) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  const { data, error } = await supabase
-    .from('milestones')
-    .insert({ ...milestone, mission_id: missionId })
-    .select()
-    .single()
-
-  if (error) throw error
+  const newMilestone = await prisma.milestones.create({
+    data: { ...milestone, mission_id: missionId }
+  })
   
   revalidatePath(`/missions/${missionId}`)
-  return data
+  return newMilestone
 }
 
-export async function updateMilestone(missionId: string, id: string, updates: Omit<Database['public']['Tables']['milestones']['Update'], 'id' | 'created_at' | 'mission_id'>) {
+export async function updateMilestone(missionId: string, id: string, updates: Prisma.milestonesUpdateInput) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  const { data, error } = await supabase
-    .from('milestones')
-    .update(updates)
-    .eq('id', id)
-    .select()
-    .single()
-
-  if (error) throw error
+  const milestone = await prisma.milestones.update({
+    where: { id },
+    data: updates
+  })
   
   revalidatePath(`/missions/${missionId}`)
-  return data
+  return milestone
 }
 
 export async function deleteMilestone(missionId: string, id: string) {
@@ -251,12 +244,9 @@ export async function deleteMilestone(missionId: string, id: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  const { error } = await supabase
-    .from('milestones')
-    .delete()
-    .eq('id', id)
-
-  if (error) throw error
+  await prisma.milestones.delete({
+    where: { id }
+  })
   
   revalidatePath(`/missions/${missionId}`)
 }
@@ -267,19 +257,14 @@ export async function deleteMission(id: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  // Get mission data first for revalidation
-  const { data: mission } = await supabase
-    .from('missions')
-    .select('project_id')
-    .eq('id', id)
-    .single()
+  const mission = await prisma.missions.findUnique({
+    where: { id },
+    select: { project_id: true }
+  })
 
-  const { error } = await supabase
-    .from('missions')
-    .delete()
-    .eq('id', id)
-
-  if (error) throw error
+  await prisma.missions.delete({
+    where: { id }
+  })
   
   revalidatePath('/')
   revalidatePath('/projects')
