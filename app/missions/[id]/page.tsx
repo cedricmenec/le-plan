@@ -8,6 +8,7 @@ import { MissionDetailMilestones } from '@/components/missions/mission-detail-mi
 import { MissionHeaderHero, MissionHeroBlock } from '@/components/missions/mission-header-hero'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import { formatRelativeDuration } from '@/lib/utils'
+import { MissionState } from '@prisma/client'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -43,6 +44,8 @@ export default async function MissionDetailPage({ params }: PageProps) {
     return notFound()
   }
 
+  const isReadonly = mission.state === MissionState.Terminated
+
   const breadcrumbItems = mission.projects 
     ? [
         { label: 'Projects', href: '/projects' },
@@ -68,6 +71,7 @@ export default async function MissionDetailPage({ params }: PageProps) {
               'use server'
               await updateMission(id, updates)
             }} 
+            readonly={isReadonly}
           />
 
           <div className="space-y-10">
@@ -82,6 +86,7 @@ export default async function MissionDetailPage({ params }: PageProps) {
                   'use server'
                   await updateMission(id, { goal: val })
                 }}
+                trigger={isReadonly ? "none" : "doubleClick"}
                 type="textarea"
                 displayClassName="text-xl leading-relaxed text-slate-700 dark:text-slate-300 min-h-[4rem]"
                 placeholder="Décrire l'objectif principal de cette mission..."
@@ -94,6 +99,7 @@ export default async function MissionDetailPage({ params }: PageProps) {
                 'use server'
                 await updateMission(id, updates)
               }}
+              readonly={isReadonly}
             />
 
             <div className="space-y-3">
@@ -108,6 +114,7 @@ export default async function MissionDetailPage({ params }: PageProps) {
                     'use server'
                     await updateMission(id, { notes: val })
                   }}
+                  trigger={isReadonly ? "none" : "doubleClick"}
                   type="textarea"
                   displayClassName="text-base text-slate-600 dark:text-slate-400 whitespace-pre-wrap min-h-[6rem] leading-relaxed"
                   placeholder="Ajouter des notes complémentaires, liens ou détails techniques..."
@@ -118,9 +125,9 @@ export default async function MissionDetailPage({ params }: PageProps) {
         </div>
 
         <div className="bg-white dark:bg-[#15202b] rounded-2xl p-8 border border-slate-200 dark:border-slate-800 h-fit sticky top-10 space-y-10">
-          <MissionDetailMilestones missionId={mission.id} initialMilestones={milestones} />
+          <MissionDetailMilestones missionId={mission.id} initialMilestones={milestones} readonly={isReadonly} />
           <div className="h-px bg-slate-100 dark:bg-slate-800" />
-          <TaskList missionId={mission.id} />
+          <TaskList missionId={mission.id} readonly={isReadonly} />
         </div>
       </div>
     </div>

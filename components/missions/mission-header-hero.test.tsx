@@ -34,7 +34,13 @@ vi.mock('./mission-state-actions', () => ({
   MissionStateActions: ({ state }: any) => <div data-testid="state-actions">{state}</div>
 }))
 
-describe('MissionHeaderHero & MissionHeroBlock', () => {
+// Mock server actions
+vi.mock('@/app/missions/actions', () => ({
+  deleteMission: vi.fn(),
+  reopenMission: vi.fn(),
+}))
+
+describe('MissionHeaderHero & MissionHeaderHero ReadOnly', () => {
   const mockMission = {
     id: 'm1',
     title: 'Hero Mission',
@@ -75,6 +81,37 @@ describe('MissionHeaderHero & MissionHeroBlock', () => {
 
     expect(screen.getByText(/FEATURE/i)).toBeDefined()
     expect(screen.getByTestId('state-actions')).toBeDefined()
+  })
+
+  test('renders in readonly mode correctly', () => {
+    render(
+      <TooltipProvider>
+        <MissionHeaderHero mission={mockMission} onUpdate={async () => {}} readonly={true} />
+      </TooltipProvider>
+    )
+
+    // Should NOT show state actions
+    expect(screen.queryByTestId('state-actions')).toBeNull()
+
+    // Should show ARCHIVE indicator
+    expect(screen.getByText(/ARCHIVE/i)).toBeDefined()
+
+    // Should show RÉOUVRIR button
+    expect(screen.getByText(/RÉOUVRIR/i)).toBeDefined()
+  })
+
+  test('MissionHeroBlock in readonly mode', () => {
+    render(
+      <TooltipProvider>
+        <MissionHeroBlock mission={mockMission} onUpdate={async () => {}} readonly={true} />
+      </TooltipProvider>
+    )
+
+    // Should NOT show smart suggestion
+    expect(screen.queryByText(/Passer à la charge par tâches/i)).toBeNull()
+
+    // Should NOT show estimation settings toggle
+    expect(screen.queryByLabelText(/Configuration de l'estimation/i)).toBeNull()
   })
 
   test('renders estimation controls after clicking toggle', () => {

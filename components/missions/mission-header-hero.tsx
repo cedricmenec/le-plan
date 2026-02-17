@@ -10,7 +10,7 @@ import { MissionStateActions } from './mission-state-actions'
 import { Button } from '@/components/ui/button'
 import { EditMissionModal } from './edit-mission-modal'
 import { DeleteMissionDialog } from './delete-mission-dialog'
-import { deleteMission } from '@/app/missions/actions'
+import { deleteMission, reopenMission } from '@/app/missions/actions'
 import { useToast } from '@/components/ui/use-toast'
 import {
   DropdownMenu,
@@ -36,7 +36,9 @@ import {
   Settings2,
   X,
   Pencil,
-  Trash2
+  Trash2,
+  RotateCcw,
+  Archive
 } from 'lucide-react'
 
 const ROM_OPTIONS = Object.keys(ROM_MAPPING).map(size => ({
@@ -60,17 +62,39 @@ const MISSION_TYPES = [
 interface MissionHeaderHeroProps {
   mission: any
   onUpdate: (updates: any) => Promise<void>
+  readonly?: boolean
 }
 
-export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps) {
+export function MissionHeaderHero({ mission, onUpdate, readonly }: MissionHeaderHeroProps) {
   const router = useRouter()
   const { toast } = useToast()
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [isDeleting, setIsDeleting] = React.useState(false)
+  const [isReopening, setIsReopening] = React.useState(false)
 
   const currentType = MISSION_TYPES.find(t => t.value === mission.type) || MISSION_TYPES[4]
   const TypeIcon = currentType.icon
+
+  const handleReopen = async () => {
+    try {
+      setIsReopening(true)
+      await reopenMission(mission.id)
+      toast({
+        title: 'Mission réouverte',
+        description: 'La mission a été déplacée vers "À venir".',
+      })
+      window.location.reload()
+    } catch (error) {
+      toast({
+        title: 'Erreur',
+        description: 'Impossible de réouvrir la mission.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsReopening(false)
+    }
+  }
 
   const handleDelete = async () => {
     try {
@@ -115,38 +139,64 @@ export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps)
             <span>{currentType.label}</span>
           </div>
 
-          <MissionStateActions 
-            state={mission.state} 
-            reason={mission.reason} 
-            onUpdate={onUpdate} 
-          />
+          {readonly ? (
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 text-[10px] font-bold tracking-[0.2em]">
+              <Archive className="h-3 w-3" />
+              ARCHIVE
+            </div>
+          ) : (
+            <MissionStateActions 
+              state={mission.state} 
+              reason={mission.reason} 
+              onUpdate={onUpdate} 
+            />
+          )}
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
-              aria-label="Actions de la mission"
-            >
-              <MoreVertical className="h-5 w-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
-              <Pencil className="mr-2 h-4 w-4" />
-              <span>Modifier</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={() => setIsDeleteOpen(true)}
-              className="text-destructive focus:text-destructive"
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              <span>Supprimer</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {readonly ? (
+          <Button 
+            onClick={handleReopen} 
+            disabled={isReopening}
+            variant="outline" 
+            size="sm"
+            className="h-8 border-blue-200 dark:border-blue-900 text-blue-600 dark:text-blue-400 font-bold text-[10px] tracking-widest uppercase hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all rounded-full px-4"
+          >
+            {isReopening ? (
+              'Réouverture...'
+            ) : (
+              <>
+                <RotateCcw className="h-3.5 w-3.5 mr-2" />
+                RÉOUVRIR
+              </>
+            )}
+          </Button>
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                aria-label="Actions de la mission"
+              >
+                <MoreVertical className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
+                <Pencil className="mr-2 h-4 w-4" />
+                <span>Modifier</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => setIsDeleteOpen(true)}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                <span>Supprimer</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       {/* Title */}
@@ -155,6 +205,7 @@ export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps)
         onSave={async (val) => {
           await onUpdate({ title: val })
         }}
+        trigger={readonly ? "none" : "doubleClick"}
         displayClassName="text-3xl font-extrabold tracking-tight h-auto py-1 text-slate-900 dark:text-white"
         className="text-3xl"
       />
@@ -182,9 +233,10 @@ export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps)
 interface MissionHeroBlockProps {
   mission: any
   onUpdate?: (updates: any) => Promise<void>
+  readonly?: boolean
 }
 
-export function MissionHeroBlock({ mission, onUpdate }: MissionHeroBlockProps) {
+export function MissionHeroBlock({ mission, onUpdate, readonly }: MissionHeroBlockProps) {
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
   const [isAlertDismissed, setIsAlertDismissed] = React.useState(false)
   const confidence = mission.confidence || 0
@@ -194,7 +246,7 @@ export function MissionHeroBlock({ mission, onUpdate }: MissionHeroBlockProps) {
   const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
   const officialEstimation = mission.load_source === 'tasks' ? tasksDays : romDays
 
-  const showSuggestion = !isAlertDismissed && mission.load_source === 'rom' && (mission.subtasks?.length > 0) && tasksDays > 0
+  const showSuggestion = !readonly && !isAlertDismissed && mission.load_source === 'rom' && (mission.subtasks?.length > 0) && tasksDays > 0
 
   return (
     <div className="bg-slate-50/50 dark:bg-slate-900/40 p-8 md:p-10 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-8">
@@ -228,79 +280,82 @@ export function MissionHeroBlock({ mission, onUpdate }: MissionHeroBlockProps) {
         estimation={officialEstimation}
         estimatedDelivery={mission.estimated_delivery_date}
         desiredDelivery={mission.desired_delivery_date}
+        readonly={readonly}
       />
 
       {/* Estimation Settings Collapsible */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
-            size="icon-sm"
-            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-            className={`text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors ${isSettingsOpen ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-200' : ''}`}
-            title="Configuration de l'estimation"
-            aria-label="Configuration de l'estimation"
-          >
-            <Settings2 className="h-4 w-4" />
-          </Button>
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-            {isSettingsOpen ? 'Estimation Settings' : ''}
-          </span>
-        </div>
+      {!readonly && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon-sm"
+              onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+              className={`text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors ${isSettingsOpen ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-200' : ''}`}
+              title="Configuration de l'estimation"
+              aria-label="Configuration de l'estimation"
+            >
+              <Settings2 className="h-4 w-4" />
+            </Button>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              {isSettingsOpen ? 'Estimation Settings' : ''}
+            </span>
+          </div>
 
-        {isSettingsOpen && (
-          <div className="bg-white dark:bg-[#1a2632] border border-slate-200 dark:border-slate-800 rounded-none p-6 animate-in fade-in slide-in-from-top-1 duration-200 shadow-none">
-            <div className="flex flex-wrap items-center gap-10">
-              {/* ROM Selection */}
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                  <Shirt className="h-3 w-3" />
-                  Estimation ROM
-                </label>
-                <InlineEditableField
-                  value={mission.rom_size}
-                  type="select"
-                  options={ROM_OPTIONS}
-                  onSave={async (val) => {
-                    onUpdate?.({ rom_size: val })
-                  }}
-                  placeholder="Choisir Taille..."
-                  displayClassName="text-sm font-bold text-slate-700 dark:text-slate-300"
-                />
-              </div>
-
-              {/* Load Source Toggle */}
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                  <Info className="h-3 w-3" />
-                  Source Officielle
-                </label>
-                <InlineEditableField
-                  value={mission.load_source}
-                  type="select"
-                  options={LOAD_SOURCE_OPTIONS}
-                  onSave={async (val) => {
-                    onUpdate?.({ load_source: val })
-                  }}
-                  displayClassName="text-sm font-bold text-blue-600 dark:text-blue-400"
-                />
-              </div>
-
-              {/* Comparison Display */}
-              <div className="flex items-center gap-4">
-                <div className="px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col items-center min-w-[60px]">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase">ROM</span>
-                  <span className="text-xs font-black text-slate-700 dark:text-slate-300">{romDays}j</span>
+          {isSettingsOpen && (
+            <div className="bg-white dark:bg-[#1a2632] border border-slate-200 dark:border-slate-800 rounded-none p-6 animate-in fade-in slide-in-from-top-1 duration-200 shadow-none">
+              <div className="flex flex-wrap items-center gap-10">
+                {/* ROM Selection */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <Shirt className="h-3 w-3" />
+                    Estimation ROM
+                  </label>
+                  <InlineEditableField
+                    value={mission.rom_size}
+                    type="select"
+                    options={ROM_OPTIONS}
+                    onSave={async (val) => {
+                      onUpdate?.({ rom_size: val })
+                    }}
+                    placeholder="Choisir Taille..."
+                    displayClassName="text-sm font-bold text-slate-700 dark:text-slate-300"
+                  />
                 </div>
-                <div className="px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col items-center min-w-[60px]">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase">Tâches</span>
-                  <span className="text-xs font-black text-slate-700 dark:text-slate-300">{tasksDays}j</span>
+
+                {/* Load Source Toggle */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <Info className="h-3 w-3" />
+                    Source Officielle
+                  </label>
+                  <InlineEditableField
+                    value={mission.load_source}
+                    type="select"
+                    options={LOAD_SOURCE_OPTIONS}
+                    onSave={async (val) => {
+                      onUpdate?.({ load_source: val })
+                    }}
+                    displayClassName="text-sm font-bold text-blue-600 dark:text-blue-400"
+                  />
+                </div>
+
+                {/* Comparison Display */}
+                <div className="flex items-center gap-4">
+                  <div className="px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col items-center min-w-[60px]">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase">ROM</span>
+                    <span className="text-xs font-black text-slate-700 dark:text-slate-300">{romDays}j</span>
+                  </div>
+                  <div className="px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col items-center min-w-[60px]">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase">Tâches</span>
+                    <span className="text-xs font-black text-slate-700 dark:text-slate-300">{tasksDays}j</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       <div className="h-px bg-slate-100 dark:bg-slate-800" />
 
