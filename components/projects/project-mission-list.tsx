@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { MissionList } from '@/components/missions/mission-list'
 import { MissionWithProject } from '@/components/missions/mission-card'
 import { MissionState } from '@prisma/client'
@@ -17,6 +18,11 @@ interface ProjectMissionListProps {
 export function ProjectMissionList({ projectId, initialMissions }: ProjectMissionListProps) {
   const [missions, setMissions] = useState<MissionWithProject[]>(initialMissions)
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    setMissions(initialMissions)
+  }, [initialMissions])
 
   // We should ideally have a getProjectMissions action, but for now we'll rely on the parent providing updates 
   // or a full page refresh until we refactor this component to use a server action properly.
@@ -30,10 +36,10 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
 
   useEffect(() => {
     // Listen for global mission updates
-    const onCreated = () => window.location.reload() // Simple refresh for now to avoid supabase
+    const onCreated = () => router.refresh() // Smooth refresh using router
     window.addEventListener('missions:created', onCreated)
     return () => window.removeEventListener('missions:created', onCreated)
-  }, [])
+  }, [router])
 
   const filteredMissions = missions.filter((m) => {
     return m.state !== MissionState.Terminated

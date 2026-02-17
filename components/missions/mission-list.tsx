@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { MissionCard, MissionWithProject } from './mission-card'
 import { GridPlaceholder } from '@/components/ui/grid-placeholder'
 import { CondensedMissionList } from './condensed-mission-list'
@@ -35,6 +36,7 @@ export function MissionList({
   const [missionToEdit, setMissionToEdit] = useState<any | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const router = useRouter()
 
   const sortedMissions = useMemo(() => sortMissions(missions), [missions])
 
@@ -51,12 +53,14 @@ export function MissionList({
       setMissions(initialMissions)
       setLoading(false)
     }
+  }, [initialMissions])
 
+  useEffect(() => {
     const onCreated = () => {
       if (onUpdate) {
         onUpdate()
       } else {
-        window.location.reload()
+        router.refresh()
       }
     }
 
@@ -74,7 +78,7 @@ export function MissionList({
       if (onUpdate) {
         onUpdate()
       } else {
-        window.location.reload()
+        router.refresh()
       }
     } catch (error) {
       console.error(error)
@@ -96,7 +100,7 @@ export function MissionList({
       if (onUpdate) {
         onUpdate()
       } else {
-        window.location.reload()
+        router.refresh()
       }
     } catch (error) {
       console.error(error)

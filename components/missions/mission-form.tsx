@@ -23,7 +23,7 @@ const MISSION_TYPES = [
 ]
 
 interface MissionFormProps {
-  onSuccess?: () => void
+  onSuccess?: (mission: any) => void
   initialProjectId?: string
   isProjectLocked?: boolean
 }
@@ -96,7 +96,7 @@ export function MissionForm({ onSuccess, initialProjectId, isProjectLocked }: Mi
     setLoading(true)
 
     try {
-      await createMission({
+      const mission = await createMission({
         title,
         type,
         goal,
@@ -113,7 +113,7 @@ export function MissionForm({ onSuccess, initialProjectId, isProjectLocked }: Mi
       setPriority('medium')
       // notify sibling components (e.g. MissionList) to refetch their data
       window.dispatchEvent(new CustomEvent('missions:created'))
-      if (onSuccess) onSuccess()
+      if (onSuccess) onSuccess(mission)
     } catch (error) {
       console.error(error)
       alert('Erreur lors de la création de la mission')
