@@ -11,7 +11,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { getRecentlyCompletedMissions } from '@/app/projects/actions'
-import { Loader2, History } from 'lucide-react'
+import { Loader2, History, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 type MissionWithTasks = {
   id: string
@@ -105,17 +106,19 @@ export function RecentlyCompletedMissions({
               const duration = calculateMissionDuration(mission.started_at, mission.completed_at)
               
               return (
-                <div 
+                <Link 
                   key={mission.id} 
-                  className="grid grid-cols-[100px_1fr_120px_120px] items-center px-4 py-3 hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors"
+                  href={`/missions/${mission.id}`}
+                  className="grid grid-cols-[100px_1fr_120px_120px] items-center px-4 py-3 hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors group"
                 >
                   <div className="text-center">
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                       {mission.type}
                     </span>
                   </div>
-                  <div className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <div className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
                     {mission.title}
+                    <ArrowRight className="h-3.5 w-3.5 text-blue-500 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                   </div>
                   <div className="text-sm text-slate-600 dark:text-slate-400 px-2 font-mono">
                     {actualLoad}j
@@ -123,7 +126,7 @@ export function RecentlyCompletedMissions({
                   <div className="text-center text-sm text-slate-500 dark:text-slate-400">
                     {duration}
                   </div>
-                </div>
+                </Link>
               )
             })
           )}

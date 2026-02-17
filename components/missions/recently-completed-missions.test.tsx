@@ -49,5 +49,9 @@ describe('RecentlyCompletedMissions', () => {
     expect(screen.getByText('Feature')).toBeDefined()
     expect(screen.getByText('2j')).toBeDefined() // Actual Load
     expect(screen.getByText('9 days')).toBeDefined() // Duration
+
+    // Check link
+    const link = screen.getByRole('link', { name: /Mission 1/i })
+    expect(link.getAttribute('href')).toBe('/missions/1')
   })
 })
