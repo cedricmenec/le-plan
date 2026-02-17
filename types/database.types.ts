@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           id: string
           created_at: string
+          updated_at: string
           user_id: string
           name: string
           label: string | null
@@ -24,6 +25,7 @@ export type Database = {
         Insert: {
           id?: string
           created_at?: string
+          updated_at?: string
           user_id?: string
           name: string
           label?: string | null
@@ -35,6 +37,7 @@ export type Database = {
         Update: {
           id?: string
           created_at?: string
+          updated_at?: string
           user_id?: string
           name?: string
           label?: string | null
@@ -49,6 +52,7 @@ export type Database = {
         Row: {
           id: string
           created_at: string
+          updated_at: string
           user_id: string
           title: string
           type: string
@@ -70,6 +74,7 @@ export type Database = {
         Insert: {
           id?: string
           created_at?: string
+          updated_at?: string
           user_id?: string
           title: string
           type: string
@@ -91,6 +96,7 @@ export type Database = {
         Update: {
           id?: string
           created_at?: string
+          updated_at?: string
           user_id?: string
           title?: string
           type?: string
@@ -123,6 +129,7 @@ export type Database = {
         Row: {
           id: string
           created_at: string
+          updated_at: string
           mission_id: string
           title: string
           is_completed: boolean
@@ -133,6 +140,7 @@ export type Database = {
         Insert: {
           id?: string
           created_at?: string
+          updated_at?: string
           mission_id: string
           title: string
           is_completed?: boolean
@@ -143,6 +151,7 @@ export type Database = {
         Update: {
           id?: string
           created_at?: string
+          updated_at?: string
           mission_id?: string
           title?: string
           is_completed?: boolean
