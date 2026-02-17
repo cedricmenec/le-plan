@@ -148,6 +148,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: ReadOnly Access for Completed Missions
+## [x] Track: ReadOnly Access for Completed Missions
 - **ID**: `readonly_completed_missions_20260217`
 - **Link**: [conductor/tracks/readonly_completed_missions_20260217/](tracks/readonly_completed_missions_20260217/)
