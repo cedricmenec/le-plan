@@ -15,12 +15,12 @@ Focus on the backend transitions and ensuring we can fetch the data needed for t
 ## Phase 2: ReadOnly UI Components
 Create the read-only versions of the core mission detail components.
 
-- [ ] Task: Create a ReadOnly wrapper or variant for `TaskList`.
-    - [ ] Write tests for `TaskList` in a disabled/read-only state (no checkboxes, no drag & drop, no inline editing).
-    - [ ] Implement the read-only state in `components/missions/task-list.tsx`.
-- [ ] Task: Create a ReadOnly variant for `MissionTimeline` and `MilestoneList`.
-    - [ ] Write tests for `MissionTimeline` and `MilestoneList` in a read-only state.
-    - [ ] Implement the read-only state in `components/missions/mission-timeline.tsx` and `components/missions/mission-milestone-list.tsx`.
+- [x] Task: Create a ReadOnly wrapper or variant for `TaskList`.
+    - [x] Write tests for `TaskList` in a disabled/read-only state (no checkboxes, no drag & drop, no inline editing).
+    - [x] Implement the read-only state in `components/missions/task-list.tsx`.
+- [x] Task: Create a ReadOnly variant for `MissionTimeline` and `MilestoneList`. deaba2f
+    - [x] Write tests for `MissionTimeline` and `MilestoneList` in a read-only state.
+    - [x] Implement the read-only state in `components/missions/mission-timeline.tsx` and `components/missions/mission-milestone-list.tsx`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: ReadOnly UI Components' (Protocol in workflow.md)
 
 ## Phase 3: Dedicated ReadOnly View
