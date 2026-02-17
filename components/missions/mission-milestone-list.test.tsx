@@ -57,4 +57,18 @@ describe('MissionMilestoneList', () => {
     render(<MissionMilestoneList milestones={[mockMilestones[1]]} />)
     expect(screen.getByText('Aucun jalon prévu pour le moment.')).toBeDefined()
   })
+
+  it('renders in readonly mode correctly', () => {
+    render(<MissionMilestoneList milestones={mockMilestones} readonly={true} />)
+    
+    // Should NOT show "AJOUTER" button
+    expect(screen.queryByText(/AJOUTER/)).toBeNull()
+    
+    // Should show ALL milestones by default in readonly (even past ones)
+    expect(screen.getByText('Future Milestone')).toBeDefined()
+    expect(screen.getByText('Past Milestone')).toBeDefined()
+
+    // Should NOT show toggle buttons
+    expect(screen.queryByText(/VOIR LES JALONS PASSÉS/)).toBeNull()
+  })
 })

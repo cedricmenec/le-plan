@@ -9,12 +9,14 @@ interface MissionTimelineProps {
   estimation: number
   estimatedDelivery: string | null
   desiredDelivery: string | null
+  readonly?: boolean
 }
 
 export function MissionTimeline({
   estimation,
   estimatedDelivery,
   desiredDelivery,
+  readonly
 }: MissionTimelineProps) {
   const metrics = useMemo(() => {
     return calculateTimelineMetrics(new Date(), estimation, estimatedDelivery, desiredDelivery)
@@ -73,16 +75,18 @@ export function MissionTimeline({
             style={{ left: `${effortPercentage / 2}%` }}
           >
             <div className="bg-blue-600 text-white text-[9px] font-black px-4 py-1.5 rounded-full shadow-lg uppercase tracking-wider whitespace-nowrap">
-              {estimation} {estimation > 1 ? 'days' : 'day'} remaining
+              {estimation} {estimation > 1 ? 'days' : 'day'} {readonly ? 'total duration' : 'remaining'}
             </div>
           </div>
 
           {/* Markers */}
           {/* Today Marker */}
-          <div className="absolute top-0 left-0 flex flex-col items-center">
-            <div className="absolute top-0 -translate-y-8 text-[10px] font-bold text-slate-400 tracking-tight">TODAY</div>
-            <div className="h-8 w-[2px] bg-blue-500/30 -translate-y-[calc(50%-3px)]" />
-          </div>
+          {!readonly && (
+            <div className="absolute top-0 left-0 flex flex-col items-center">
+              <div className="absolute top-0 -translate-y-8 text-[10px] font-bold text-slate-400 tracking-tight">TODAY</div>
+              <div className="h-8 w-[2px] bg-blue-500/30 -translate-y-[calc(50%-3px)]" />
+            </div>
+          )}
 
           {/* Target Marker */}
           {desiredPercentage !== null && (

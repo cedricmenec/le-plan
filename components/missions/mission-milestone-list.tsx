@@ -10,9 +10,10 @@ interface MissionMilestoneListProps {
   onAddClick?: () => void
   onEdit?: (milestone: Milestone) => void
   onDelete?: (milestone: Milestone) => void
+  readonly?: boolean
 }
 
-export function MissionMilestoneList({ milestones, onAddClick, onEdit, onDelete }: MissionMilestoneListProps) {
+export function MissionMilestoneList({ milestones, onAddClick, onEdit, onDelete, readonly }: MissionMilestoneListProps) {
   const [showAll, setShowAll] = useState(false)
 
   const today = new Date()
@@ -27,12 +28,12 @@ export function MissionMilestoneList({ milestones, onAddClick, onEdit, onDelete 
   }, [milestones, today])
 
   const displayMilestones = useMemo(() => {
-    if (showAll) {
+    if (showAll || readonly) {
       // Re-sort all by date for a chronological timeline when viewing all
       return [...milestones].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     }
     return upcoming
-  }, [showAll, upcoming, milestones])
+  }, [showAll, upcoming, milestones, readonly])
 
   const hasPast = past.length > 0
 
@@ -46,14 +47,16 @@ export function MissionMilestoneList({ milestones, onAddClick, onEdit, onDelete 
           </span>
         </h3>
         
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={onAddClick}
-          className="h-7 px-2 text-[10px] font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20"
-        >
-          <Plus className="h-3 w-3 mr-1" /> AJOUTER
-        </Button>
+        {!readonly && (
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={onAddClick}
+            className="h-7 px-2 text-[10px] font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20"
+          >
+            <Plus className="h-3 w-3 mr-1" /> AJOUTER
+          </Button>
+        )}
       </div>
 
       <div className="relative">
@@ -65,6 +68,7 @@ export function MissionMilestoneList({ milestones, onAddClick, onEdit, onDelete 
                 milestone={milestone} 
                 onEdit={() => onEdit?.(milestone)}
                 onDelete={() => onDelete?.(milestone)}
+                readonly={readonly}
               />
             ))}
           </div>
@@ -75,7 +79,7 @@ export function MissionMilestoneList({ milestones, onAddClick, onEdit, onDelete 
         )}
       </div>
 
-      {hasPast && !showAll && (
+      {hasPast && !showAll && !readonly && (
         <button
           onClick={() => setShowAll(true)}
           className="w-full py-2 text-[11px] font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center justify-center gap-1.5 border border-transparent hover:border-slate-100 dark:hover:border-slate-800 rounded-lg transition-all"
@@ -85,7 +89,7 @@ export function MissionMilestoneList({ milestones, onAddClick, onEdit, onDelete 
         </button>
       )}
 
-      {showAll && (
+      {showAll && !readonly && (
         <button
           onClick={() => setShowAll(false)}
           className="w-full py-2 text-[11px] font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 flex items-center justify-center gap-1.5"

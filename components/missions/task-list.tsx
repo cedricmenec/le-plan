@@ -49,6 +49,7 @@ interface Task {
 
 interface TaskListProps {
   missionId: string
+  readonly?: boolean
 }
 
 interface SortableTaskItemProps {
@@ -56,9 +57,10 @@ interface SortableTaskItemProps {
   onUpdate: (id: string, updates: Partial<Task>) => Promise<void>
   onDelete: (id: string) => Promise<void>
   isPending?: boolean
+  readonly?: boolean
 }
 
-function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskItemProps) {
+function SortableTaskItem({ task, onUpdate, onDelete, isPending, readonly }: SortableTaskItemProps) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const {
     attributes,
@@ -87,25 +89,29 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
       <div className="flex items-center space-x-3 flex-1 min-w-0">
         <div 
           {...attributes} 
-          {...listeners} 
-          className="cursor-grab active:cursor-grabbing p-1 -ml-1 text-slate-300 hover:text-slate-500 dark:text-slate-700 dark:hover:text-slate-500 transition-colors"
+          {...(readonly ? {} : listeners)} 
+          className={`p-1 -ml-1 transition-colors ${
+            readonly 
+              ? 'text-slate-100 dark:text-slate-900 cursor-default' 
+              : 'text-slate-300 hover:text-slate-500 dark:text-slate-700 dark:hover:text-slate-500 cursor-grab active:cursor-grabbing'
+          }`}
         >
           <GripVertical className="h-4 w-4" />
         </div>
         
         <Checkbox 
           checked={task.is_completed}
-          onCheckedChange={(checked) => onUpdate(task.id, { is_completed: !!checked })}
-          disabled={isPending}
+          onCheckedChange={(checked) => !readonly && onUpdate(task.id, { is_completed: !!checked })}
+          disabled={isPending || readonly}
           className="h-4 w-4"
         />
 
         <InlineEditableField
           value={task.title}
           onSave={async (newTitle) => {
-            await onUpdate(task.id, { title: newTitle })
+            if (!readonly) await onUpdate(task.id, { title: newTitle })
           }}
-          trigger="doubleClick"
+          trigger={readonly ? "none" : "doubleClick"}
           className="flex-1"
           isExternalPending={isPending}
           displayClassName={isDone ? 'line-through text-slate-300 dark:text-slate-700' : 'text-slate-700 dark:text-slate-200'}
@@ -114,11 +120,15 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
 
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1">
-          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+          <Popover open={!readonly && isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverAnchor asChild>
               <div 
-                onDoubleClick={() => setIsPopoverOpen(true)}
-                className="cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 px-1.5 py-0.5 rounded transition-colors text-[11px] font-bold text-slate-700 dark:text-slate-300 min-w-[2rem] text-center"
+                onDoubleClick={() => !readonly && setIsPopoverOpen(true)}
+                className={`px-1.5 py-0.5 rounded transition-colors text-[11px] font-bold min-w-[2rem] text-center ${
+                  readonly 
+                    ? 'text-slate-400 dark:text-slate-600 cursor-default' 
+                    : 'cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                }`}
               >
                 {task.estimation}
               </div>
@@ -154,22 +164,24 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
           <span className="text-[9px] font-bold text-slate-400 uppercase">J</span>
         </div>
 
-        <Button
-          type="button"
-          size="icon"
-          variant="ghost"
-          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-          onClick={() => onDelete(task.id)}
-          disabled={isPending}
-        >
-          <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-        </Button>
+        {!readonly && (
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => onDelete(task.id)}
+            disabled={isPending}
+          >
+            <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+          </Button>
+        )}
       </div>
     </div>
   )
 }
 
-export function TaskList({ missionId }: TaskListProps) {
+export function TaskList({ missionId, readonly }: TaskListProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [newTitle, setNewTitle] = useState('')
   const [pendingTaskIds, setPendingTaskIds] = useState<Set<string>>(new Set())
@@ -256,6 +268,8 @@ export function TaskList({ missionId }: TaskListProps) {
   }
 
   async function handleDragEnd(event: DragEndEvent) {
+    if (readonly) return
+
     const { active, over } = event
 
     if (over && active.id !== over.id) {
@@ -332,35 +346,38 @@ export function TaskList({ missionId }: TaskListProps) {
                 onUpdate={handleUpdateTask} 
                 onDelete={deleteTask} 
                 isPending={pendingTaskIds.has(task.id)}
+                readonly={readonly}
               />
             ))}
           </div>
         </SortableContext>
       </DndContext>
 
-      <div className="flex items-center space-x-2 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
-        <Input 
-          className="h-9 text-sm" 
-          placeholder="Ajouter une tâche..." 
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault()
-              addTask()
-            }
-          }}
-        />
-        <Button 
-          type="button" 
-          size="icon" 
-          variant="secondary" 
-          className="h-9 w-9 shrink-0" 
-          onClick={addTask}
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
-      </div>
+      {!readonly && (
+        <div className="flex items-center space-x-2 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <Input 
+            className="h-9 text-sm" 
+            placeholder="Ajouter une tâche..." 
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                addTask()
+              }
+            }}
+          />
+          <Button 
+            type="button" 
+            size="icon" 
+            variant="secondary" 
+            className="h-9 w-9 shrink-0" 
+            onClick={addTask}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

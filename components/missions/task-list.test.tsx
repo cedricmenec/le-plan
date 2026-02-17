@@ -144,3 +144,36 @@ test('displays clarified task counter', async () => {
   const counter = screen.getByText(/1 restantes \/ 2 au total/i)
   expect(counter).toBeDefined()
 })
+
+test('renders in read-only mode correctly', async () => {
+  render(<TaskList missionId="1" readonly={true} />)
+  
+  await screen.findByText(/Task 1/i)
+  
+  // Checkboxes should be disabled
+  const checkboxes = screen.getAllByRole('checkbox')
+  checkboxes.forEach(checkbox => {
+    expect((checkbox as any).disabled).toBe(true)
+  })
+
+  // Should NOT show the add task input
+  expect(screen.queryByPlaceholderText(/Ajouter une tâche.../i)).toBeNull()
+  
+  // Should NOT show delete buttons
+  expect(screen.queryByRole('button', { name: /Trash2/i })).toBeNull()
+
+  // Re-check for Task 2 by showing completed
+  const toggleButton = await screen.findByText(/Voir les tâches terminées/i)
+  fireEvent.click(toggleButton)
+  await screen.findByText(/Task 2/i)
+
+  // Title should not be editable (double click should not show input)
+  const task1Label = screen.getByText(/Task 1/i)
+  fireEvent.doubleClick(task1Label)
+  expect(screen.queryByDisplayValue('Task 1')).toBeNull()
+
+  // Estimation should not be editable
+  const estimationText = screen.getByText('0.5')
+  fireEvent.doubleClick(estimationText)
+  expect(screen.queryByDisplayValue('0.5')).toBeNull()
+})

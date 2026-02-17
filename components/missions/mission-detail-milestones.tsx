@@ -10,9 +10,10 @@ import { useToast } from '@/components/ui/use-toast'
 interface MissionDetailMilestonesProps {
   missionId: string
   initialMilestones: Milestone[]
+  readonly?: boolean
 }
 
-export function MissionDetailMilestones({ missionId, initialMilestones }: MissionDetailMilestonesProps) {
+export function MissionDetailMilestones({ missionId, initialMilestones, readonly }: MissionDetailMilestonesProps) {
   const [milestones, setMilestones] = useState<Milestone[]>(initialMilestones)
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [editingMilestone, setEditingMilestone] = useState<Milestone | null>(null)
@@ -47,22 +48,27 @@ export function MissionDetailMilestones({ missionId, initialMilestones }: Missio
         onAddClick={() => setIsAddOpen(true)}
         onEdit={(m) => setEditingMilestone(m)}
         onDelete={handleDelete}
+        readonly={readonly}
       />
       
-      <AddMilestoneDialog 
-        missionId={missionId}
-        open={isAddOpen}
-        onOpenChange={setIsAddOpen}
-        onSuccess={handleSuccess}
-      />
+      {!readonly && (
+        <>
+          <AddMilestoneDialog 
+            missionId={missionId}
+            open={isAddOpen}
+            onOpenChange={setIsAddOpen}
+            onSuccess={handleSuccess}
+          />
 
-      <EditMilestoneDialog
-        missionId={missionId}
-        milestone={editingMilestone}
-        open={!!editingMilestone}
-        onOpenChange={(open) => !open && setEditingMilestone(null)}
-        onSuccess={handleSuccess}
-      />
+          <EditMilestoneDialog
+            missionId={missionId}
+            milestone={editingMilestone}
+            open={!!editingMilestone}
+            onOpenChange={(open) => !open && setEditingMilestone(null)}
+            onSuccess={handleSuccess}
+          />
+        </>
+      )}
     </>
   )
 }

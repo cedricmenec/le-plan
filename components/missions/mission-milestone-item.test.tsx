@@ -71,10 +71,62 @@ describe('MissionMilestoneItem Hover Logic', () => {
     })
     fireEvent.mouseLeave(itemContainer)
     
-    // Should stay hidden even after more time passes
-    act(() => {
-      vi.advanceTimersByTime(1000)
+        // Should stay hidden even after more time passes
+    
+        act(() => {
+    
+          vi.advanceTimersByTime(1000)
+    
+        })
+    
+        expect(actionsWrapper.className).toContain('opacity-0')
+    
+      })
+    
+    
+    
+        test('does not show actions in readonly mode', async () => {
+    
+    
+    
+          render(<MissionMilestoneItem milestone={mockMilestone} readonly={true} />)
+    
+    
+    
+          
+    
+    
+    
+          // MilestoneActions should NOT be rendered
+    
+    
+    
+      
+    
+        expect(screen.queryByTestId('milestone-actions')).toBeNull()
+    
+    
+    
+        const itemContainer = screen.getByText('Test Milestone').closest('.group')!
+    
+        fireEvent.mouseEnter(itemContainer)
+    
+        
+    
+        act(() => {
+    
+          vi.advanceTimersByTime(1500)
+    
+        })
+    
+        
+    
+        // Still should not be there
+    
+        expect(screen.queryByTestId('milestone-actions')).toBeNull()
+    
+      })
+    
     })
-    expect(actionsWrapper.className).toContain('opacity-0')
-  })
-})
+    
+    

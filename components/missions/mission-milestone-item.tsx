@@ -24,6 +24,7 @@ interface MissionMilestoneItemProps {
   milestone: Milestone
   onEdit?: () => void
   onDelete?: () => void
+  readonly?: boolean
 }
 
 const TYPE_ICONS: Record<string, any> = {
@@ -33,7 +34,7 @@ const TYPE_ICONS: Record<string, any> = {
   'Documentation': FileText,
 }
 
-export function MissionMilestoneItem({ milestone, onEdit, onDelete }: MissionMilestoneItemProps) {
+export function MissionMilestoneItem({ milestone, onEdit, onDelete, readonly }: MissionMilestoneItemProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [showActions, setShowActions] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -117,17 +118,19 @@ export function MissionMilestoneItem({ milestone, onEdit, onDelete }: MissionMil
           </div>
           
           <div className="flex items-center gap-2 h-8">
-            <div 
-              className={`transition-all duration-200 ${
-                (showActions || isMenuOpen) ? 'opacity-100' : 'opacity-0 pointer-events-none'
-              }`}
-            >
-              <MilestoneActions 
-                onEdit={onEdit || (() => {})} 
-                onDelete={onDelete || (() => {})} 
-                onOpenChange={setIsMenuOpen}
-              />
-            </div>
+            {!readonly && (
+              <div 
+                className={`transition-all duration-200 ${
+                  (showActions || isMenuOpen) ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                }`}
+              >
+                <MilestoneActions 
+                  onEdit={onEdit || (() => {})} 
+                  onDelete={onDelete || (() => {})} 
+                  onOpenChange={setIsMenuOpen}
+                />
+              </div>
+            )}
             
             {milestone.note && (
               <button 

@@ -64,4 +64,22 @@ describe('MissionTimeline', () => {
     expect(screen.queryByText(/n\/a/i)).toBeNull() // Should show date for desired
     expect(screen.getByText(/2026-02-03/i)).toBeDefined()
   })
+
+  test('renders in readonly mode correctly', () => {
+    render(
+      <MissionTimeline 
+        estimation={5} 
+        estimatedDelivery="2026-02-03" 
+        desiredDelivery="2026-02-08"
+        readonly={true}
+      />
+    )
+
+    // Should show "total duration" instead of "remaining"
+    expect(screen.getByText(/5 days total duration/i)).toBeDefined()
+    expect(screen.queryByText(/remaining/i)).toBeNull()
+
+    // Should NOT show "TODAY"
+    expect(screen.queryByText(/TODAY/i)).toBeNull()
+  })
 })
