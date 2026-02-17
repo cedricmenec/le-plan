@@ -6,7 +6,7 @@ export class MissionStateMachine {
     [MissionState.Queued]: [MissionState.Backlog, MissionState.Active],
     [MissionState.Active]: [MissionState.Suspended, MissionState.Terminated],
     [MissionState.Suspended]: [MissionState.Active, MissionState.Terminated],
-    [MissionState.Terminated]: [],
+    [MissionState.Terminated]: [MissionState.Queued],
   };
 
   private static readonly STATE_REASONS: Record<MissionState, MissionReason[]> = {

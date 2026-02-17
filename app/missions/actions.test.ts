@@ -12,7 +12,8 @@ import {
   createMilestone,
   updateMilestone,
   deleteMilestone,
-  deleteMission
+  deleteMission,
+  reopenMission
 } from './actions';
 import { prisma } from '@/lib/prisma';
 import { MissionStateMachine } from '@/lib/missions/state-machine';
@@ -238,6 +239,44 @@ describe('Mission Actions', () => {
       (prisma.missions.findUnique as any).mockResolvedValue({ id: '1', project_id: 'p1' });
       await deleteMission('1');
       expect(prisma.missions.delete).toHaveBeenCalledWith({ where: { id: '1' } });
+    });
+  });
+
+  describe('reopenMission', () => {
+    it('should transition mission from Terminated to Queued', async () => {
+      const missionId = '1';
+      (prisma.missions.findUnique as any).mockResolvedValue({ 
+        id: missionId, 
+        state: MissionState.Terminated, 
+        reason: MissionReason.Done 
+      });
+      (prisma.missions.update as any).mockResolvedValue({ 
+        id: missionId, 
+        state: MissionState.Queued,
+        reason: null
+      });
+
+      const result = await reopenMission(missionId);
+
+      expect(prisma.missions.update).toHaveBeenCalledWith({
+        where: { id: missionId },
+        data: {
+          state: MissionState.Queued,
+          reason: null,
+        },
+      });
+      expect(result.state).toBe(MissionState.Queued);
+    });
+
+    it('should throw if mission is not Terminated', async () => {
+      const missionId = '1';
+      (prisma.missions.findUnique as any).mockResolvedValue({ 
+        id: missionId, 
+        state: MissionState.Active, 
+        reason: null 
+      });
+
+      await expect(reopenMission(missionId)).rejects.toThrow(/only be re-opened from Terminated/);
     });
   });
 });

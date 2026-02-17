@@ -257,3 +257,37 @@ export async function deleteMission(id: string) {
   }
 }
 
+export async function reopenMission(id: string) {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const currentMission = await prisma.missions.findUnique({
+    where: { id },
+    select: { state: true, project_id: true }
+  })
+
+  if (!currentMission) throw new Error('Mission not found')
+
+  if (currentMission.state !== MissionState.Terminated) {
+    throw new Error('Mission can only be re-opened from Terminated state')
+  }
+
+  const mission = await prisma.missions.update({
+    where: { id },
+    data: {
+      state: MissionState.Queued,
+      reason: null
+    }
+  })
+
+  revalidatePath(`/missions/${id}`)
+  revalidatePath('/')
+  revalidatePath('/projects')
+  if (mission.project_id) {
+    revalidatePath(`/projects/${mission.project_id}`)
+  }
+  return serializeMission(mission)
+}
+
