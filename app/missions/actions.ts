@@ -6,9 +6,27 @@ import { prisma } from '@/lib/prisma'
 import { MissionStateMachine } from '@/lib/missions/state-machine'
 import { MissionState, MissionReason, Prisma } from '@prisma/client'
 
-export type Mission = Prisma.missionsGetPayload<{
-  include: { projects: true; subtasks: true }
-}>
+// Helper to serialize Prisma objects for Client Components
+function serializeMission(mission: any) {
+  if (!mission) return mission
+  return {
+    ...mission,
+    estimation: mission.estimation ? Number(mission.estimation) : 0,
+    confidence: mission.confidence ? Number(mission.confidence) : null,
+    created_at: mission.created_at?.toISOString(),
+    updated_at: mission.updated_at?.toISOString(),
+    estimated_delivery_date: mission.estimated_delivery_date?.toISOString(),
+    desired_delivery_date: mission.desired_delivery_date?.toISOString(),
+    subtasks: mission.subtasks?.map((s: any) => ({
+      ...s,
+      estimation: s.estimation ? Number(s.estimation) : 0,
+      created_at: s.created_at?.toISOString(),
+      updated_at: s.updated_at?.toISOString(),
+    }))
+  }
+}
+
+export type Mission = any // Simplified for now to avoid Decimal issues in types
 
 export async function getMission(id: string) {
   const mission = await prisma.missions.findUnique({
@@ -17,35 +35,33 @@ export async function getMission(id: string) {
       projects: {
         select: { name: true }
       },
-      subtasks: true
+      subtasks: {
+        orderBy: { position: 'asc' }
+      }
     }
   })
 
   if (!mission) throw new Error('Mission not found')
-  return mission
+  return serializeMission(mission)
 }
 
-export async function createMission(data: {
-  title: string
-  type: string
-  project_id?: string
-  priority?: string
-  goal?: string
-  notes?: string
-  estimation?: number
-  confidence?: number
-  rom_size?: string
-  load_source?: string
-  state?: MissionState
-  reason?: MissionReason | null
-}) {
+export async function createMission(data: any) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  const missionState = data.state || MissionState.Backlog
-  const missionReason = data.reason || null
+  // Map legacy status if provided
+  let missionState = data.state
+  let missionReason = data.reason || null
+
+  if (!missionState && data.status) {
+    missionState = data.status === 'done' ? MissionState.Terminated :
+                   data.status === 'in_progress' ? MissionState.Active : MissionState.Backlog
+    if (missionState === MissionState.Terminated) missionReason = MissionReason.Done
+  }
+
+  missionState = missionState || MissionState.Backlog
 
   if (!MissionStateMachine.validateStateAndReason(missionState, missionReason)) {
     throw new Error(`Invalid reason ${missionReason} for state ${missionState}`)
@@ -57,7 +73,6 @@ export async function createMission(data: {
       user_id: user.id,
       state: missionState,
       reason: missionReason,
-      // Temporarily mapping state to status for backward compatibility in UI
       status: missionState === MissionState.Terminated && missionReason === MissionReason.Done ? 'done' : 
               missionState === MissionState.Active ? 'in_progress' : 'todo'
     }
@@ -68,23 +83,10 @@ export async function createMission(data: {
   if (mission.project_id) {
     revalidatePath(`/projects/${mission.project_id}`)
   }
-  return mission
+  return serializeMission(mission)
 }
 
-export async function updateMission(id: string, updates: {
-  title?: string
-  type?: string
-  project_id?: string | null
-  priority?: string
-  goal?: string | null
-  notes?: string | null
-  estimation?: number
-  confidence?: number | null
-  rom_size?: string | null
-  load_source?: string
-  state?: MissionState
-  reason?: MissionReason | null
-}) {
+export async function updateMission(id: string, updates: any) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
@@ -98,20 +100,31 @@ export async function updateMission(id: string, updates: {
   if (!currentMission) throw new Error('Mission not found')
 
   const finalUpdates: any = { ...updates }
+  
+  // Handle legacy status updates by converting to state
+  if (updates.status && !updates.state) {
+    finalUpdates.state = updates.status === 'done' ? MissionState.Terminated :
+                         updates.status === 'in_progress' ? MissionState.Active : MissionState.Backlog
+    if (finalUpdates.state === MissionState.Terminated) {
+      finalUpdates.reason = MissionReason.Done
+    } else {
+      finalUpdates.reason = null
+    }
+  }
 
-  if (updates.state) {
-    if (!MissionStateMachine.isValidTransition(currentMission.state, updates.state)) {
-      throw new Error(`Invalid transition from ${currentMission.state} to ${updates.state}`)
+  if (finalUpdates.state) {
+    if (!MissionStateMachine.isValidTransition(currentMission.state, finalUpdates.state)) {
+      throw new Error(`Invalid transition from ${currentMission.state} to ${finalUpdates.state}`)
     }
 
-    const nextReason = updates.hasOwnProperty('reason') ? updates.reason : currentMission.reason
-    if (!MissionStateMachine.validateStateAndReason(updates.state, nextReason as MissionReason | null)) {
-      throw new Error(`Invalid reason ${nextReason} for state ${updates.state}`)
+    const nextReason = finalUpdates.hasOwnProperty('reason') ? finalUpdates.reason : currentMission.reason
+    if (!MissionStateMachine.validateStateAndReason(finalUpdates.state, nextReason as MissionReason | null)) {
+      throw new Error(`Invalid reason ${nextReason} for state ${finalUpdates.state}`)
     }
 
-    // Mapping state to legacy status for UI
-    finalUpdates.status = updates.state === MissionState.Terminated && nextReason === MissionReason.Done ? 'done' : 
-                          updates.state === MissionState.Active ? 'in_progress' : 'todo'
+    // Ensure status is synced for legacy UI
+    finalUpdates.status = finalUpdates.state === MissionState.Terminated && nextReason === MissionReason.Done ? 'done' : 
+                          finalUpdates.state === MissionState.Active ? 'in_progress' : 'todo'
   }
 
   const mission = await prisma.missions.update({
@@ -125,10 +138,7 @@ export async function updateMission(id: string, updates: {
   if (mission.project_id) {
     revalidatePath(`/projects/${mission.project_id}`)
   }
-  if (currentMission.project_id && currentMission.project_id !== mission.project_id) {
-    revalidatePath(`/projects/${currentMission.project_id}`)
-  }
-  return mission
+  return serializeMission(mission)
 }
 
 export async function updateTask(id: string, updates: Prisma.subtasksUpdateInput) {

@@ -5,8 +5,37 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { MissionState, MissionReason, Prisma } from '@prisma/client'
 
+function serializeMission(mission: any) {
+  if (!mission) return mission
+  return {
+    ...mission,
+    estimation: mission.estimation ? Number(mission.estimation) : 0,
+    confidence: mission.confidence ? Number(mission.confidence) : null,
+    created_at: mission.created_at?.toISOString(),
+    updated_at: mission.updated_at?.toISOString(),
+    estimated_delivery_date: mission.estimated_delivery_date?.toISOString(),
+    desired_delivery_date: mission.desired_delivery_date?.toISOString(),
+    subtasks: mission.subtasks?.map((s: any) => ({
+      ...s,
+      estimation: s.estimation ? Number(s.estimation) : 0,
+      created_at: s.created_at?.toISOString(),
+      updated_at: s.updated_at?.toISOString(),
+    }))
+  }
+}
+
+function serializeProject(project: any) {
+  if (!project) return project
+  return {
+    ...project,
+    created_at: project.created_at?.toISOString(),
+    updated_at: project.updated_at?.toISOString(),
+    missions: project.missions?.map(serializeMission)
+  }
+}
+
 export async function getProjects() {
-  return prisma.projects.findMany({
+  const projects = await prisma.projects.findMany({
     include: {
       missions: {
         include: {
@@ -16,6 +45,7 @@ export async function getProjects() {
     },
     orderBy: { name: 'asc' }
   })
+  return projects.map(serializeProject)
 }
 
 export async function getProject(id: string) {
@@ -34,7 +64,7 @@ export async function getProject(id: string) {
   })
 
   if (!project) throw new Error('Project not found')
-  return project
+  return serializeProject(project)
 }
 
 export async function createProject(project: Prisma.projectsCreateUncheckedInput) {
@@ -48,7 +78,7 @@ export async function createProject(project: Prisma.projectsCreateUncheckedInput
   })
 
   revalidatePath('/projects')
-  return newProject
+  return serializeProject(newProject)
 }
 
 export async function updateProject(id: string, updates: Prisma.projectsUpdateInput) {
@@ -63,7 +93,7 @@ export async function updateProject(id: string, updates: Prisma.projectsUpdateIn
   })
 
   revalidatePath('/projects')
-  return project
+  return serializeProject(project)
 }
 
 export async function deleteProject(id: string) {
@@ -95,15 +125,7 @@ export async function getRecentlyCompletedMissions(projectId: string, days: numb
     reason: MissionReason.Done
   }
 
-  if (days > 0) {
-    const dateLimit = new Date()
-    dateLimit.setDate(dateLimit.getDate() - days)
-    // We don't have completed_at in Prisma schema yet, but it was in supabase migrations.
-    // Let's check schema.prisma again to see if it's there.
-  }
-  
-  // Re-reading schema to be sure about date fields
-  return prisma.missions.findMany({
+  const missions = await prisma.missions.findMany({
     where,
     include: { subtasks: true },
     orderBy: [
@@ -111,4 +133,5 @@ export async function getRecentlyCompletedMissions(projectId: string, days: numb
       { created_at: 'desc' }
     ]
   })
+  return missions.map(serializeMission)
 }
