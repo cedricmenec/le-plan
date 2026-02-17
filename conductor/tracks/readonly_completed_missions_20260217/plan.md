@@ -35,7 +35,7 @@ Implement the new page structure for viewing completed missions.
     - [x] Connect the button to the `reopenMission` action.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Dedicated ReadOnly View' (Protocol in workflow.md)
 
-## Phase 4: Integration & Navigation [checkpoint: d3aee66]
+## Phase 4: Integration & Navigation [checkpoint: eb528a3]
 Connect the existing UI to the new ReadOnly view.
 
 - [x] Task: Update Project Detail view to link to the ReadOnly view. f35a086
