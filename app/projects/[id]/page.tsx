@@ -4,6 +4,7 @@ import { redirect, notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { ProjectMissionList } from '@/components/projects/project-mission-list'
 import { RecentlyCompletedMissions } from '@/components/missions/recently-completed-missions'
+import { ProjectHeader } from '@/components/projects/project-header'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -50,19 +51,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         ]} 
       />
       
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
-        <div className="flex items-center gap-2">
-          {project.label && (
-            <span className="text-xs font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded-sm">
-              {project.label}
-            </span>
-          )}
-          {project.description && (
-            <p className="text-muted-foreground">{project.description}</p>
-          )}
-        </div>
-      </div>
+      <ProjectHeader project={project} />
 
       <ProjectMissionList 
         projectId={id} 
