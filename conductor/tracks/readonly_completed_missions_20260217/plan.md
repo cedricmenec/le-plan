@@ -2,7 +2,7 @@
 
 This plan details the steps to implement a dedicated read-only view for completed missions and the ability to re-open them to the `Next Up` state.
 
-## Phase 1: Logic & Actions
+## Phase 1: Logic & Actions [checkpoint: b5b645d]
 Focus on the backend transitions and ensuring we can fetch the data needed for the read-only view.
 
 - [x] Task: Update mission actions to support the "Re-open" transition. c3868fa
