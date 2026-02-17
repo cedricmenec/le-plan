@@ -456,6 +456,7 @@ model milestones {
 model missions {
   id                      String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at              DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime     @default(now()) @updatedAt @db.Timestamptz(6)
   user_id                 String       @db.Uuid
   title                   String
   type                    String
@@ -484,6 +485,7 @@ model missions {
 model projects {
   id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at  DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime   @default(now()) @updatedAt @db.Timestamptz(6)
   user_id     String     @db.Uuid
   name        String
   label       String?
@@ -502,6 +504,7 @@ model projects {
 model subtasks {
   id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at   DateTime @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime @default(now()) @updatedAt @db.Timestamptz(6)
   mission_id   String   @db.Uuid
   title        String
   is_completed Boolean  @default(false)
