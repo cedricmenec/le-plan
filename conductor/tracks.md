@@ -121,3 +121,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Composant pour les missions récemment terminées
 - **ID**: `recently_completed_missions_20260216`
 - **Link**: [conductor/archive/recently_completed_missions_20260216](archive/recently_completed_missions_20260216/)
+
+---
+
+- [ ] **Track: Prisma Migration Setup**
+*Link: [./tracks/prisma_setup_20260217/](./tracks/prisma_setup_20260217/)*
