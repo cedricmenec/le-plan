@@ -13,8 +13,15 @@ import {
 import { getRecentlyCompletedMissions } from '@/app/projects/actions'
 import { Loader2, History } from 'lucide-react'
 
-type MissionWithTasks = Database['public']['Tables']['missions']['Row'] & {
-  subtasks: Database['public']['Tables']['subtasks']['Row'][]
+type MissionWithTasks = {
+  id: string
+  title: string
+  type: string
+  state: any
+  reason: any
+  started_at?: string | null
+  completed_at?: string | null
+  subtasks: { estimation: number; is_completed: boolean }[]
 }
 
 interface RecentlyCompletedMissionsProps {

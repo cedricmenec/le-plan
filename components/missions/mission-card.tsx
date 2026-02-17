@@ -31,7 +31,6 @@ export type Mission = {
   id: string
   title: string
   type: string
-  status: string
   state: MissionState
   reason: MissionReason | null
   confidence: number | null

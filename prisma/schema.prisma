@@ -463,7 +463,6 @@ model missions {
   estimation              Decimal      @default(0) @db.Decimal
   confidence              Decimal?     @default(100) @db.Decimal
   project_parent          String?
-  status                  String       @default("todo")
   state                   MissionState @default(Backlog)
   reason                  MissionReason?
   project_id              String?      @db.Uuid

@@ -1,8 +1,8 @@
 'use client'
 
-import { Database } from '@/types/database.types'
 import { Card, CardTitle, CardContent } from '@/components/ui/card'
 import { MoreHorizontal, Edit2, Trash2, Eye, Clock, ListTodo } from 'lucide-react'
+import { MissionState } from '@prisma/client'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,19 +13,32 @@ import { Button } from '@/components/ui/button'
 import { formatRelativeDuration } from '@/lib/utils'
 import Link from 'next/link'
 
-type Project = Database['public']['Tables']['projects']['Row']
-type Mission = Database['public']['Tables']['missions']['Row']
+type Project = {
+  id: string
+  name: string
+  label: string | null
+  description: string | null
+  color: string
+  image_url: string | null
+}
+
+type Mission = {
+  id: string
+  title: string
+  state: MissionState
+  estimated_delivery_date: string | null
+}
 
 interface ProjectCardProps {
   project: Project
   missions: Mission[]
-  onEdit: (project: Project) => void
-  onDelete: (project: Project) => void
+  onEdit: (project: any) => void
+  onDelete: (project: any) => void
 }
 
 export function ProjectCard({ project, missions, onEdit, onDelete }: ProjectCardProps) {
   const activeMissions = missions
-    .filter(m => m.status === 'in_progress')
+    .filter(m => m.state === MissionState.Active)
     .sort((a, b) => {
       if (!a.estimated_delivery_date) return 1
       if (!b.estimated_delivery_date) return -1
@@ -33,7 +46,7 @@ export function ProjectCard({ project, missions, onEdit, onDelete }: ProjectCard
     })
     .slice(0, 3)
 
-  const upcomingMissionsCount = missions.filter(m => m.status === 'todo').length
+  const upcomingMissionsCount = missions.filter(m => m.state === MissionState.Backlog || m.state === MissionState.Queued).length
   const totalMissions = missions.length
 
   const placeholderImage = `https://images.unsplash.com/photo-1572177222102-78617f76cc23?q=80&w=1000&auto=format&fit=crop`

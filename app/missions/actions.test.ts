@@ -72,7 +72,6 @@ describe('Mission Actions', () => {
       expect(prisma.missions.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           state: MissionState.Backlog,
-          status: 'todo',
         }),
       });
     });
@@ -86,7 +85,6 @@ describe('Mission Actions', () => {
       expect(prisma.missions.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           state: MissionState.Active,
-          status: 'in_progress',
         }),
       });
     });
@@ -111,7 +109,6 @@ describe('Mission Actions', () => {
         where: { id: missionId },
         data: expect.objectContaining({
           state: MissionState.Active,
-          status: 'in_progress',
         }),
       });
     });
@@ -145,34 +142,8 @@ describe('Mission Actions', () => {
         data: expect.objectContaining({
           state: MissionState.Suspended,
           reason: MissionReason.Blocked,
-          status: 'todo',
         }),
       });
-    });
-
-    it('should handle legacy status updates and map them to state', async () => {
-      const missionId = '1';
-      const updates = { status: 'in_progress' };
-      (prisma.missions.findUnique as any).mockResolvedValue({ id: missionId, state: MissionState.Backlog, reason: null });
-      (prisma.missions.update as any).mockResolvedValue({ id: missionId, ...updates, state: MissionState.Active });
-
-      await updateMission(missionId, updates);
-
-      expect(prisma.missions.update).toHaveBeenCalledWith({
-        where: { id: missionId },
-        data: expect.objectContaining({
-          state: MissionState.Active,
-          status: 'in_progress',
-        }),
-      });
-    });
-
-    it('should still forbid invalid transitions even with legacy status', async () => {
-      const missionId = '1';
-      const updates = { status: 'done' }; // Map to Terminated
-      (prisma.missions.findUnique as any).mockResolvedValue({ id: missionId, state: MissionState.Backlog, reason: null });
-
-      await expect(updateMission(missionId, updates)).rejects.toThrow(/Invalid transition/);
     });
   });
 

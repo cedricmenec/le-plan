@@ -42,7 +42,7 @@ import { CSS } from '@dnd-kit/utilities'
 interface Task {
   id: string
   title: string
-  status: 'todo' | 'in_progress' | 'done'
+  is_completed: boolean
   estimation: number
   position: number
 }
@@ -76,7 +76,7 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
     opacity: isDragging ? 0.5 : undefined,
   }
 
-  const isDone = task.status === 'done'
+  const isDone = task.is_completed
 
   return (
     <div 
@@ -93,46 +93,12 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending }: SortableTaskI
           <GripVertical className="h-4 w-4" />
         </div>
         
-        <Select
-          value={task.status}
-          onValueChange={(val: 'todo' | 'in_progress' | 'done') => onUpdate(task.id, { status: val })}
+        <Checkbox 
+          checked={task.is_completed}
+          onCheckedChange={(checked) => onUpdate(task.id, { is_completed: !!checked })}
           disabled={isPending}
-        >
-          <SelectTrigger 
-            className={`h-7 w-fit px-2 border-none bg-transparent shadow-none focus:ring-0 ${
-              task.status === 'done' ? 'text-slate-300 dark:text-slate-700' : 
-              task.status === 'in_progress' ? 'text-blue-500 dark:text-blue-400' : 
-              'text-slate-400'
-            }`}
-            aria-label={`Statut: ${task.status === 'done' ? 'Terminé' : task.status === 'in_progress' ? 'En cours' : 'À faire'}`}
-          >
-            <SelectValue>
-              {task.status === 'todo' && <Square className="h-4 w-4 text-slate-400" />}
-              {task.status === 'in_progress' && <PlayCircle className="h-4 w-4 text-blue-500 dark:text-blue-400" />}
-              {task.status === 'done' && <CheckSquare className="h-4 w-4 text-slate-300 dark:text-slate-700" />}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent align="start" className="min-w-[130px]">
-            <SelectItem value="todo">
-              <div className="flex items-center gap-2">
-                <Square className="h-3.5 w-3.5" />
-                <span>À faire</span>
-              </div>
-            </SelectItem>
-            <SelectItem value="in_progress">
-              <div className="flex items-center gap-2">
-                <PlayCircle className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />
-                <span>En cours</span>
-              </div>
-            </SelectItem>
-            <SelectItem value="done">
-              <div className="flex items-center gap-2">
-                <CheckSquare className="h-3.5 w-3.5 text-slate-300 dark:text-slate-700" />
-                <span className="text-slate-300 dark:text-slate-700">Terminé</span>
-              </div>
-            </SelectItem>
-          </SelectContent>
-        </Select>
+          className="h-4 w-4"
+        />
 
         <InlineEditableField
           value={task.title}
@@ -211,9 +177,9 @@ export function TaskList({ missionId }: TaskListProps) {
   const supabase = createClient()
 
   const { filteredTasks, hasDoneTasks } = useMemo(() => {
-    const doneTasks = tasks.filter(t => t.status === 'done')
+    const doneTasks = tasks.filter(t => t.is_completed)
     return {
-      filteredTasks: showCompleted ? tasks : tasks.filter(t => t.status !== 'done'),
+      filteredTasks: showCompleted ? tasks : tasks.filter(t => !t.is_completed),
       hasDoneTasks: doneTasks.length > 0
     }
   }, [tasks, showCompleted])
@@ -231,6 +197,7 @@ export function TaskList({ missionId }: TaskListProps) {
 
   useEffect(() => {
     async function fetchTasks() {
+      // Direct call to actions or supabase for now (legacy)
       const { data, error } = await supabase
         .from('subtasks')
         .select('*')
@@ -251,7 +218,7 @@ export function TaskList({ missionId }: TaskListProps) {
         mission_id: missionId, 
         title: newTitle,
         position: maxPosition + 1,
-        status: 'todo',
+        is_completed: false,
         estimation: 0.5
       })
 
@@ -328,7 +295,7 @@ export function TaskList({ missionId }: TaskListProps) {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Tâches</h3>
         <span className="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full font-medium">
-          {tasks.filter(t => t.status !== 'done').length} restantes / {tasks.length} au total
+          {tasks.filter(t => !t.is_completed).length} restantes / {tasks.length} au total
         </span>
       </div>
 
@@ -342,7 +309,7 @@ export function TaskList({ missionId }: TaskListProps) {
           ) : (
             <>
               <History className="h-3.5 w-3.5" />
-              VOIR LES TÂCHES TERMINÉES ({tasks.filter(t => t.status === 'done').length})
+              VOIR LES TÂCHES TERMINÉES ({tasks.filter(t => t.is_completed).length})
             </>
           )}
         </button>

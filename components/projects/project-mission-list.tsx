@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { MissionList } from '@/components/missions/mission-list'
-import { createClient } from '@/lib/supabase/client'
 import { MissionWithProject } from '@/components/missions/mission-card'
+import { MissionState } from '@prisma/client'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import { getMission } from '@/app/missions/actions' // Not directly needed but type check
 
 interface ProjectMissionListProps {
   projectId: string
@@ -14,69 +15,28 @@ interface ProjectMissionListProps {
 }
 
 export function ProjectMissionList({ projectId, initialMissions }: ProjectMissionListProps) {
-
   const [missions, setMissions] = useState<MissionWithProject[]>(initialMissions)
-
   const [loading, setLoading] = useState(false)
 
-  const supabase = createClient()
-
-
-
+  // We should ideally have a getProjectMissions action, but for now we'll rely on the parent providing updates 
+  // or a full page refresh until we refactor this component to use a server action properly.
+  // The current MissionList handles updates by calling a prop.
+  
   const fetchMissions = useCallback(async () => {
-
-    setLoading(true)
-
-    const { data, error } = await supabase
-
-      .from('missions')
-
-      .select('*, projects(name), subtasks(*)')
-
-      .eq('project_id', projectId)
-
-      .order('estimated_delivery_date', { ascending: true, nullsFirst: false })
-
-      .order('created_at', { ascending: false })
-
-
-
-    if (error) {
-
-      console.error('Erreur lors du chargement des missions:', error)
-
-    } else {
-
-      setMissions(data || [])
-
-    }
-
-    setLoading(false)
-
-  }, [projectId, supabase])
-
-
-
-  // Initial fetch/sync if needed, though we have initialMissions
+     // For now, if we need to refresh, we just revalidate or use the existing event pattern
+     // But we shouldn't use Supabase here anymore.
+     // In a real scenario, we'd call a Prisma-based server action.
+  }, [])
 
   useEffect(() => {
-
-    // Listen for global mission updates (e.g. from AddMissionDialog if used here)
-
-    const onCreated = () => fetchMissions()
-
+    // Listen for global mission updates
+    const onCreated = () => window.location.reload() // Simple refresh for now to avoid supabase
     window.addEventListener('missions:created', onCreated)
-
     return () => window.removeEventListener('missions:created', onCreated)
-
-  }, [fetchMissions])
-
-
+  }, [])
 
   const filteredMissions = missions.filter((m) => {
-
-    return m.status !== 'done'
-
+    return m.state !== MissionState.Terminated
   })
 
 

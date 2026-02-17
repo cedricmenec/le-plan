@@ -1,20 +1,18 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import { MissionCard, MissionWithProject } from './mission-card'
 import { GridPlaceholder } from '@/components/ui/grid-placeholder'
 import { CondensedMissionList } from './condensed-mission-list'
 import { DeleteMissionDialog } from './delete-mission-dialog'
 import { EditMissionModal } from './edit-mission-modal'
-import { Database } from '@/types/database.types'
+import { MissionState } from '@prisma/client'
 import { sortMissions } from '@/lib/utils'
+import { updateMission, deleteMission, getMission } from '@/app/missions/actions'
 import {
   TooltipProvider,
 } from "@/components/ui/tooltip"
 import { ProjectEmptyState } from '@/components/projects/project-empty-state'
-
-type Mission = Database['public']['Tables']['missions']['Row']
 
 interface MissionListProps {
   initialMissions?: MissionWithProject[]
@@ -33,74 +31,54 @@ export function MissionList({
 }: MissionListProps) {
   const [missions, setMissions] = useState<MissionWithProject[]>(initialMissions || [])
   const [loading, setLoading] = useState(!initialMissions)
-  const [missionToDelete, setMissionToDelete] = useState<Mission | null>(null)
-  const [missionToEdit, setMissionToEdit] = useState<Mission | null>(null)
+  const [missionToDelete, setMissionToDelete] = useState<any | null>(null)
+  const [missionToEdit, setMissionToEdit] = useState<any | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
-  const supabase = createClient()
 
   const sortedMissions = useMemo(() => sortMissions(missions), [missions])
 
   const activeMissions = useMemo(() => 
-    sortedMissions.filter(m => m.status === 'in_progress'), 
+    sortedMissions.filter(m => m.state === MissionState.Active), 
   [sortedMissions])
 
   const todoMissions = useMemo(() => 
-    sortedMissions.filter(m => m.status === 'todo'), 
+    sortedMissions.filter(m => m.state === MissionState.Backlog || m.state === MissionState.Queued), 
   [sortedMissions])
-
-  async function fetchMissions() {
-    const { data, error } = await supabase
-      .from('missions')
-      .select('*, projects(name), subtasks(*)')
-      .order('estimated_delivery_date', { ascending: true, nullsFirst: false })
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      console.error('Erreur lors du chargement des missions:', error)
-    } else {
-      setMissions(data || [])
-    }
-    setLoading(false)
-  }
 
   useEffect(() => {
     if (initialMissions) {
       setMissions(initialMissions)
       setLoading(false)
-    } else {
-      fetchMissions()
     }
 
     const onCreated = () => {
-      setLoading(true)
-      fetchMissions()
+      if (onUpdate) {
+        onUpdate()
+      } else {
+        window.location.reload()
+      }
     }
 
     window.addEventListener('missions:created', onCreated)
     return () => window.removeEventListener('missions:created', onCreated)
-  }, [supabase, initialMissions])
+  }, [initialMissions, onUpdate])
 
-  const handleUpdate = async (data: Partial<Mission>) => {
+  const handleUpdate = async (data: any) => {
     if (!missionToEdit) return
 
     setUpdatingId(missionToEdit.id)
     try {
-      const { error } = await supabase
-        .from('missions')
-        .update(data)
-        .eq('id', missionToEdit.id)
-
-      if (error) {
-        alert('Erreur lors de la mise à jour')
+      await updateMission(missionToEdit.id, data)
+      setMissionToEdit(null)
+      if (onUpdate) {
+        onUpdate()
       } else {
-        setMissionToEdit(null)
-        if (onUpdate) {
-            onUpdate()
-        } else {
-            fetchMissions()
-        }
+        window.location.reload()
       }
+    } catch (error) {
+      console.error(error)
+      alert('Erreur lors de la mise à jour')
     } finally {
       setUpdatingId(null)
     }
@@ -114,20 +92,15 @@ export function MissionList({
     setMissionToDelete(null)
 
     try {
-      const { error } = await supabase
-        .from('missions')
-        .delete()
-        .eq('id', idToDelete)
-
-      if (error) {
-        alert('Erreur lors de la suppression')
+      await deleteMission(idToDelete)
+      if (onUpdate) {
+        onUpdate()
       } else {
-        if (onUpdate) {
-            onUpdate()
-        } else {
-            fetchMissions()
-        }
+        window.location.reload()
       }
+    } catch (error) {
+      console.error(error)
+      alert('Erreur lors de la suppression')
     } finally {
       setDeletingId(null)
     }

@@ -16,13 +16,13 @@ export function romToDays(size: ROMSize): number {
 }
 
 interface TaskWithEstimation {
-  status: string
+  is_completed: boolean
   estimation: number
 }
 
 export function calculateTaskRemainingLoad(tasks: TaskWithEstimation[]): number {
   return tasks
-    .filter(task => task.status !== 'done')
+    .filter(task => !task.is_completed)
     .reduce((sum, task) => sum + (Number(task.estimation) || 0), 0)
 }
 

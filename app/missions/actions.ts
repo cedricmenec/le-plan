@@ -51,17 +51,8 @@ export async function createMission(data: any) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
-  // Map legacy status if provided
-  let missionState = data.state
-  let missionReason = data.reason || null
-
-  if (!missionState && data.status) {
-    missionState = data.status === 'done' ? MissionState.Terminated :
-                   data.status === 'in_progress' ? MissionState.Active : MissionState.Backlog
-    if (missionState === MissionState.Terminated) missionReason = MissionReason.Done
-  }
-
-  missionState = missionState || MissionState.Backlog
+  const missionState = data.state || MissionState.Backlog
+  const missionReason = data.reason || null
 
   if (!MissionStateMachine.validateStateAndReason(missionState, missionReason)) {
     throw new Error(`Invalid reason ${missionReason} for state ${missionState}`)
@@ -73,8 +64,6 @@ export async function createMission(data: any) {
       user_id: user.id,
       state: missionState,
       reason: missionReason,
-      status: missionState === MissionState.Terminated && missionReason === MissionReason.Done ? 'done' : 
-              missionState === MissionState.Active ? 'in_progress' : 'todo'
     }
   })
 
@@ -101,17 +90,6 @@ export async function updateMission(id: string, updates: any) {
 
   const finalUpdates: any = { ...updates }
   
-  // Handle legacy status updates by converting to state
-  if (updates.status && !updates.state) {
-    finalUpdates.state = updates.status === 'done' ? MissionState.Terminated :
-                         updates.status === 'in_progress' ? MissionState.Active : MissionState.Backlog
-    if (finalUpdates.state === MissionState.Terminated) {
-      finalUpdates.reason = MissionReason.Done
-    } else {
-      finalUpdates.reason = null
-    }
-  }
-
   if (finalUpdates.state) {
     if (!MissionStateMachine.isValidTransition(currentMission.state, finalUpdates.state)) {
       throw new Error(`Invalid transition from ${currentMission.state} to ${finalUpdates.state}`)
@@ -121,10 +99,6 @@ export async function updateMission(id: string, updates: any) {
     if (!MissionStateMachine.validateStateAndReason(finalUpdates.state, nextReason as MissionReason | null)) {
       throw new Error(`Invalid reason ${nextReason} for state ${finalUpdates.state}`)
     }
-
-    // Ensure status is synced for legacy UI
-    finalUpdates.status = finalUpdates.state === MissionState.Terminated && nextReason === MissionReason.Done ? 'done' : 
-                          finalUpdates.state === MissionState.Active ? 'in_progress' : 'todo'
   }
 
   const mission = await prisma.missions.update({
