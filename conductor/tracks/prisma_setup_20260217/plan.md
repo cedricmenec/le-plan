@@ -8,11 +8,11 @@ This plan outlines the steps to integrate Prisma and Prisma Migrate into the pro
 - [x] Task: Configure `.env` and `schema.prisma` for direct Supabase connection 45ac8e9
 - [x] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md) 3e8319d
 
-## Phase 2: Schema Introspection & Baselining
+## Phase 2: Schema Introspection & Baselining [checkpoint: caed7de]
 - [x] Task: Introspect existing database to populate `schema.prisma` 2361ea9
 - [x] Task: Create initial baseline migration (`npx prisma migrate dev --name init --create-only`) caed7de
 - [x] Task: Mark migration as applied in Supabase (`npx prisma migrate resolve --applied "..._init"`) caed7de
-- [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md) caed7de
 
 ## Phase 3: Prisma Client Implementation
 - [ ] Task: [TDD] Create `lib/prisma.ts` singleton and verify its instantiation
