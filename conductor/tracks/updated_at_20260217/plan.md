@@ -16,9 +16,9 @@ This phase ensures that the application's data layer correctly handles the new f
 - [x] Task: Create integration tests to verify `updated_at` behavior for `Subtask` (Task) bd95465
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Repository/Service Layer Verification' (Protocol in workflow.md) abf032c
 
-## Phase 3: Final Validation & Cleanup
+## Phase 3: Final Validation & Cleanup [checkpoint: c537e75]
 Ensuring everything is consistent and documented.
 
-- [ ] Task: Run all project tests to ensure no regressions
-- [ ] Task: Update `types/database.types.ts` if it is manually maintained (or via Supabase CLI if applicable)
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Final Validation & Cleanup' (Protocol in workflow.md)
+- [x] Task: Run all project tests to ensure no regressions c537e75
+- [x] Task: Update `types/database.types.ts` if it is manually maintained (or via Supabase CLI if applicable) 04d98d1
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Final Validation & Cleanup' (Protocol in workflow.md) c537e75
