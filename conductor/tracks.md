@@ -124,5 +124,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Prisma Migration Setup**
+- [~] **Track: Prisma Migration Setup**
 *Link: [./tracks/prisma_setup_20260217/](./tracks/prisma_setup_20260217/)*
