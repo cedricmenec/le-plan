@@ -12,13 +12,31 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Trash2 } from 'lucide-react'
-import { Database } from '@/types/database.types'
+import { MissionState, MissionReason } from '@prisma/client'
+import { MissionStateMachine } from '@/lib/missions/state-machine'
 import { createClient } from '@/lib/supabase/client'
 import { PrioritySelect } from './priority-select'
 import { PriorityLevel } from './priority-badge'
 
-type Project = Database['public']['Tables']['projects']['Row']
-type Mission = Database['public']['Tables']['missions']['Row']
+type Project = { id: string; name: string; status: string }
+type Mission = {
+  id: string
+  title: string
+  type: string
+  status: string
+  state: MissionState
+  reason: MissionReason | null
+  confidence: number | null
+  goal: string | null
+  notes: string | null
+  project_id: string | null
+  rom_size: string | null
+  load_source: string
+  estimated_delivery_date: string | null
+  desired_delivery_date: string | null
+  priority: string | null
+  estimation: number | null
+}
 
 const MISSION_TYPES = [
   { value: 'feature', label: 'Feature' },
@@ -28,11 +46,20 @@ const MISSION_TYPES = [
   { value: 'other', label: 'Autre' },
 ]
 
-const MISSION_STATUSES = [
-  { value: 'todo', label: 'À faire' },
-  { value: 'in_progress', label: 'En cours' },
-  { value: 'done', label: 'Terminé' },
-]
+const STATE_LABELS: Record<string, string> = {
+  [MissionState.Backlog]: 'Backlog',
+  [MissionState.Queued]: 'Next Up',
+  [MissionState.Active]: 'En cours',
+  [MissionState.Suspended]: 'Suspendu',
+  [MissionState.Terminated]: 'Terminé / Clos',
+}
+
+const REASON_LABELS: Record<string, string> = {
+  [MissionReason.Blocked]: 'Bloqué',
+  [MissionReason.Deprioritized]: 'Dépriorisé',
+  [MissionReason.Done]: 'Fait (Done)',
+  [MissionReason.Cancelled]: 'Annulé',
+}
 
 interface EditMissionModalProps {
   mission: Mission
@@ -59,18 +86,17 @@ export function EditMissionModal({
     async function fetchProjects() {
       const { data } = await supabase
         .from('projects')
-        .select('*')
+        .select('id, name, status')
         .eq('status', 'active')
         .order('name')
       
       setProjects(data || [])
     }
-    fetchProjects()
-  }, [supabase])
+    if (open) fetchProjects()
+  }, [supabase, open])
 
   useEffect(() => {
     if (open && mission) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         title: mission.title,
         type: mission.type,
@@ -79,7 +105,8 @@ export function EditMissionModal({
         estimation: mission.estimation,
         confidence: mission.confidence,
         project_id: mission.project_id,
-        status: mission.status,
+        state: mission.state,
+        reason: mission.reason,
         estimated_delivery_date: mission.estimated_delivery_date,
         desired_delivery_date: mission.desired_delivery_date,
         priority: mission.priority,
@@ -87,63 +114,63 @@ export function EditMissionModal({
     }
   }, [open, mission])
 
+  const nextStates = mission ? [mission.state, ...MissionStateMachine.getValidNextStates(mission.state)] : []
+  const availableReasons = formData.state ? MissionStateMachine.getValidReasons(formData.state) : []
+
+  const handleStateChange = (nextState: MissionState) => {
+    const reasons = MissionStateMachine.getValidReasons(nextState)
+    setFormData({ 
+      ...formData, 
+      state: nextState, 
+      reason: reasons.length > 0 ? reasons[0] : null 
+    })
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     
-    // Basic date validation
-    if (formData.estimated_delivery_date) {
-      const d = new Date(formData.estimated_delivery_date)
-      if (isNaN(d.getTime())) {
-        alert('Date de livraison estimée invalide (format attendu: YYYY-MM-DD)')
-        return
-      }
+    if (formData.state && !MissionStateMachine.validateStateAndReason(formData.state, formData.reason || null)) {
+      alert(`Un motif est requis pour l'état ${formData.state}`)
+      return
     }
 
-    if (formData.desired_delivery_date) {
-      const d = new Date(formData.desired_delivery_date)
-      if (isNaN(d.getTime())) {
-        alert('Date de livraison souhaitée invalide (format attendu: YYYY-MM-DD)')
-        return
-      }
-    }
-
-    // Map 'none' back to null if needed, but if using state it's already handled
     onSubmit(formData)
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Modifier la mission</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="edit-project">Projet (Optionnel)</Label>
-            <Select
-              value={formData.project_id || 'none'}
-              onValueChange={(value) => setFormData({ ...formData, project_id: value === 'none' ? null : value })}
-            >
-              <SelectTrigger id="edit-project">
-                <SelectValue placeholder="Aucun projet" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">Aucun projet</SelectItem>
-                {projects.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>
-                    {p.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Priorité</Label>
-            <PrioritySelect 
-              value={(formData.priority as PriorityLevel) || 'medium'} 
-              onValueChange={(value) => setFormData({ ...formData, priority: value })} 
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-project">Projet (Optionnel)</Label>
+              <Select
+                value={formData.project_id || 'none'}
+                onValueChange={(value) => setFormData({ ...formData, project_id: value === 'none' ? null : value })}
+              >
+                <SelectTrigger id="edit-project">
+                  <SelectValue placeholder="Aucun projet" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Aucun projet</SelectItem>
+                  {projects.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>
+                      {p.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Priorité</Label>
+              <PrioritySelect 
+                value={(formData.priority as PriorityLevel) || 'medium'} 
+                onValueChange={(value) => setFormData({ ...formData, priority: value })} 
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -175,19 +202,20 @@ export function EditMissionModal({
                 </SelectContent>
               </Select>
             </div>
+            
             <div className="space-y-2">
-              <Label htmlFor="edit-status">Statut</Label>
+              <Label htmlFor="edit-state">État</Label>
               <Select
-                value={formData.status}
-                onValueChange={(value) => setFormData({ ...formData, status: value })}
+                value={formData.state}
+                onValueChange={(value) => handleStateChange(value as MissionState)}
               >
-                <SelectTrigger id="edit-status">
-                  <SelectValue placeholder="Statut" />
+                <SelectTrigger id="edit-state">
+                  <SelectValue placeholder="État" />
                 </SelectTrigger>
                 <SelectContent>
-                  {MISSION_STATUSES.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>
-                      {s.label}
+                  {nextStates.map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {STATE_LABELS[s]}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -195,45 +223,36 @@ export function EditMissionModal({
             </div>
           </div>
 
+          {availableReasons.length > 0 && (
+            <div className="space-y-2 animate-in fade-in slide-in-from-top-1">
+              <Label htmlFor="edit-reason">Motif / Raison</Label>
+              <Select
+                value={formData.reason || ''}
+                onValueChange={(value) => setFormData({ ...formData, reason: value as MissionReason })}
+              >
+                <SelectTrigger id="edit-reason">
+                  <SelectValue placeholder="Sélectionner une raison" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableReasons.map((r) => (
+                    <SelectItem key={r} value={r}>
+                      {REASON_LABELS[r]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div className="space-y-2">
-            <Label htmlFor="edit-goal">Main Goal</Label>
+            <Label htmlFor="edit-goal">Objectif Principal</Label>
             <Textarea
               id="edit-goal"
               value={formData.goal || ''}
               onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
-              placeholder="Objectif principal"
+              placeholder="Quel est l'objectif de cette mission ?"
+              className="h-20"
             />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="edit-notes">Notes</Label>
-            <Textarea
-              id="edit-notes"
-              value={formData.notes || ''}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="Notes complémentaires"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="edit-estimated-date">Date de Livraison Estimée</Label>
-              <Input
-                id="edit-estimated-date"
-                value={formData.estimated_delivery_date || ''}
-                onChange={(e) => setFormData({ ...formData, estimated_delivery_date: e.target.value })}
-                placeholder="YYYY-MM-DD"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-desired-date">Date de livraison souhaitée</Label>
-              <Input
-                id="edit-desired-date"
-                value={formData.desired_delivery_date || ''}
-                onChange={(e) => setFormData({ ...formData, desired_delivery_date: e.target.value })}
-                placeholder="YYYY-MM-DD"
-              />
-            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -267,7 +286,7 @@ export function EditMissionModal({
               <Button
                 type="button"
                 variant="outline"
-                className="text-destructive hover:bg-destructive/10"
+                className="text-destructive hover:bg-destructive/10 border-destructive/20"
                 onClick={onDelete}
                 disabled={loading}
               >

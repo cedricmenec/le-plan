@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import { useRef, useEffect, useState } from 'react'
 import { MissionActions } from './mission-actions'
-import { Database } from '@/types/database.types'
+import { StateBadge } from './state-badge'
+import { MissionState, MissionReason } from '@prisma/client'
 import { formatRelativeDuration } from '@/lib/utils'
 import { romToDays, calculateTaskRemainingLoad, ROMSize } from '@/lib/load-utils'
 import {
@@ -26,8 +27,33 @@ import {
   LucideIcon
 } from 'lucide-react'
 
-export type Mission = Database['public']['Tables']['missions']['Row']
-export type Subtask = Database['public']['Tables']['subtasks']['Row']
+export type Mission = {
+  id: string
+  title: string
+  type: string
+  status: string
+  state: MissionState
+  reason: MissionReason | null
+  confidence: number | null
+  goal: string | null
+  notes: string | null
+  project_id: string | null
+  project_parent: string | null
+  rom_size: string | null
+  load_source: string
+  estimated_delivery_date: string | null
+  desired_delivery_date: string | null
+  priority: string | null
+}
+
+export type Subtask = {
+  id: string
+  title: string
+  is_completed: boolean
+  position: number
+  estimation: number
+}
+
 export type MissionWithProject = Mission & { 
   projects: { name: string } | null,
   subtasks?: Subtask[]
@@ -72,13 +98,6 @@ export function MissionCard({
   const confidence = mission.confidence || 0
   const isHighConfidence = confidence >= 80
   const projectName = mission.projects?.name || mission.project_parent
-  
-  const statusLabels: Record<string, string> = {
-    todo: 'TODO',
-    in_progress: 'ACTIVE',
-    done: 'DONE'
-  }
-  const statusDisplay = statusLabels[mission.status] || mission.status.toUpperCase()
 
   const romDays = romToDays(mission.rom_size as ROMSize)
   const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
@@ -125,9 +144,7 @@ export function MissionCard({
               <Icon className="h-6 w-6" />
             </div>
             
-            <div className="px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-bold tracking-wider">
-              {statusDisplay}
-            </div>
+            <StateBadge state={mission.state} reason={mission.reason} />
           </div>
           
           <div className="flex items-center gap-4">
@@ -187,7 +204,7 @@ export function MissionCard({
       <div className="space-y-2 mt-auto">
         <div className="pt-3 flex justify-between items-center text-[11px] border-t border-slate-50 dark:border-slate-800/50 mt-4">
           <div className="flex items-center gap-2 text-slate-400">
-            <span className="font-bold tracking-wider">STATUT: {mission.status.toUpperCase()}</span>
+            <span className="font-bold tracking-wider uppercase">ETAT: {mission.state}</span>
             {mission.estimated_delivery_date && (
               <>
                 <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { MissionTimeline } from './mission-timeline'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import { PriorityBadge } from './priority-badge'
+import { MissionStateActions } from './mission-state-actions'
 import { Button } from '@/components/ui/button'
 import { EditMissionModal } from './edit-mission-modal'
 import { DeleteMissionDialog } from './delete-mission-dialog'
@@ -54,12 +55,6 @@ const MISSION_TYPES = [
   { label: 'Support', value: 'support', icon: Wrench, color: 'text-rose-600 bg-rose-50 dark:text-rose-400 dark:bg-rose-900/20' },
   { label: 'Docs', value: 'docs', icon: FileText, color: 'text-sky-600 bg-sky-50 dark:text-sky-400 dark:bg-sky-900/20' },
   { label: 'Autre', value: 'other', icon: MoreHorizontal, color: 'text-slate-600 bg-slate-50 dark:text-slate-400 dark:bg-slate-900/20' },
-]
-
-const MISSION_STATUSES = [
-  { label: 'À faire', value: 'todo' },
-  { label: 'En cours', value: 'in_progress' },
-  { label: 'Terminé', value: 'done' },
 ]
 
 interface MissionHeaderHeroProps {
@@ -120,14 +115,10 @@ export function MissionHeaderHero({ mission, onUpdate }: MissionHeaderHeroProps)
             <span>{currentType.label}</span>
           </div>
 
-          <InlineEditableField
-            value={mission.status}
-            type="select"
-            options={MISSION_STATUSES}
-            onSave={async (val) => {
-              await onUpdate({ status: val })
-            }}
-            displayClassName="text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+          <MissionStateActions 
+            state={mission.state} 
+            reason={mission.reason} 
+            onUpdate={onUpdate} 
           />
         </div>
 
