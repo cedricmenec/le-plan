@@ -131,4 +131,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 ---
 
 ## [x] **Track: Ajouter au table mission et subtasks un champ de base de données updated_at**
-*Link: [./tracks/updated_at_20260217/](./tracks/updated_at_20260217/)*
+- **ID**: `updated_at_20260217`
+- **Link**: [conductor/archive/updated_at_20260217](archive/updated_at_20260217/)
