@@ -15,9 +15,12 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Project Page Integration' (Protocol in workflow.md) (5529bdf)
 
 ## Phase 3: Polish & Success Flow
-- [ ] Task: Implement the success toast with "View Mission" link.
-    - [ ] Update the `addMission` action or the form submission handler to return the new mission ID.
-    - [ ] Update the UI to show the toast with the dynamic link after successful creation.
-- [ ] Task: Verify list refresh on the Project Page.
-    - [ ] Ensure `revalidatePath` is called for the project page after mission creation.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Polish & Success Flow' (Protocol in workflow.md)
+- [x] Task: Implement the success toast with "View Mission" link. (66562ee)
+    - [x] Update the `addMission` action or the form submission handler to return the new mission ID.
+    - [x] Update the UI to show the toast with the dynamic link after successful creation.
+    - [x] Refactor list refresh to use `router.refresh()` instead of `window.location.reload()` to preserve toasts.
+    - [x] Style success toast with a green background and set auto-dismiss to 5 seconds.
+- [x] Task: Verify list refresh on the Project Page. (66562ee)
+    - [x] Ensure `revalidatePath` is called for the project page after mission creation.
+    - [x] Ensure client-side state is updated when props change after refresh.
+- [~] Task: Conductor - User Manual Verification 'Phase 3: Polish & Success Flow' (Protocol in workflow.md)
