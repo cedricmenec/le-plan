@@ -12,7 +12,7 @@ Focus on the backend transitions and ensuring we can fetch the data needed for t
     - [x] Verify that existing fetching logic in `app/missions/[id]` retrieves completed tasks and milestones correctly.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Logic & Actions' (Protocol in workflow.md)
 
-## Phase 2: ReadOnly UI Components
+## Phase 2: ReadOnly UI Components [checkpoint: 7ac9d4b]
 Create the read-only versions of the core mission detail components.
 
 - [x] Task: Create a ReadOnly wrapper or variant for `TaskList`.
