@@ -10,7 +10,7 @@ This plan outlines the steps to integrate Prisma and Prisma Migrate into the pro
 
 ## Phase 2: Schema Introspection & Baselining
 - [x] Task: Introspect existing database to populate `schema.prisma` 2361ea9
-- [ ] Task: Create initial baseline migration (`npx prisma migrate dev --name init --create-only`)
+- [x] Task: Create initial baseline migration (`npx prisma migrate dev --name init --create-only`) caed7de
 - [ ] Task: Mark migration as applied in Supabase (`npx prisma migrate resolve --applied "..._init"`)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
