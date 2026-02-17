@@ -9,10 +9,10 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Preparation' (Protocol in workflow.md) (77b218c)
 
 ## Phase 2: Project Page Integration
-- [ ] Task: Add "Add Mission" button to the Project Detail page header.
-    - [ ] Write tests for the Project Page header to ensure the new button exists and is only visible when the user has appropriate permissions (if applicable).
-    - [ ] Implement the `AddMissionDialog` trigger in `app/projects/[id]/page.tsx`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Project Page Integration' (Protocol in workflow.md)
+- [x] Task: Add "Add Mission" button to the Project Detail page header. (0222837)
+    - [x] Write tests for the Project Page header to ensure the new button exists and is only visible when the user has appropriate permissions (if applicable).
+    - [x] Implement the `AddMissionDialog` trigger in `app/projects/[id]/page.tsx`.
+- [~] Task: Conductor - User Manual Verification 'Phase 2: Project Page Integration' (Protocol in workflow.md)
 
 ## Phase 3: Polish & Success Flow
 - [ ] Task: Implement the success toast with "View Mission" link.
