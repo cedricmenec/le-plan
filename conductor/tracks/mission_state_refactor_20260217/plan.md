@@ -2,14 +2,14 @@
 
 This plan outlines the steps to refactor the mission state management from a simple string-based status to a structured macro-state model with explicit transition rules, as defined in `spec.md`.
 
-## Phase 1: Database & Core Logic
+## Phase 1: Database & Core Logic [checkpoint: db9cd1e]
 This phase focuses on updating the data model and implementing the centralized state machine that will govern all transitions.
 
-- [ ] Task: Update Prisma schema to include `MissionState` and `MissionReason` enums and add `state` and `reason` columns to the `missions` model.
-- [ ] Task: Create a database migration to add the new columns and perform the initial data mapping (`todo` -> `Backlog`, `in_progress` -> `Active`, `done` -> `Terminated/Done`).
-- [ ] Task: Implement the `MissionStateMachine` in `lib/missions/state-machine.ts` with transition validation logic.
-- [ ] Task: Write unit tests for the `MissionStateMachine` covering all allowed and forbidden transitions.
-- [ ] Task: Conductor - User Manual Verification 'Database & Core Logic' (Protocol in workflow.md)
+- [x] Task: Update Prisma schema to include `MissionState` and `MissionReason` enums and add `state` and `reason` columns to the `missions` model. 53fbf6f
+- [x] Task: Create a database migration to add the new columns and perform the initial data mapping (`todo` -> `Backlog`, `in_progress` -> `Active`, `done` -> `Terminated/Done`). 53fbf6f
+- [x] Task: Implement the `MissionStateMachine` in `lib/missions/state-machine.ts` with transition validation logic. 53fbf6f
+- [x] Task: Write unit tests for the `MissionStateMachine` covering all allowed and forbidden transitions. 53fbf6f
+- [x] Task: Conductor - User Manual Verification 'Database & Core Logic' (Protocol in workflow.md) db9cd1e
 
 ## Phase 2: Backend Integration
 Refactor the server actions and API layer to use the new state model and the state machine for validations.
