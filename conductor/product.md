@@ -165,7 +165,7 @@ Le projet consiste à développer une **application Web** personnelle de visibil
 *   **Tableau de Bord de Charge (Inclus) :** Interface de type Dashboard avec barre de navigation latérale, header d'actions rapides et grille de missions active.
     *   **Accès Direct aux Projets (Inclus) :** Liste des projets accessible directement depuis la barre de navigation latérale via un dossier "Projects" dépliable.
 *   **Gestion des Projets :** Création, modification et vue détaillée des projets.
-    *   **Vue détaillée (Inclus) :** Visualisation de toutes les missions non-terminées d'un projet (actives et à venir) avec des indicateurs visuels de capacité (Grid Placeholders), de **priorité** et de **délais relatifs**.
+    *   **Vue détaillée (Inclus) :** Visualisation de toutes les missions non-terminées d'un projet (actives et à venir) avec des indicateurs visuels de capacité (Grid Placeholders), de **priorité** et de **délais relatifs**. Permet la **création rapide de mission** directement depuis l'en-tête, avec pré-sélection automatique et verrouillage du projet.
         *   **Missions terminées (Inclus) :** Liste des missions terminées (historique) affichée au bas de la page projet avec le type, la charge réelle et la durée de réalisation.
         *   **État vide (Inclus) :** Affichage d'un "Ghost Grid" (skeleton cards) avec un bouton d'action pour créer la première mission si aucune n'existe.
     *   Facilitation de la priorisation des missions par un **modèle de macro-états explicite (Backlog, Next Up, En cours, Suspendu, Terminé)**, un **tri automatique par date de livraison estimée**, un **tri alphabétique des projets**, et un **affichage dynamique de la charge restante** (ROM ou tâches) directement sur les cartes de mission.
