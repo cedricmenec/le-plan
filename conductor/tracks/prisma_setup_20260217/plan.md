@@ -4,7 +4,7 @@ This plan outlines the steps to integrate Prisma and Prisma Migrate into the pro
 
 ## Phase 1: Environment & Tooling Setup
 - [x] Task: Install Prisma dependencies (prisma, @prisma/client) cb74590
-- [ ] Task: Initialize Prisma in the project (`npx prisma init`)
+- [x] Task: Initialize Prisma in the project (`npx prisma init`) a460735
 - [ ] Task: Configure `.env` and `schema.prisma` for direct Supabase connection
 - [ ] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
