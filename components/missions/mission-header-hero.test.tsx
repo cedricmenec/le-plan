@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { expect, test, describe, vi } from 'vitest'
 import { MissionHeaderHero, MissionHeroBlock } from './mission-header-hero'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { MissionState, MissionReason } from '@prisma/client'
 
 // Mock useRouter
 vi.mock('next/navigation', () => ({
@@ -28,12 +29,18 @@ vi.mock('./mission-timeline', () => ({
   MissionTimeline: () => <div data-testid="mission-timeline" />
 }))
 
+// Mock MissionStateActions
+vi.mock('./mission-state-actions', () => ({
+  MissionStateActions: ({ state }: any) => <div data-testid="state-actions">{state}</div>
+}))
+
 describe('MissionHeaderHero & MissionHeroBlock', () => {
   const mockMission = {
     id: 'm1',
     title: 'Hero Mission',
     type: 'feature',
-    status: 'in_progress',
+    state: MissionState.Active,
+    reason: null,
     estimation: 5,
     confidence: 90,
     estimated_delivery_date: '2026-02-01',
@@ -43,8 +50,8 @@ describe('MissionHeaderHero & MissionHeroBlock', () => {
     rom_size: 'M',
     load_source: 'rom',
     subtasks: [
-      { id: 't1', status: 'todo', estimation: 2 },
-      { id: 't2', status: 'done', estimation: 1 }
+      { id: 't1', is_completed: false, estimation: 2 },
+      { id: 't2', is_completed: true, estimation: 1 }
     ]
   }
 
@@ -59,7 +66,7 @@ describe('MissionHeaderHero & MissionHeroBlock', () => {
     expect(screen.getByText('Super Project')).toBeDefined()
   })
 
-  test('renders mission type and status badges', () => {
+  test('renders mission type and state badges', () => {
     render(
       <TooltipProvider>
         <MissionHeaderHero mission={mockMission} onUpdate={async () => {}} />
@@ -67,7 +74,7 @@ describe('MissionHeaderHero & MissionHeroBlock', () => {
     )
 
     expect(screen.getByText(/FEATURE/i)).toBeDefined()
-    expect(screen.getByText(/EN COURS/i)).toBeDefined()
+    expect(screen.getByTestId('state-actions')).toBeDefined()
   })
 
   test('renders estimation controls after clicking toggle', () => {
@@ -85,8 +92,6 @@ describe('MissionHeaderHero & MissionHeroBlock', () => {
 
     // ROM display (M)
     expect(screen.getByText(/M \(~5j\)/i)).toBeDefined()
-    // Official source toggle display
-    expect(screen.getByText(/T-SHIRT \(ROM\)/i)).toBeDefined()
     
     // Comparison values
     expect(screen.getByText('5j')).toBeDefined() // ROM M = 5

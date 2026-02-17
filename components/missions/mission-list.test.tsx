@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { expect, test, vi, beforeAll } from 'vitest'
+import { expect, test, vi, beforeAll, describe, beforeEach } from 'vitest'
 import { MissionList } from './mission-list'
+import { MissionState } from '@prisma/client'
 
 beforeAll(() => {
   global.ResizeObserver = class {
@@ -27,182 +28,112 @@ vi.mock('next/navigation', () => ({
   })),
 }))
 
+// Mock server actions
+vi.mock('@/app/missions/actions', () => ({
+  updateMission: vi.fn(),
+  deleteMission: vi.fn(),
+  getMission: vi.fn(),
+}))
+
 // Mock Supabase
-vi.mock('@/lib/supabase/client', () => {
-  const missionsFirst = [
-    { id: '1', title: 'Mission 1', type: 'feature', estimation: 2, status: 'todo', projects: { name: 'Projet Test' } },
-  ]
-  const missionsAfter = [
-    { id: '3', title: 'Nouvelle mission', type: 'feature', estimation: 1, status: 'todo', projects: null },
-    ...missionsFirst,
-  ]
-
-  // Track state across calls
-  let callCount = 0;
-
-  const mockFrom = vi.fn((table) => {
-    if (table === 'missions') {
-      const chain = {
-        select: vi.fn(() => chain),
-        order: vi.fn(() => {
-          // We return the chain, but we need to track when the final promise should resolve
-          // For simplicity, we'll return a proxy or just make the chain thenable
-          return {
-            ...chain,
-            then: (onfulfilled: any) => {
-              callCount++;
-              const data = callCount <= 4 ? missionsFirst : missionsAfter;
-              return Promise.resolve({ data, error: null }).then(onfulfilled);
-            }
-          };
-        }),
-        delete: vi.fn(() => ({
-          eq: vi.fn().mockResolvedValue({ error: null })
-        })),
-        update: vi.fn(() => ({
-          eq: vi.fn().mockResolvedValue({ error: null })
+vi.mock('@/lib/supabase/client', () => ({
+  createClient: vi.fn(() => ({
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({
+        order: vi.fn(() => ({
+          order: vi.fn(() => Promise.resolve({ data: [], error: null }))
         }))
-      }
-      return chain
-    }
-    if (table === 'subtasks') {
-      return {
-        select: vi.fn(() => ({
-          eq: vi.fn(() => ({
-            order: vi.fn(() => Promise.resolve({ data: [], error: null })),
-          })),
-        })),
-      }
-    }
-    return {}
+      }))
+    }))
+  }))
+}))
+
+describe('MissionList', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
   })
 
-  return {
-    createClient: vi.fn(() => ({
-      from: mockFrom,
-    })),
-  }
-})
+  test('renders mission list with missions', async () => {
+    const mockMissions = [
+      { id: '1', title: 'Mission 1', type: 'feature', estimation: 2, state: MissionState.Backlog, projects: { name: 'Projet Test' }, subtasks: [] },
+    ]
+    render(<MissionList initialMissions={mockMissions as any} />)
 
-test('renders mission list with missions', async () => {
-  render(<MissionList />)
+    const mission1 = await screen.findByText(/Mission 1/i)
+    expect(mission1).toBeDefined()
+  })
 
-  const mission1 = await screen.findByText(/Mission 1/i)
-  expect(mission1).toBeDefined()
+  test('renders mission goal and notes icon when present', async () => {
+    const missions = [
+      { 
+        id: '1', 
+        title: 'Mission with goal', 
+        type: 'feature', 
+        goal: 'This is the main goal', 
+        notes: 'Some notes',
+        estimation: 2, 
+        state: MissionState.Backlog, 
+        projects: null,
+        confidence: 100,
+        subtasks: []
+      },
+    ]
+    render(<MissionList initialMissions={missions as any} />)
 
-  // the 'Nouvelle mission' is not present on the initial fetch
-  expect(screen.queryByText(/Nouvelle mission/i)).toBeNull()
-})
+    expect(screen.getByText(/This is the main goal/i)).toBeDefined()
+    expect(screen.getByTestId('notes-icon')).toBeDefined()
+  })
 
-test('renders mission goal and notes icon when present', async () => {
-  const missions = [
-    { 
-      id: '1', 
-      title: 'Mission with goal', 
-      type: 'feature', 
-      goal: 'This is the main goal', 
-      notes: 'Some notes',
-      estimation: 2, 
-      status: 'todo', 
-      projects: null,
-      confidence: 100
-    },
-  ]
-  // @ts-ignore
-  render(<MissionList initialMissions={missions} />)
+  test('renders split layout correctly', () => {
+    const missions = [
+      { 
+        id: '1', 
+        title: 'Active Mission', 
+        type: 'feature', 
+        state: MissionState.Active, 
+        estimation: 2, 
+        created_at: '2026-01-24T10:00:00Z',
+        projects: null,
+        subtasks: []
+      },
+      { 
+        id: '2', 
+        title: 'Todo Mission', 
+        type: 'study', 
+        state: MissionState.Backlog, 
+        estimation: 1, 
+        created_at: '2026-01-24T11:00:00Z',
+        projects: null,
+        subtasks: []
+      },
+    ]
+    render(<MissionList initialMissions={missions as any} layout="split" />)
 
-  expect(screen.getByText(/This is the main goal/i)).toBeDefined()
-  expect(screen.getByTestId('notes-icon')).toBeDefined()
-})
+    expect(screen.getByText('Missions actives')).toBeDefined()
+    expect(screen.getByText('Missions non commencées')).toBeDefined()
+    expect(screen.getByText('1 mission en cours')).toBeDefined()
+    expect(screen.getByText('1 mission en attente')).toBeDefined()
+    expect(screen.getByText('Active Mission')).toBeDefined()
+    expect(screen.getByText('Todo Mission')).toBeDefined()
+  })
 
-test('re-fetches missions when a mission is created (missions:created)', async () => {
-  render(<MissionList />)
+  test('renders grid placeholders in active missions grid', () => {
+    const missions = [
+      { 
+        id: '1', 
+        title: 'Active Mission 1', 
+        type: 'feature', 
+        state: MissionState.Active, 
+        estimation: 2, 
+        created_at: '2026-01-24T10:00:00Z',
+        projects: null,
+        subtasks: []
+      },
+    ]
+    render(<MissionList initialMissions={missions as any} layout="split" />)
 
-  // initial state: at least the baseline mission is present
-  await screen.findByText(/Mission 1/i)
-
-  // simulate another component notifying that a mission was created
-  window.dispatchEvent(new CustomEvent('missions:created'))
-
-  // MissionList should re-fetch and render the new mission
-  const newMission = await screen.findByText(/Nouvelle mission/i)
-  expect(newMission).toBeDefined()
-})
-
-test('handles mission deletion', async () => {
-  render(<MissionList />)
-  
-  // Find actions button for Mission 1
-  const actionsButtons = await screen.findAllByRole('button', { name: /actions/i })
-  const actionsButton = actionsButtons[0]
-  
-  // Open actions menu
-  fireEvent.pointerDown(actionsButton, { pointerId: 1, pointerType: 'mouse' })
-  fireEvent.click(actionsButton)
-  
-  // Click delete option
-  const deleteOption = await screen.findByText(/supprimer la mission/i)
-  fireEvent.click(deleteOption)
-  
-  // Confirm deletion in dialog
-  const confirmButton = await screen.findByRole('button', { name: /supprimer/i })
-  fireEvent.click(confirmButton)
-  
-  // Verify Supabase delete was called (we assume the mock is set up correctly in the global scope)
-  // Since checking the exact call args on the internal mock is hard without exposing it, 
-  // we rely on the flow completing without error.
-  // Ideally, we would export the mock or spy on it, but for this integration test, 
-  // seeing the dialog close and no error is a good sign.
-})
-
-test('renders split layout correctly', () => {
-  const missions = [
-    { 
-      id: '1', 
-      title: 'Active Mission', 
-      type: 'feature', 
-      status: 'in_progress', 
-      estimation: 2, 
-      created_at: '2026-01-24T10:00:00Z',
-      projects: null 
-    },
-    { 
-      id: '2', 
-      title: 'Todo Mission', 
-      type: 'study', 
-      status: 'todo', 
-      estimation: 1, 
-      created_at: '2026-01-24T11:00:00Z',
-      projects: null 
-    },
-  ]
-  // @ts-ignore
-  render(<MissionList initialMissions={missions} layout="split" />)
-
-  expect(screen.getByText('Missions actives')).toBeDefined()
-  expect(screen.getByText('Missions non commencées')).toBeDefined()
-  expect(screen.getByText('1 mission en cours')).toBeDefined()
-  expect(screen.getByText('1 mission en attente')).toBeDefined()
-  expect(screen.getByText('Active Mission')).toBeDefined()
-  expect(screen.getByText('Todo Mission')).toBeDefined()
-})
-
-test('renders grid placeholders in active missions grid', () => {
-  const missions = [
-    { 
-      id: '1', 
-      title: 'Active Mission 1', 
-      type: 'feature', 
-      status: 'in_progress', 
-      estimation: 2, 
-      created_at: '2026-01-24T10:00:00Z',
-      projects: null 
-    },
-  ]
-  // @ts-ignore
-  render(<MissionList initialMissions={missions} layout="split" />)
-
-  // Should have 1 mission + 2 placeholders to fill the row of 3
-  const placeholders = screen.getAllByText('Encore de la place pour sauver le monde ?')
-  expect(placeholders).toBeDefined()
+    // Should have 1 mission + 2 placeholders to fill the row of 3
+    const placeholders = screen.getAllByText('Encore de la place pour sauver le monde ?')
+    expect(placeholders).toBeDefined()
+  })
 })

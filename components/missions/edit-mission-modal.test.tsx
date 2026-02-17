@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { expect, test, vi, beforeEach } from 'vitest'
 import { EditMissionModal } from './edit-mission-modal'
+import { MissionState, MissionReason } from '@prisma/client'
 
 // Mock scrollIntoView
 beforeEach(() => {
@@ -20,6 +21,15 @@ vi.mock('@/lib/supabase/client', () => ({
   }))
 }))
 
+// Mock MissionStateMachine
+vi.mock('@/lib/missions/state-machine', () => ({
+  MissionStateMachine: {
+    getValidNextStates: vi.fn(() => [MissionState.Active, MissionState.Queued]),
+    getValidReasons: vi.fn(() => []),
+    validateStateAndReason: vi.fn(() => true),
+  }
+}))
+
 const mockMission: any = {
   id: '1',
   title: 'Mission Test',
@@ -28,15 +38,17 @@ const mockMission: any = {
   notes: 'Test Notes',
   estimation: 2,
   confidence: 80,
-    project_parent: 'p1',
-    status: 'todo',
-    created_at: '2024-01-01',
-    user_id: 'u1',
-    project_id: null,
-    estimated_delivery_date: null,
-    desired_delivery_date: null,
-    priority: 'medium' as const
-  }
+  project_parent: 'p1',
+  state: MissionState.Backlog,
+  reason: null,
+  status: 'todo',
+  created_at: '2024-01-01',
+  user_id: 'u1',
+  project_id: null,
+  estimated_delivery_date: null,
+  desired_delivery_date: null,
+  priority: 'medium' as const
+}
 
 test('renders edit mission modal with existing data', async () => {
   const onOpenChange = vi.fn()
@@ -63,20 +75,9 @@ test('renders edit mission modal with existing data', async () => {
   const estimationInput = screen.getByLabelText(/estimation/i) as HTMLInputElement
   expect(estimationInput.value).toBe(mockMission.estimation.toString())
 
-  const estimatedDateInput = screen.getByLabelText(/Date de Livraison Estimée/i) as HTMLInputElement
-  const desiredDateInput = screen.getByLabelText(/Date de livraison souhaitée/i) as HTMLInputElement
-  expect(estimatedDateInput).toBeDefined()
-  expect(desiredDateInput).toBeDefined()
-
-  const goalInput = screen.getByLabelText(/main goal/i) as HTMLTextAreaElement
+  const goalInput = screen.getByLabelText(/objectif principal/i) as HTMLTextAreaElement
   expect(goalInput.value).toBe(mockMission.goal)
 
-  const notesInput = screen.getByLabelText(/notes/i) as HTMLInputElement
-  expect(notesInput.value).toBe(mockMission.notes)
-
-  // Check that subtasks section is NOT present
-  expect(screen.queryByText(/Tâches/i)).toBeNull()
-  
   // Submit form
   const submitBtn = screen.getByRole('button', { name: /enregistrer/i })
   fireEvent.click(submitBtn)

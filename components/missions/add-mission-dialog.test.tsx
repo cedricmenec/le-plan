@@ -15,7 +15,7 @@ vi.mock('./mission-form', () => ({
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          onSuccess()
+          onSuccess({ id: '123', title: 'Mock Mission' } as any)
         }}
       >
         <button type="submit">Submit</button>

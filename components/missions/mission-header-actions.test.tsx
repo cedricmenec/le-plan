@@ -2,6 +2,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react'
 import { expect, test, describe, vi } from 'vitest'
 import { MissionHeaderHero } from './mission-header-hero'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { MissionState } from '@prisma/client'
 
 // Mock useRouter
 vi.mock('next/navigation', () => ({
@@ -23,6 +24,11 @@ vi.mock('@/lib/supabase/client', () => ({
   }),
 }))
 
+// Mock MissionStateActions
+vi.mock('./mission-state-actions', () => ({
+  MissionStateActions: ({ state }: any) => <div data-testid="state-actions">{state}</div>
+}))
+
 // Mock DropdownMenu to avoid Portal issues in tests
 vi.mock('@/components/ui/dropdown-menu', () => ({
   DropdownMenu: ({ children }: any) => <div data-testid="dropdown-menu">{children}</div>,
@@ -33,6 +39,11 @@ vi.mock('@/components/ui/dropdown-menu', () => ({
       {children}
     </div>
   ),
+  DropdownMenuLabel: ({ children }: any) => <div>{children}</div>,
+  DropdownMenuSeparator: () => <hr />,
+  DropdownMenuSub: ({ children }: any) => <div>{children}</div>,
+  DropdownMenuSubTrigger: ({ children }: any) => <div>{children}</div>,
+  DropdownMenuSubContent: ({ children }: any) => <div>{children}</div>,
 }))
 
 describe('MissionHeaderHero Actions Menu', () => {
@@ -40,7 +51,7 @@ describe('MissionHeaderHero Actions Menu', () => {
     id: 'm1',
     title: 'Hero Mission',
     type: 'feature',
-    status: 'in_progress',
+    state: MissionState.Active,
     project_id: 'p1',
     projects: { name: 'Super Project' },
   }

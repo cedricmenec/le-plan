@@ -47,6 +47,10 @@ describe('MissionStateMachine', () => {
     it('should NOT allow transition from Terminated to Active', () => {
       expect(MissionStateMachine.isValidTransition(MissionState.Terminated, MissionState.Active)).toBe(false);
     });
+
+    it('should allow transition from Terminated to Queued', () => {
+      expect(MissionStateMachine.isValidTransition(MissionState.Terminated, MissionState.Queued)).toBe(true);
+    });
   });
 
   describe('validateStateAndReason', () => {

@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { expect, test, describe, vi } from 'vitest'
 import { MissionHeaderHero, MissionHeroBlock } from './mission-header-hero'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { MissionState } from '@prisma/client'
 
 // Mock useRouter
 vi.mock('next/navigation', () => ({
@@ -28,12 +29,18 @@ vi.mock('./mission-timeline', () => ({
   MissionTimeline: () => <div data-testid="mission-timeline" />
 }))
 
+// Mock MissionStateActions
+vi.mock('./mission-state-actions', () => ({
+  MissionStateActions: () => <div data-testid="state-actions" />
+}))
+
 describe('MissionHeaderHero UI Polishing', () => {
   const mockMission = {
     id: 'm1',
     title: 'Hero Mission',
     type: 'feature',
-    status: 'in_progress',
+    state: MissionState.Active,
+    reason: null,
     projects: { name: 'Super Project' }
   }
 
@@ -57,8 +64,6 @@ describe('MissionHeaderHero UI Polishing', () => {
     )
     
     const heroBlock = container.querySelector('.rounded-2xl.border')
-    // expect(heroBlock?.className).not.toContain('shadow-') 
-    // toContain on undefined or null if not found, but it should be found
     if (!heroBlock) throw new Error('heroBlock not found')
     expect(heroBlock.className).not.toContain('shadow-')
   })

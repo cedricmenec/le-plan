@@ -1,58 +1,65 @@
-import { expect, test, vi } from 'vitest'
-import { getProjects, getProject, createProject, updateProject, deleteProject } from './actions'
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { getProjects, getProject, createProject, updateProject, deleteProject } from './actions';
+import { prisma } from '@/lib/prisma';
 
-const mockSelect = vi.fn((query) => ({
-  order: vi.fn(() => Promise.resolve({ data: [], error: null })),
-  eq: vi.fn(() => ({
-    single: vi.fn(() => Promise.resolve({ data: { id: '1', name: 'Test Project' }, error: null })),
-    select: vi.fn(() => ({
-      single: vi.fn(() => Promise.resolve({ data: {}, error: null }))
-    }))
-  }))
-}))
+vi.mock('@/lib/prisma', () => ({
+  prisma: {
+    projects: {
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
+    missions: {
+      count: vi.fn(),
+    }
+  },
+}));
 
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(() => ({
-    from: vi.fn(() => ({
-      select: mockSelect,
-      insert: vi.fn(() => ({
-        select: vi.fn(() => ({
-          single: vi.fn(() => Promise.resolve({ data: { id: '1', name: 'Test' }, error: null }))
-        }))
-      })),
-      update: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          select: vi.fn(() => ({
-            single: vi.fn(() => Promise.resolve({ data: {}, error: null }))
-          }))
-        }))
-      })),
-      delete: vi.fn(() => ({
-        eq: vi.fn(() => Promise.resolve({ error: null }))
-      }))
-    })),
     auth: {
-      getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-1' } }, error: null }))
-    }
-  }))
-}))
+      getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-1' } } })),
+    },
+  })),
+}));
 
-test('exports are defined', () => {
-  expect(getProjects).toBeDefined()
-  expect(getProject).toBeDefined()
-  expect(createProject).toBeDefined()
-  expect(updateProject).toBeDefined()
-  expect(deleteProject).toBeDefined()
-})
+vi.mock('next/cache', () => ({
+  revalidatePath: vi.fn(),
+}));
 
-test('getProjects calls select with correct query', async () => {
-  await getProjects()
-  expect(mockSelect).toHaveBeenCalledWith('*, missions(*, subtasks(*))')
-})
+describe('Project Actions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-test('getProject returns a project and calls select with correct query', async () => {
-  const project = await getProject('1')
-  expect(project).toBeDefined()
-  expect(project.name).toBe('Test Project')
-  expect(mockSelect).toHaveBeenCalledWith('*, missions(*, projects(name), subtasks(*))')
-})
+  it('getProjects fetches projects with missions', async () => {
+    (prisma.projects.findMany as any).mockResolvedValue([]);
+    await getProjects();
+    expect(prisma.projects.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      include: {
+        missions: {
+          include: {
+            subtasks: true
+          }
+        }
+      }
+    }));
+  });
+
+  it('getProject fetches a project by id', async () => {
+    const mockProj = { id: '1', name: 'Test' };
+    (prisma.projects.findUnique as any).mockResolvedValue(mockProj);
+    const result = await getProject('1');
+    expect(result).toMatchObject(mockProj);
+    expect(prisma.projects.findUnique).toHaveBeenCalledWith(expect.objectContaining({
+      where: { id: '1' }
+    }));
+  });
+
+  it('deleteProject throws error if missions exist', async () => {
+    (prisma.missions.count as any).mockResolvedValue(5);
+    await expect(deleteProject('1')).rejects.toThrow('Cannot delete project with attached missions');
+  });
+});

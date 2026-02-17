@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { expect, test, vi, beforeAll, describe, beforeEach, afterEach } from 'vitest'
 import { MissionCard, MissionWithProject } from './mission-card'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { MissionState, MissionReason } from '@prisma/client'
 
 beforeAll(() => {
   global.ResizeObserver = class {
@@ -25,14 +26,13 @@ describe('MissionCard', () => {
     id: '1',
     title: 'Test Mission',
     type: 'feature',
+    state: MissionState.Backlog,
+    reason: null,
     status: 'todo',
-    estimation: 2,
     confidence: 85,
     goal: 'Test Goal',
     notes: 'Test Notes',
     project_parent: 'p1',
-    created_at: new Date().toISOString(),
-    user_id: 'user-1',
     project_id: 'p1',
     priority: 'medium',
     projects: {
@@ -42,8 +42,6 @@ describe('MissionCard', () => {
     desired_delivery_date: null,
     rom_size: 'S',
     load_source: 'rom',
-    completed_at: null,
-    started_at: null,
     subtasks: []
   }
 
@@ -64,8 +62,9 @@ describe('MissionCard', () => {
     expect(screen.getByText('Test Goal')).toBeDefined()
     expect(screen.getByTestId('notes-icon')).toBeDefined()
     
-    // Check for status badge and footer status
-    expect(screen.getAllByText(/TODO/i).length).toBeGreaterThanOrEqual(2)
+    // Check for state badge and footer state
+    expect(screen.getByText('Backlog')).toBeDefined()
+    expect(screen.getByText(/ETAT: Backlog/i)).toBeDefined()
 
     // Check for ROM estimation (Size S = 2j)
     expect(screen.getByText('2j')).toBeDefined()
@@ -102,15 +101,15 @@ describe('MissionCard', () => {
       ...mockMission,
       load_source: 'tasks',
       subtasks: [
-        { id: 's1', title: 'T1', estimation: 1, status: 'todo' } as any,
-        { id: 's2', title: 'T2', estimation: 0.5, status: 'in_progress' } as any,
-        { id: 's3', title: 'T3', estimation: 2, status: 'done' } as any,
+        { id: 's1', title: 'T1', estimation: 1, is_completed: false },
+        { id: 's2', title: 'T2', estimation: 0.5, is_completed: false },
+        { id: 's3', title: 'T3', estimation: 2, is_completed: true },
       ]
     }
     render(
       <TooltipProvider>
         <MissionCard 
-          mission={tasksMission} 
+          mission={tasksMission as any} 
           onEdit={() => {}} 
           onDelete={() => {}} 
         />

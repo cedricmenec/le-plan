@@ -1,12 +1,9 @@
 import { render, screen } from '@testing-library/react'
 import { ProjectCard } from './project-card'
 import { expect, test, vi } from 'vitest'
-import { Database } from '@/types/database.types'
+import { MissionState, MissionReason } from '@prisma/client'
 
-type Project = Database['public']['Tables']['projects']['Row']
-type Mission = Database['public']['Tables']['missions']['Row']
-
-const mockProject: Project = {
+const mockProject = {
   id: '1',
   name: 'Test Project',
   label: 'Marketing',
@@ -18,11 +15,12 @@ const mockProject: Project = {
   image_url: null
 }
 
-const mockMissions: Mission[] = [
+const mockMissions = [
   {
     id: 'm1',
     title: 'Active Mission',
-    status: 'in_progress',
+    state: MissionState.Active,
+    reason: null,
     estimated_delivery_date: '2026-01-30',
     created_at: '',
     user_id: 'u1',
@@ -37,13 +35,12 @@ const mockMissions: Mission[] = [
     project_parent: null,
     rom_size: null,
     load_source: 'tasks',
-    completed_at: null,
-    started_at: null
   },
   {
     id: 'm2',
     title: 'Upcoming Mission',
-    status: 'todo',
+    state: MissionState.Backlog,
+    reason: null,
     estimated_delivery_date: null,
     created_at: '',
     user_id: 'u1',
@@ -58,16 +55,14 @@ const mockMissions: Mission[] = [
     project_parent: null,
     rom_size: null,
     load_source: 'tasks',
-    completed_at: null,
-    started_at: null
   }
 ]
 
 test('renders project name and label', () => {
   render(
     <ProjectCard 
-      project={mockProject} 
-      missions={mockMissions}
+      project={mockProject as any} 
+      missions={mockMissions as any}
       onEdit={vi.fn()} 
       onDelete={vi.fn()} 
     />
@@ -79,8 +74,8 @@ test('renders project name and label', () => {
 test('renders active missions list', () => {
   render(
     <ProjectCard 
-      project={mockProject} 
-      missions={mockMissions}
+      project={mockProject as any} 
+      missions={mockMissions as any} 
       onEdit={vi.fn()} 
       onDelete={vi.fn()} 
     />
@@ -93,8 +88,8 @@ test('renders project image when image_url is provided', () => {
   const projectWithImage = { ...mockProject, image_url: 'https://example.com/image.jpg' }
   render(
     <ProjectCard 
-      project={projectWithImage} 
-      missions={mockMissions}
+      project={projectWithImage as any} 
+      missions={mockMissions as any}
       onEdit={vi.fn()} 
       onDelete={vi.fn()} 
     />
@@ -106,8 +101,8 @@ test('renders project image when image_url is provided', () => {
 test('renders upcoming missions count', () => {
   render(
     <ProjectCard 
-      project={mockProject} 
-      missions={mockMissions}
+      project={mockProject as any} 
+      missions={mockMissions as any} 
       onEdit={vi.fn()} 
       onDelete={vi.fn()} 
     />

@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import MissionDetailPage from './page'
 import { expect, test, vi } from 'vitest'
+import { MissionState } from '@prisma/client'
 
 // Mock useRouter
 vi.mock('next/navigation', () => ({
@@ -22,6 +23,11 @@ vi.mock('@/lib/supabase/client', () => ({
   }),
 }))
 
+// Mock MissionStateActions
+vi.mock('@/components/missions/mission-state-actions', () => ({
+  MissionStateActions: ({ state }: any) => <div data-testid="state-actions">{state}</div>
+}))
+
 // Mock the server components/actions
 vi.mock('../actions', () => ({
   getMission: vi.fn(() => Promise.resolve({
@@ -29,7 +35,8 @@ vi.mock('../actions', () => ({
     title: 'Test Mission',
     goal: 'Test Goal',
     notes: 'Test Notes',
-    status: 'in_progress',
+    state: MissionState.Active,
+    reason: null,
     type: 'feature',
     estimation: 5,
     confidence: 80,
@@ -79,6 +86,7 @@ test('renders mission detail page with project breadcrumbs', async () => {
   render(Page)
 
   expect(screen.getByText('Projects')).toBeDefined()
+  // One in breadcrumbs, one in header
   expect(screen.getAllByText('Test Project')).toHaveLength(2)
 })
 
@@ -91,7 +99,8 @@ test('renders mission detail page', async () => {
   expect(screen.getByText('Test Goal')).toBeDefined()
   expect(screen.getByText('Test Notes')).toBeDefined()
   expect(screen.getByText('Feature')).toBeDefined()
-  expect(screen.getByText('En cours')).toBeDefined()
+  expect(screen.getByTestId('state-actions')).toBeDefined()
+  expect(screen.getByText('Active')).toBeDefined()
   expect(screen.getByText(/remaining/i)).toBeDefined()
   expect(screen.getByText('80%')).toBeDefined()
   expect(screen.getByText('2026-06-01')).toBeDefined()

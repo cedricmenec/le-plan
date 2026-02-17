@@ -20,9 +20,9 @@ describe('load-utils', () => {
   describe('calculateTaskRemainingLoad', () => {
     test('sums estimations of non-done tasks', () => {
       const tasks = [
-        { status: 'todo', estimation: 1 },
-        { status: 'in_progress', estimation: 2.5 },
-        { status: 'done', estimation: 5 },
+        { is_completed: false, estimation: 1 },
+        { is_completed: false, estimation: 2.5 },
+        { is_completed: true, estimation: 5 },
       ]
       // @ts-ignore - testing with partial objects
       expect(calculateTaskRemainingLoad(tasks)).toBe(3.5)
@@ -30,7 +30,7 @@ describe('load-utils', () => {
 
     test('returns 0 if all tasks are done', () => {
       const tasks = [
-        { status: 'done', estimation: 1 },
+        { is_completed: true, estimation: 1 },
       ]
       // @ts-ignore
       expect(calculateTaskRemainingLoad(tasks)).toBe(0)
