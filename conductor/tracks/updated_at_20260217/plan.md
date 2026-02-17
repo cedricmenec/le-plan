@@ -3,9 +3,9 @@
 ## Phase 1: Database Schema Update & Migration
 This phase focuses on updating the Prisma schema and applying the changes to the database.
 
-- [ ] Task: Update `prisma/schema.prisma` to add `updated_at` field with `@updatedAt` to `Project`, `Mission`, and `Subtask` models
-- [ ] Task: Generate a new Prisma migration and apply it to the database
-- [ ] Task: Verify the migration by inspecting the database schema
+- [x] Task: Update `prisma/schema.prisma` to add `updated_at` field with `@updatedAt` to `Project`, `Mission`, and `Subtask` models 0c20c9a
+- [x] Task: Generate a new Prisma migration and apply it to the database 0c20c9a
+- [x] Task: Verify the migration by inspecting the database schema 0c20c9a
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Database Schema Update & Migration' (Protocol in workflow.md)
 
 ## Phase 2: Repository/Service Layer Verification
