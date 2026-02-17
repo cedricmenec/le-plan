@@ -145,9 +145,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Permettre directement depuis la page de gestion d'un projet d'ajouter une nouvelle mission pour ce projet.
 - **ID**: `add_mission_from_project_20260217`
 - **Link**: [conductor/archive/add_mission_from_project_20260217](archive/add_mission_from_project_20260217/)
-
----
-
-## [x] Track: ReadOnly Access for Completed Missions
-- **ID**: `readonly_completed_missions_20260217`
-- **Link**: [conductor/tracks/readonly_completed_missions_20260217/](tracks/readonly_completed_missions_20260217/)
