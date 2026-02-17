@@ -14,7 +14,7 @@
     - [x] Implement the `AddMissionDialog` trigger in `app/projects/[id]/page.tsx`.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Project Page Integration' (Protocol in workflow.md) (5529bdf)
 
-## Phase 3: Polish & Success Flow
+## Phase 3: Polish & Success Flow [checkpoint: 2aaaf49]
 - [x] Task: Implement the success toast with "View Mission" link. (66562ee)
     - [x] Update the `addMission` action or the form submission handler to return the new mission ID.
     - [x] Update the UI to show the toast with the dynamic link after successful creation.
@@ -23,4 +23,4 @@
 - [x] Task: Verify list refresh on the Project Page. (66562ee)
     - [x] Ensure `revalidatePath` is called for the project page after mission creation.
     - [x] Ensure client-side state is updated when props change after refresh.
-- [~] Task: Conductor - User Manual Verification 'Phase 3: Polish & Success Flow' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Polish & Success Flow' (Protocol in workflow.md) (2aaaf49)
