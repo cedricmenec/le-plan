@@ -35,11 +35,11 @@ Implement the new page structure for viewing completed missions.
     - [x] Connect the button to the `reopenMission` action.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Dedicated ReadOnly View' (Protocol in workflow.md)
 
-## Phase 4: Integration & Navigation
+## Phase 4: Integration & Navigation [checkpoint: d3aee66]
 Connect the existing UI to the new ReadOnly view.
 
-- [ ] Task: Update Project Detail view to link to the ReadOnly view.
-    - [ ] Update `components/projects/project-mission-list.tsx` (or wherever completed missions are listed) to link to the ReadOnly view instead of the standard (editable) detail page for terminated missions.
-- [ ] Task: Update Recently Completed Missions list.
-    - [ ] Update `components/missions/recently-completed-missions.tsx` to link to the new ReadOnly view.
+- [x] Task: Update Project Detail view to link to the ReadOnly view. f35a086
+    - [x] Update `components/projects/project-mission-list.tsx` (or wherever completed missions are listed) to link to the ReadOnly view instead of the standard (editable) detail page for terminated missions.
+- [x] Task: Update Recently Completed Missions list. d3aee66
+    - [x] Update `components/missions/recently-completed-missions.tsx` to link to the new ReadOnly view.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Integration & Navigation' (Protocol in workflow.md)
