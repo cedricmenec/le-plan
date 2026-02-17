@@ -464,6 +464,8 @@ model missions {
   confidence              Decimal?     @default(100) @db.Decimal
   project_parent          String?
   status                  String       @default("todo")
+  state                   MissionState @default(Backlog)
+  reason                  MissionReason?
   project_id              String?      @db.Uuid
   goal                    String?
   notes                   String?
@@ -584,4 +586,23 @@ enum one_time_token_type {
   phone_change_token
 
   @@schema("auth")
+}
+
+enum MissionState {
+  Backlog
+  Queued
+  Active
+  Suspended
+  Terminated
+
+  @@schema("public")
+}
+
+enum MissionReason {
+  Blocked
+  Deprioritized
+  Done
+  Cancelled
+
+  @@schema("public")
 }
