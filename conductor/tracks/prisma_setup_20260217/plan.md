@@ -2,11 +2,11 @@
 
 This plan outlines the steps to integrate Prisma and Prisma Migrate into the project, following the TDD workflow where applicable.
 
-## Phase 1: Environment & Tooling Setup
+## Phase 1: Environment & Tooling Setup [checkpoint: 3e8319d]
 - [x] Task: Install Prisma dependencies (prisma, @prisma/client) cb74590
 - [x] Task: Initialize Prisma in the project (`npx prisma init`) a460735
 - [x] Task: Configure `.env` and `schema.prisma` for direct Supabase connection 45ac8e9
-- [ ] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md) 3e8319d
 
 ## Phase 2: Schema Introspection & Baselining
 - [ ] Task: Introspect existing database to populate `schema.prisma`
