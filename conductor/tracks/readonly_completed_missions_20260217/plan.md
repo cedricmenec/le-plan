@@ -23,16 +23,16 @@ Create the read-only versions of the core mission detail components.
     - [x] Implement the read-only state in `components/missions/mission-timeline.tsx` and `components/missions/mission-milestone-list.tsx`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: ReadOnly UI Components' (Protocol in workflow.md)
 
-## Phase 3: Dedicated ReadOnly View
+## Phase 3: Dedicated ReadOnly View [checkpoint: 62e3be1]
 Implement the new page structure for viewing completed missions.
 
-- [ ] Task: Implement the dedicated ReadOnly view page.
-    - [ ] Create `app/missions/[id]/readonly/page.tsx` (or a conditional branch in the main detail page if more appropriate, but the spec calls for a dedicated view).
-    - [ ] Write tests to ensure the page renders all sections (Metadata, Tasks, Milestones, Duration) without interactive elements.
-    - [ ] Implement the page layout using the read-only components.
-- [ ] Task: Implement the "Re-open" button in the ReadOnly view.
-    - [ ] Add the "Re-open" button to the header of the ReadOnly view.
-    - [ ] Connect the button to the `reopenMission` action.
+- [x] Task: Implement the dedicated ReadOnly view page. 62e3be1
+    - [x] Create `app/missions/[id]/readonly/page.tsx` (or a conditional branch in the main detail page if more appropriate, but the spec calls for a dedicated view).
+    - [x] Write tests to ensure the page renders all sections (Metadata, Tasks, Milestones, Duration) without interactive elements.
+    - [x] Implement the page layout using the read-only components.
+- [x] Task: Implement the "Re-open" button in the ReadOnly view. 62e3be1
+    - [x] Add the "Re-open" button to the header of the ReadOnly view.
+    - [x] Connect the button to the `reopenMission` action.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Dedicated ReadOnly View' (Protocol in workflow.md)
 
 ## Phase 4: Integration & Navigation
