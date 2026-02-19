@@ -58,13 +58,25 @@ export async function createMission(data: any) {
     throw new Error(`Invalid reason ${missionReason} for state ${missionState}`)
   }
 
-  const mission = await prisma.missions.create({
-    data: {
-      ...data,
-      user_id: user.id,
-      state: missionState,
-      reason: missionReason,
-    }
+  const mission = await prisma.$transaction(async (tx) => {
+    const newMission = await tx.missions.create({
+      data: {
+        ...data,
+        user_id: user.id,
+        state: missionState,
+        reason: missionReason,
+      }
+    })
+
+    await tx.mission_status_history.create({
+      data: {
+        mission_id: newMission.id,
+        status: missionState,
+        reason: missionReason,
+      }
+    })
+
+    return newMission
   })
 
   revalidatePath('/')
@@ -101,9 +113,23 @@ export async function updateMission(id: string, updates: any) {
     }
   }
 
-  const mission = await prisma.missions.update({
-    where: { id },
-    data: finalUpdates
+  const mission = await prisma.$transaction(async (tx) => {
+    const updatedMission = await tx.missions.update({
+      where: { id },
+      data: finalUpdates
+    })
+
+    if (finalUpdates.state) {
+      await tx.mission_status_history.create({
+        data: {
+          mission_id: id,
+          status: updatedMission.state,
+          reason: updatedMission.reason,
+        }
+      })
+    }
+
+    return updatedMission
   })
 
   revalidatePath(`/missions/${id}`)
@@ -274,12 +300,24 @@ export async function reopenMission(id: string) {
     throw new Error('Mission can only be re-opened from Terminated state')
   }
 
-  const mission = await prisma.missions.update({
-    where: { id },
-    data: {
-      state: MissionState.Queued,
-      reason: null
-    }
+  const mission = await prisma.$transaction(async (tx) => {
+    const updatedMission = await tx.missions.update({
+      where: { id },
+      data: {
+        state: MissionState.Queued,
+        reason: null
+      }
+    })
+
+    await tx.mission_status_history.create({
+      data: {
+        mission_id: id,
+        status: MissionState.Queued,
+        reason: null
+      }
+    })
+
+    return updatedMission
   })
 
   revalidatePath(`/missions/${id}`)
