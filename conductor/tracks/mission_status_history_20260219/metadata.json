@@ -1,0 +1,8 @@
+{
+  "track_id": "mission_status_history_20260219",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-02-19T14:50:00Z",
+  "updated_at": "2026-02-19T14:50:00Z",
+  "description": "Tracer les changements de statuts d'une mission (historique d'état / audit) pour calculer la durée d'ouverture et visualiser les temps de pause/blocage."
+}
