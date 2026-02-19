@@ -14,7 +14,7 @@ This plan covers the implementation of a tracking system for mission status chan
 - [x] Task: Implement automated logging in status transition actions 1ad6fd5
     - [ ] Update mission status update actions to create a `MissionStatusHistory` record
     - [ ] Ensure the transition reason is captured when available
-- [ ] Task: Implement duration calculation utilities
+- [x] Task: Implement duration calculation utilities 1112320
     - [ ] Create utility functions in `lib/missions/` to calculate total lead time
     - [ ] Create utility functions to calculate segmented durations (Active, Paused, Blocked)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Backend Logic & Data Capture' (Protocol in workflow.md)
