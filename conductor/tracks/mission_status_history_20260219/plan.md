@@ -11,7 +11,7 @@ This plan covers the implementation of a tracking system for mission status chan
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Database & Schema' (Protocol in workflow.md) ea12c9d
 
 ## Phase 2: Backend Logic & Data Capture
-- [ ] Task: Implement automated logging in status transition actions
+- [x] Task: Implement automated logging in status transition actions 1ad6fd5
     - [ ] Update mission status update actions to create a `MissionStatusHistory` record
     - [ ] Ensure the transition reason is captured when available
 - [ ] Task: Implement duration calculation utilities
