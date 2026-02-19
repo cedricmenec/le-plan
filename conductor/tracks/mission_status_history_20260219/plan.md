@@ -6,7 +6,7 @@ This plan covers the implementation of a tracking system for mission status chan
 - [x] Task: Update Prisma schema to include `MissionStatusHistory` table e9dd87a
     - [ ] Define model with `id`, `missionId`, `status`, `reason`, and `createdAt`
     - [ ] Set up relationship with `Mission` model
-- [ ] Task: Create and apply database migration
+- [x] Task: Create and apply database migration 87c444e
     - [ ] Run `npx prisma migrate dev`
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Database & Schema' (Protocol in workflow.md)
 
