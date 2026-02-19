@@ -3,7 +3,7 @@
 This plan covers the implementation of a tracking system for mission status changes, including database schema updates, backend logic for automated logging, and UI enhancements for visualization.
 
 ## Phase 1: Database & Schema
-- [ ] Task: Update Prisma schema to include `MissionStatusHistory` table
+- [x] Task: Update Prisma schema to include `MissionStatusHistory` table e9dd87a
     - [ ] Define model with `id`, `missionId`, `status`, `reason`, and `createdAt`
     - [ ] Set up relationship with `Mission` model
 - [ ] Task: Create and apply database migration
