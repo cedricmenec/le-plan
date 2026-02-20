@@ -65,10 +65,14 @@ export async function createMission(data: any) {
     throw new Error(`Invalid reason ${missionReason} for state ${missionState}`)
   }
 
+  const finalData = { ...data }
+  if (finalData.estimated_delivery_date) finalData.estimated_delivery_date = new Date(finalData.estimated_delivery_date)
+  if (finalData.desired_delivery_date) finalData.desired_delivery_date = new Date(finalData.desired_delivery_date)
+
   const mission = await prisma.$transaction(async (tx) => {
     const newMission = await tx.missions.create({
       data: {
-        ...data,
+        ...finalData,
         user_id: user.id,
         state: missionState,
         reason: missionReason,
@@ -109,6 +113,9 @@ export async function updateMission(id: string, updates: any) {
 
   const finalUpdates: any = { ...updates }
   
+  if (finalUpdates.estimated_delivery_date) finalUpdates.estimated_delivery_date = new Date(finalUpdates.estimated_delivery_date)
+  if (finalUpdates.desired_delivery_date) finalUpdates.desired_delivery_date = new Date(finalUpdates.desired_delivery_date)
+
   if (finalUpdates.state) {
     if (!MissionStateMachine.isValidTransition(currentMission.state, finalUpdates.state)) {
       throw new Error(`Invalid transition from ${currentMission.state} to ${finalUpdates.state}`)
@@ -166,7 +173,7 @@ export async function updateTask(id: string, updates: Prisma.subtasksUpdateInput
   return task
 }
 
-export async function createTask(task: Prisma.subtasksCreateUncheckedInput) {
+export async function createTask(task: Prisma.subtasksCreateInput) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
@@ -226,31 +233,38 @@ export async function getMilestones(missionId: string) {
   })
 }
 
-export async function createMilestone(missionId: string, milestone: Prisma.milestonesCreateUncheckedInput) {
+export async function createMilestone(missionId: string, milestone: Prisma.milestonesUncheckedCreateInput) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
   const newMilestone = await prisma.milestones.create({
-    data: { ...milestone, mission_id: missionId }
+    data: { 
+      ...milestone, 
+      mission_id: missionId,
+      date: milestone.date ? new Date(milestone.date as string) : new Date()
+    }
   })
   
   revalidatePath(`/missions/${missionId}`)
   return newMilestone
 }
 
-export async function updateMilestone(missionId: string, id: string, updates: Prisma.milestonesUpdateInput) {
+export async function updateMilestone(missionId: string, id: string, updates: Prisma.milestonesUncheckedUpdateInput) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
 
+  const finalUpdates: any = { ...updates }
+  if (finalUpdates.date) finalUpdates.date = new Date(finalUpdates.date as string)
+
   const milestone = await prisma.milestones.update({
     where: { id },
-    data: updates
+    data: finalUpdates
   })
-  
+
   revalidatePath(`/missions/${missionId}`)
   return milestone
 }

@@ -75,7 +75,7 @@ export async function getProject(id: string) {
   return serializeProject(project)
 }
 
-export async function createProject(project: Prisma.projectsCreateUncheckedInput) {
+export async function createProject(project: Prisma.projectsUncheckedCreateInput) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
@@ -89,7 +89,7 @@ export async function createProject(project: Prisma.projectsCreateUncheckedInput
   return serializeProject(newProject)
 }
 
-export async function updateProject(id: string, updates: Prisma.projectsUpdateInput) {
+export async function updateProject(id: string, updates: Prisma.projectsUncheckedUpdateInput) {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
@@ -97,7 +97,7 @@ export async function updateProject(id: string, updates: Prisma.projectsUpdateIn
 
   const project = await prisma.projects.update({
     where: { id },
-    data: updates
+    data: updates as any // Using any to avoid complex deep mapping if needed
   })
 
   revalidatePath('/projects')
