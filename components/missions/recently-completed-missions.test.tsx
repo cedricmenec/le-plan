@@ -25,30 +25,23 @@ describe('RecentlyCompletedMissions', () => {
         id: '1',
         title: 'Mission 1',
         type: 'Feature',
-        status: 'done',
-        started_at: '2026-02-01T10:00:00Z',
-        completed_at: '2026-02-10T10:00:00Z',
-        subtasks: [{ estimation: 2, status: 'done' }],
+        state: 'Terminated',
+        reason: 'Done',
+        subtasks: [{ estimation: 2, is_completed: true }],
         project_id: '1',
         user_id: 'u1',
         created_at: '2026-02-01T10:00:00Z',
-        goal: null,
-        notes: null,
-        confidence: null,
-        project_parent: null,
-        estimated_delivery_date: null,
-        desired_delivery_date: null,
-        priority: 'medium',
-        rom_size: null,
-        load_source: 'tasks',
-        estimation: 0,
+        status_history: [
+          { status: 'Active', created_at: '2026-02-01T10:00:00Z' },
+          { status: 'Terminated', created_at: '2026-02-10T10:00:00Z' }
+        ]
       }
     ]
-    render(<RecentlyCompletedMissions projectId="1" initialMissions={mockMissions as never} />)
+    render(<RecentlyCompletedMissions projectId="1" initialMissions={mockMissions as any} />)
     expect(screen.getByText('Mission 1')).toBeDefined()
     expect(screen.getByText('Feature')).toBeDefined()
     expect(screen.getByText('2j')).toBeDefined() // Actual Load
-    expect(screen.getByText('9 days')).toBeDefined() // Duration
+    expect(screen.getByText('9j')).toBeDefined() // Duration (10 - 1 = 9 days)
 
     // Check link
     const link = screen.getByRole('link', { name: /Mission 1/i })

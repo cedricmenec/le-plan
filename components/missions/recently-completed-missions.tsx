@@ -2,7 +2,8 @@
 
 import * as React from 'react'
 import { Database } from '@/types/database.types'
-import { calculateTotalLoad, calculateMissionDuration } from '@/lib/load-utils'
+import { calculateTotalLoad } from '@/lib/load-utils'
+import { calculateMissionDurations, StatusHistoryEntry } from '@/lib/missions/duration-utils'
 import {
   Select,
   SelectContent,
@@ -20,9 +21,8 @@ type MissionWithTasks = {
   type: string
   state: any
   reason: any
-  started_at?: string | null
-  completed_at?: string | null
   subtasks: { estimation: number; is_completed: boolean }[]
+  status_history?: StatusHistoryEntry[]
 }
 
 interface RecentlyCompletedMissionsProps {
@@ -103,7 +103,14 @@ export function RecentlyCompletedMissions({
           ) : (
             missions.map((mission) => {
               const actualLoad = calculateTotalLoad(mission.subtasks)
-              const duration = calculateMissionDuration(mission.started_at, mission.completed_at)
+              const durations = calculateMissionDurations(
+                (mission.status_history || []).map(h => ({
+                  ...h,
+                  created_at: new Date(h.created_at)
+                }))
+              )
+              const leadTimeDays = Math.round(durations.totalLeadTimeMs / (1000 * 60 * 60 * 24))
+              const duration = leadTimeDays > 0 ? `${leadTimeDays}j` : '< 1j'
               
               return (
                 <Link 
