@@ -19,7 +19,7 @@ This plan covers the implementation of a tracking system for mission status chan
     - [x] Create utility functions to calculate segmented durations (Active, Paused, Blocked)
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Backend Logic & Data Capture' (Protocol in workflow.md) a588d43
 
-## Phase 3: UI Implementation - Indicators & List
+## Phase 3: UI Implementation - Indicators & List [checkpoint: 771769c]
 - [x] Task: Update Mission Card to display current duration 95d4f27
     - [x] Add duration indicator for missions in "In Progress" or "Next Up"
 - [x] Task: Update Recently Completed list to show total lead time af9474a
