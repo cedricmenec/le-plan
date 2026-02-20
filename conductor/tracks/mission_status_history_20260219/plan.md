@@ -20,9 +20,9 @@ This plan covers the implementation of a tracking system for mission status chan
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Backend Logic & Data Capture' (Protocol in workflow.md) a588d43
 
 ## Phase 3: UI Implementation - Indicators & List
-- [ ] Task: Update Mission Card to display current duration
-    - [ ] Add duration indicator for missions in "In Progress" or "Next Up"
-- [ ] Task: Update Recently Completed list to show total lead time
+- [x] Task: Update Mission Card to display current duration 95d4f27
+    - [x] Add duration indicator for missions in "In Progress" or "Next Up"
+- [~] Task: Update Recently Completed list to show total lead time
     - [ ] Fetch and display duration from the status history
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Implementation - Indicators & List' (Protocol in workflow.md)
 
