@@ -31,6 +31,6 @@ This plan covers the implementation of a tracking system for mission status chan
     - [x] Implement the horizontal multi-colored bar (Active/Black, Paused/Grey, Blocked/Red)
 - [x] Task: Add History/Activity section to Mission Detail page 96a499f
     - [x] Display a chronological list of status changes with reasons
-- [~] Task: Integrate history and metrics into Mission Archive view
-    - [ ] Include status history and final duration metrics in the read-only archive view
+- [x] Task: Integrate history and metrics into Mission Archive view 96a499f
+    - [x] Include status history and final duration metrics in the read-only archive view
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: UI Implementation - Detail & Visualization' (Protocol in workflow.md)
