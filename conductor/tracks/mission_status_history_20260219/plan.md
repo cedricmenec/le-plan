@@ -27,9 +27,9 @@ This plan covers the implementation of a tracking system for mission status chan
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Implementation - Indicators & List' (Protocol in workflow.md)
 
 ## Phase 4: UI Implementation - Detail & Visualization
-- [ ] Task: Create `StatusTimeline` component
-    - [ ] Implement the horizontal multi-colored bar (Active/Black, Paused/Grey, Blocked/Red)
-- [ ] Task: Add History/Activity section to Mission Detail page
+- [x] Task: Create `StatusTimeline` component 951c5e7
+    - [x] Implement the horizontal multi-colored bar (Active/Black, Paused/Grey, Blocked/Red)
+- [~] Task: Add History/Activity section to Mission Detail page
     - [ ] Display a chronological list of status changes with reasons
 - [ ] Task: Integrate history and metrics into Mission Archive view
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: UI Implementation - Detail & Visualization' (Protocol in workflow.md)
