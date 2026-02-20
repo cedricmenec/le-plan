@@ -22,8 +22,8 @@ This plan covers the implementation of a tracking system for mission status chan
 ## Phase 3: UI Implementation - Indicators & List
 - [x] Task: Update Mission Card to display current duration 95d4f27
     - [x] Add duration indicator for missions in "In Progress" or "Next Up"
-- [~] Task: Update Recently Completed list to show total lead time
-    - [ ] Fetch and display duration from the status history
+- [x] Task: Update Recently Completed list to show total lead time af9474a
+    - [x] Fetch and display duration from the status history
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Implementation - Indicators & List' (Protocol in workflow.md)
 
 ## Phase 4: UI Implementation - Detail & Visualization
