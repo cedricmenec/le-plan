@@ -110,9 +110,14 @@ export function MissionCard({
     }))
   )
   
-  const displayDuration = (mission.state === MissionState.Active || mission.state === MissionState.Queued)
+  const displayDuration = (mission.state === MissionState.Active || mission.state === MissionState.Queued || mission.state === MissionState.Suspended)
     ? (() => {
-        const ms = mission.state === MissionState.Active ? durations.activeTimeMs : durations.queuedTimeMs
+        let ms = 0;
+        if (mission.state === MissionState.Active) ms = durations.activeTimeMs;
+        else if (mission.state === MissionState.Queued) ms = durations.queuedTimeMs;
+        else if (mission.state === MissionState.Suspended) {
+          ms = mission.reason === MissionReason.Blocked ? durations.blockedTimeMs : durations.pausedTimeMs;
+        }
         const days = Math.ceil(ms / (1000 * 60 * 60 * 24))
         return days > 0 ? `depuis ${days} jour${days > 1 ? 's' : ''}` : null
       })()

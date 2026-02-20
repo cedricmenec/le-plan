@@ -41,7 +41,7 @@ export function MissionList({
   const sortedMissions = useMemo(() => sortMissions(missions), [missions])
 
   const activeMissions = useMemo(() => 
-    sortedMissions.filter(m => m.state === MissionState.Active), 
+    sortedMissions.filter(m => m.state === MissionState.Active || m.state === MissionState.Suspended), 
   [sortedMissions])
 
   const todoMissions = useMemo(() => 
