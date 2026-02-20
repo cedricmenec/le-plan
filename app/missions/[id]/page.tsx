@@ -104,14 +104,6 @@ export default async function MissionDetailPage({ params }: PageProps) {
               readonly={isReadonly}
             />
 
-            {mission.status_history && mission.status_history.length > 0 && (
-              <div className="p-8 bg-slate-50 dark:bg-slate-900/20 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-10">
-                <StatusTimeline history={mission.status_history} />
-                <div className="h-px bg-slate-200 dark:bg-slate-800" />
-                <MissionStatusHistoryList history={mission.status_history} />
-              </div>
-            )}
-
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <h3 className="text-xs font-bold uppercase tracking-[0.2em]">Notes & Contexte</h3>
@@ -131,6 +123,14 @@ export default async function MissionDetailPage({ params }: PageProps) {
                 />
               </div>
             </div>
+
+            {mission.status_history && mission.status_history.length > 0 && (
+              <div className="p-8 bg-slate-50 dark:bg-slate-900/20 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-10">
+                <StatusTimeline history={mission.status_history} />
+                <div className="h-px bg-slate-200 dark:bg-slate-800" />
+                <MissionStatusHistoryList history={mission.status_history} />
+              </div>
+            )}
           </div>
         </div>
 

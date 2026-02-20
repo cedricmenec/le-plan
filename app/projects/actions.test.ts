@@ -41,10 +41,12 @@ describe('Project Actions', () => {
       include: {
         missions: {
           include: {
-            subtasks: true
+            subtasks: true,
+            status_history: true
           }
         }
-      }
+      },
+      orderBy: { name: 'asc' }
     }));
   });
 

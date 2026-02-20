@@ -23,8 +23,8 @@ import { createClient } from '@/lib/supabase/server';
 vi.mock('@/lib/prisma', () => ({
   prisma: {
     missions: {
-      create: vi.fn(),
-      update: vi.fn(),
+      create: vi.fn(async (args) => ({ id: '1', ...args.data })),
+      update: vi.fn(async (args) => ({ id: args.where.id, ...args.data })),
       findUnique: vi.fn(),
       delete: vi.fn(),
     },
@@ -42,7 +42,16 @@ vi.mock('@/lib/prisma', () => ({
       findMany: vi.fn(),
       delete: vi.fn(),
     },
-    $transaction: vi.fn((promises) => Promise.all(promises)),
+    mission_status_history: {
+      create: vi.fn(async (args) => ({ id: 'h1', ...args.data })),
+    },
+    $transaction: vi.fn(async (arg) => {
+      if (typeof arg === 'function') {
+        // Use the global prisma object that we might be spying on
+        return arg(prisma);
+      }
+      return Promise.all(arg);
+    }),
   },
 }));
 
@@ -194,7 +203,6 @@ describe('Mission Actions', () => {
     });
 
     it('should reorder tasks in a transaction', async () => {
-      (prisma.$transaction as any) = vi.fn(async (ops) => ops);
       const tasks = [{ id: '1', position: 1 }, { id: '2', position: 2 }];
       
       await reorderTasks('m1', tasks);
@@ -258,13 +266,13 @@ describe('Mission Actions', () => {
 
       const result = await reopenMission(missionId);
 
-      expect(prisma.missions.update).toHaveBeenCalledWith({
+      expect(prisma.missions.update).toHaveBeenCalledWith(expect.objectContaining({
         where: { id: missionId },
-        data: {
+        data: expect.objectContaining({
           state: MissionState.Queued,
           reason: null,
-        },
-      });
+        }),
+      }));
       expect(result.state).toBe(MissionState.Queued);
     });
 
