@@ -10,14 +10,14 @@ This plan covers the implementation of a tracking system for mission status chan
     - [x] Run `npx prisma migrate dev`
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Database & Schema' (Protocol in workflow.md) ea12c9d
 
-## Phase 2: Backend Logic & Data Capture
+## Phase 2: Backend Logic & Data Capture [checkpoint: a588d43]
 - [x] Task: Implement automated logging in status transition actions 1ad6fd5
-    - [ ] Update mission status update actions to create a `MissionStatusHistory` record
-    - [ ] Ensure the transition reason is captured when available
+    - [x] Update mission status update actions to create a `MissionStatusHistory` record
+    - [x] Ensure the transition reason is captured when available
 - [x] Task: Implement duration calculation utilities 1112320
-    - [ ] Create utility functions in `lib/missions/` to calculate total lead time
-    - [ ] Create utility functions to calculate segmented durations (Active, Paused, Blocked)
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Backend Logic & Data Capture' (Protocol in workflow.md)
+    - [x] Create utility functions in `lib/missions/` to calculate total lead time
+    - [x] Create utility functions to calculate segmented durations (Active, Paused, Blocked)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Backend Logic & Data Capture' (Protocol in workflow.md) a588d43
 
 ## Phase 3: UI Implementation - Indicators & List
 - [ ] Task: Update Mission Card to display current duration
