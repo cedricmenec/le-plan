@@ -46,7 +46,10 @@ vi.mock('../actions', () => ({
     estimated_delivery_date: '2026-06-01',
     desired_delivery_date: '2026-06-15',
     rom_size: 'M',
-    load_source: 'rom'
+    load_source: 'rom',
+    status_history: [
+      { status: MissionState.Active, created_at: '2026-02-19T10:00:00Z' }
+    ]
   })),
   getMilestones: vi.fn(() => Promise.resolve([])),
   updateMission: vi.fn(() => Promise.resolve())
@@ -106,6 +109,8 @@ test('renders mission detail page', async () => {
   expect(screen.getByText('2026-06-01')).toBeDefined()
   expect(screen.getByText('2026-06-15')).toBeDefined()
   expect(screen.getByTestId('task-list')).toBeDefined()
+  expect(screen.getByText(/Historique des Statuts/i)).toBeDefined()
+  expect(screen.getByText(/Audit du Cycle de Vie/i)).toBeDefined()
 })
 
 test('renders mission detail page in readonly mode for Terminated state', async () => {
