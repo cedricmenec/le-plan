@@ -7,6 +7,7 @@ import { StateBadge } from './state-badge'
 import { MissionState, MissionReason } from '@prisma/client'
 import { formatRelativeDuration } from '@/lib/utils'
 import { romToDays, calculateTaskRemainingLoad, ROMSize } from '@/lib/load-utils'
+import { calculateMissionDurations, StatusHistoryEntry } from '@/lib/missions/duration-utils'
 import {
   Tooltip,
   TooltipContent,
@@ -56,6 +57,7 @@ export type Subtask = {
 export type MissionWithProject = Mission & { 
   projects: { name: string } | null,
   subtasks?: Subtask[]
+  status_history?: StatusHistoryEntry[]
 }
 
 const TYPE_ICONS: Record<string, LucideIcon> = {
@@ -100,6 +102,21 @@ export function MissionCard({
 
   const romDays = romToDays(mission.rom_size as ROMSize)
   const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
+
+  const durations = calculateMissionDurations(
+    (mission.status_history || []).map(h => ({
+      ...h,
+      created_at: new Date(h.created_at)
+    }))
+  )
+  
+  const displayDuration = (mission.state === MissionState.Active || mission.state === MissionState.Queued)
+    ? (() => {
+        const ms = mission.state === MissionState.Active ? durations.activeTimeMs : durations.queuedTimeMs
+        const days = Math.ceil(ms / (1000 * 60 * 60 * 24))
+        return days > 0 ? `depuis ${days} jour${days > 1 ? 's' : ''}` : null
+      })()
+    : null
   
   const officialEstimationDisplay = mission.load_source === 'tasks' 
     ? `${tasksDays}j` 
@@ -203,7 +220,9 @@ export function MissionCard({
       <div className="space-y-2 mt-auto">
         <div className="pt-3 flex justify-between items-center text-[11px] border-t border-slate-50 dark:border-slate-800/50 mt-4">
           <div className="flex items-center gap-2 text-slate-400">
-            <span className="font-bold tracking-wider uppercase">ETAT: {mission.state}</span>
+            <span className="font-bold tracking-wider uppercase">
+              ETAT: {mission.state} {displayDuration && `• ${displayDuration}`}
+            </span>
             {mission.estimated_delivery_date && (
               <>
                 <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />

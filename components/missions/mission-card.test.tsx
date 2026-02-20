@@ -197,4 +197,32 @@ describe('MissionCard', () => {
     if (originalScrollHeight) Object.defineProperty(HTMLElement.prototype, 'scrollHeight', originalScrollHeight)
     if (originalClientHeight) Object.defineProperty(HTMLElement.prototype, 'clientHeight', originalClientHeight)
   })
+
+  test('displays duration for active missions', () => {
+    const activeMission: MissionWithProject = {
+      ...mockMission,
+      state: MissionState.Active,
+      status_history: [
+        { 
+          status: MissionState.Active, 
+          created_at: new Date('2026-01-22T12:00:00Z').toISOString() as any 
+        }
+      ] as any
+    }
+
+    // Now is 2026-01-24T12:00:00Z (set in beforeEach)
+    // Duration should be 2 days
+
+    render(
+      <TooltipProvider>
+        <MissionCard 
+          mission={activeMission} 
+          onEdit={() => {}} 
+          onDelete={() => {}} 
+        />
+      </TooltipProvider>
+    )
+
+    expect(screen.getByText(/depuis 2 jours/i)).toBeDefined()
+  })
 })

@@ -22,6 +22,10 @@ function serializeMission(mission: any) {
       estimation: s.estimation ? Number(s.estimation) : 0,
       created_at: s.created_at?.toISOString(),
       updated_at: s.updated_at?.toISOString(),
+    })),
+    status_history: mission.status_history?.map((h: any) => ({
+      ...h,
+      created_at: h.created_at?.toISOString(),
     }))
   }
 }
@@ -37,6 +41,9 @@ export async function getMission(id: string) {
       },
       subtasks: {
         orderBy: { position: 'asc' }
+      },
+      status_history: {
+        orderBy: { created_at: 'asc' }
       }
     }
   })

@@ -20,6 +20,10 @@ function serializeMission(mission: any) {
       estimation: s.estimation ? Number(s.estimation) : 0,
       created_at: s.created_at?.toISOString(),
       updated_at: s.updated_at?.toISOString(),
+    })),
+    status_history: mission.status_history?.map((h: any) => ({
+      ...h,
+      created_at: h.created_at?.toISOString(),
     }))
   }
 }
@@ -39,7 +43,8 @@ export async function getProjects() {
     include: {
       missions: {
         include: {
-          subtasks: true
+          subtasks: true,
+          status_history: true
         }
       }
     },
@@ -57,7 +62,10 @@ export async function getProject(id: string) {
           projects: {
             select: { name: true }
           },
-          subtasks: true
+          subtasks: true,
+          status_history: {
+            orderBy: { created_at: 'asc' }
+          }
         }
       }
     }
@@ -127,7 +135,12 @@ export async function getRecentlyCompletedMissions(projectId: string, days: numb
 
   const missions = await prisma.missions.findMany({
     where,
-    include: { subtasks: true },
+    include: { 
+      subtasks: true,
+      status_history: {
+        orderBy: { created_at: 'asc' }
+      }
+    },
     orderBy: [
       { updated_at: 'desc' },
       { created_at: 'desc' }
