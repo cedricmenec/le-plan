@@ -1,70 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Le Plan
+
+Application de gestion de projets et missions en local-first (100% navigateur).
+
+## Stack
+
+- **Framework** : Vite + React 19
+- **Routage** : React Router v7
+- **Stockage** : IndexedDB (via Dexie)
+- **UI** : Tailwind CSS v4 + shadcn/ui
+- **Build** : Static (SPA pure)
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
 # or
+pnpm install && pnpm dev
+# or
+yarn
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:5173](http://localhost:5173) with your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts disponibles
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Commande | Description |
+|----------|-------------|
+| `npm run dev` | Lance le serveur de développement Vite |
+| `npm run build` | Build TypeScript puis build Vite vers `dist/` |
+| `npm run preview` | Prévisualise le build statique localement |
+| `npm run lint` | Vérifie le code avec ESLint |
+| `npm run test` | Exécute les tests avec Vitest |
+| `npm run check` | Lint + tests + TypeScript check complet |
 
-## Database & Migrations
+## Architecture
 
-This project uses [Prisma](https://www.prisma.io/) to manage the database schema and migrations.
+```
+┌─────────────────────────────────────────────────┐
+│                 Browser (SPA)                   │
+├─────────────────────────────────────────────────┤
+│  Vite + React 19   |   React Router v7          │
+│  Tailwind CSS v4   |   shadcn/ui composants     │
+│  Dexie (IndexedDB) |   Export/Import JSON       │
+└─────────────────────────────────────────────────┘
+```
 
-### Prisma Setup
+L'application fonctionne **entièrement en local** dans le navigateur, sans serveur backend. Toutes les données sont stockées dans IndexedDB.
 
-- **Schema:** Defined in `prisma/schema.prisma`.
-- **Client:** A singleton instance is available in `lib/prisma.ts`.
-- **Migrations:** Managed via Prisma Migrate.
+## Fonctionnalités
 
-### Common Commands
+- Gestion de projets (CRUD)
+- Gestion de missions (CRUD, transitions d'état)
+- Gestion de tâches (CRUD, réordonnancement)
+- Jalons (milestones) avec types
+- Historique des changements de statut
+- Fonctionnement hors ligne complet
+- Export/Import des données (JSON)
+- Indicateur réseau (online/offline)
+
+## Déploiement
+
+### Build statique
 
 ```bash
-# Generate Prisma Client
-npx prisma generate
-
-# Create a new migration (after changing schema.prisma)
-npx prisma migrate dev --name <migration_name>
-
-# Check migration status
-npx prisma migrate status
-
-# Open Prisma Studio to browse data
-npx prisma studio
+npm run build
 ```
 
-### Environment Variables
+Le build est généré dans le dossier `dist/`.
 
-Ensure your `.env` (or `.env.local`) contains the following:
+### GitHub Pages
 
+1. Mettre à jour `vite.config.ts` : décommenter `base: '/le-plan/'` (ou le nom de votre repo)
+2. Build : `npm run build`
+3. Déployer le dossier `dist/` sur GitHub Pages
+
+### Hostinger (FTP)
+
+1. Build : `npm run build`
+2. Uploader le contenu du dossier `dist/` via FTP vers le répertoire public
+
+## Tests
+
+```bash
+npm run test        # Exécute tous les tests
+npx vitest --ui     # Interface vitest UI
+npx vitest run      # Mode run (sans watch)
 ```
-DATABASE_URL="postgresql://user:password@host:port/database"
-```
 
-## Learn More
+## Données
 
-To learn more about Next.js, take a look at the following resources:
+L'application stocke toutes les données localement dans IndexedDB. Pour sauvegarder ou transférer vos données :
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Allez dans les paramètres de l'application
+2. Utilisez "Exporter les données" pour télécharger un fichier JSON
+3. Sur un autre appareil/navigateur, utilisez "Importer les données"
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Projet initial
 
-## Deploy on Vercel
+This project was originally bootstrapped with Next.js (`create-next-app`) and Supabase backend, then migrated to a local-first architecture with Vite + React + IndexedDB.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

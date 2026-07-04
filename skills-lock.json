@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "openspec-brownfield-alignment": {
+      "source": "C:\\gitrepo\\perso\\agent-skills\\skills\\development\\openspec-brownfield-alignment",
+      "sourceType": "local",
+      "computedHash": "d9faae4ff261278b156e94c2f0996bccf7341ed77d4894d0be6c96dbadfbd25f"
+    }
+  }
+}

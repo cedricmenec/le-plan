@@ -1,0 +1,183 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Next.js static build",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v2",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v3",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v4",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v5",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v6",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v7",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v8",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v9",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v10",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v11",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v12",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v13",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v14",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v15",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v16",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v17",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v18",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v19",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v20",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v21",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"group": "build"
+		},
+		{
+			"label": "Next.js static build v22",
+			"type": "shell",
+			"command": "npx next build",
+			"args": [],
+			"group": "build"
+		},
+		{
+			"label": "Build final",
+			"type": "shell",
+			"command": "npx next build",
+			"group": "build"
+		}
+	]
+}

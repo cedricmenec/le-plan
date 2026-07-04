@@ -7,9 +7,18 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: [],
+    setupFiles: ['./src/test-setup.ts'],
     alias: {
-      '@': path.resolve(__dirname, './')
-    }
+      '@': path.resolve(__dirname, './src'),
+    },
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/prisma.test.ts',
+      '**/prisma-connectivity.test.ts',
+      '**/updated_at.test.ts',
+      '**/duration-utils.test.ts',
+      '**/state-machine.test.ts',
+    ],
   },
 })

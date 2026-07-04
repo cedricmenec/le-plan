@@ -1,0 +1,25 @@
+schema: spec-driven
+
+context: |
+  Project purpose: Personal workload visibility and arbitration tool for managing professional missions
+  Primary actors: Individual professional user, Product Managers (viewers)
+  Business domain: Workload management and project planning
+  Technical stack: Next.js (React/TypeScript), Tailwind CSS, Shadcn/ui, Supabase (PostgreSQL), Prisma ORM
+  Architecture: Single-user web application with authentication, mission/project/task management
+  Compatibility constraints: None documented
+  Security constraints: User data protected via Supabase Auth, row-level security on database
+  Code and test conventions: Vitest for testing, Prisma for database operations
+  Deployment constraints: Vercel optimized for Next.js
+  Known boundaries: Not a task management tool, not time tracking, not collaborative platform
+
+rules:
+  proposal:
+    - Separate current behavior from the proposed change.
+    - State scope, non-goals, risks, and unresolved decisions.
+  specs:
+    - Describe observable behavior with normative requirements and scenarios.
+    - Do not promote assumptions to requirements.
+  design:
+    - Link technical decisions to requirements and documented constraints.
+  tasks:
+    - Make tasks independently verifiable and traceable to requirements.
