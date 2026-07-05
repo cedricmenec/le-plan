@@ -76,10 +76,18 @@ Le build est généré dans le dossier `dist/`.
 2. Build : `npm run build`
 3. Déployer le dossier `dist/` sur GitHub Pages
 
+> **Note** : L'application utilise `createHashRouter` de React Router pour une compatibilité maximale avec les hébergeurs statiques (GitHub Pages, Hostinger, etc.). Les URLs seront de la forme `https://mon-site.github.io/#/projects/123`.
+
 ### Hostinger (FTP)
 
 1. Build : `npm run build`
 2. Uploader le contenu du dossier `dist/` via FTP vers le répertoire public
+
+### SPA et le routage
+
+React Router v7 utilise des hooks comme `useRouteError` qui nécessitent un **Data Router** (`createBrowserRouter`, `createHashRouter`, ou `createMemoryRouter`). Le projet utilise `createHashRouter` pour une compatibilité universelle avec les déploiements statiques.
+
+Si vous souhaitez migrer vers `createBrowserRouter` (URLs sans le `#`), vous devrez configurer votre serveur pour rediriger toutes les routes vers `index.html` (SPA fallback).
 
 ## Tests
 
@@ -100,6 +108,18 @@ L'application stocke toutes les données localement dans IndexedDB. Pour sauvega
 ## Projet initial
 
 This project was originally bootstrapped with Next.js (`create-next-app`) and Supabase backend, then migrated to a local-first architecture with Vite + React + IndexedDB.
+
+## SPA et compatibilité
+
+> **Note important** : L'application utilise `createHashRouter` de React Router v7. Cette approche est compatible avec tous les déploiements statiques (GitHub Pages, Hostinger, etc.) mais génère des URLs avec un fragment `#` (ex: `https://site.github.io/#/projects/123`).
+
+Si vous souhaitez implémenter un véritable SPA avec des URLs propres (sans `#`), vous devrez :
+
+1. Remplacer `createHashRouter` par `createBrowserRouter` dans `src/App.tsx`
+2. Configurer votre serveur pour rediriger toutes les routes vers `index.html` (SPA fallback)
+   - **Nginx** : `try_files $uri /index.html;`
+   - **Apache** : `FallbackResource /index.html` ou règles Rewrite
+   - **Hostinger** : Vérifier les options "SPA" ou "Single Page Application" dans le panneau de contrôle
 
 ## License
 
