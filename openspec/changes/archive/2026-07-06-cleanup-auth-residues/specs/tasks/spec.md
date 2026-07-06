@@ -1,10 +1,4 @@
-# Tasks Specification
-
-## Purpose
-
-Define how users decompose missions into tasks, estimate effort, track completion, and reorder tasks. Tasks are the actionable items within missions, with half-day estimations and checkbox completion tracking.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Create Task
 
@@ -96,3 +90,11 @@ The system SHALL display the count of remaining tasks and total tasks.
 - GIVEN a user viewing a mission with tasks
 - WHEN the task list is displayed
 - THEN the system shows "X remaining / Y total" count
+
+## REMOVED Requirements
+
+### Requirement: Task Data Isolation
+
+**Reason**: L'authentification et la séparation multi-utilisateur ont été supprimées. L'application est 100% locale (IndexedDB), il n'y a plus de notion de propriété ni de row-level security. Les tâches sont accessibles via leur mission parente dans le contexte local.
+
+**Migration**: Aucune migration nécessaire — les données sont stockées localement dans IndexedDB et accessibles directement.

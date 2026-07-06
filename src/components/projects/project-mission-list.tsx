@@ -30,8 +30,6 @@ export function ProjectMissionList({ projectId, initialMissions }: ProjectMissio
   
   const fetchMissions = useCallback(async () => {
      // For now, if we need to refresh, we just revalidate or use the existing event pattern
-     // But we shouldn't use Supabase here anymore.
-     // In a real scenario, we'd call a Prisma-based server action.
   }, [])
 
   useEffect(() => {

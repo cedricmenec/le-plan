@@ -1,10 +1,4 @@
-# Missions Specification
-
-## Purpose
-
-Define how users create, manage, track, and view missions. Missions are the central entity representing work items with types (feature, study, support, documentation), optional project association, and decomposable into tasks.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Create Mission
 
@@ -146,3 +140,11 @@ The system SHALL allow users to add a main goal and supplementary notes to each 
 - WHEN the user provides supplementary notes
 - THEN the system records the notes
 - AND the notes are displayed in the mission detail view
+
+## REMOVED Requirements
+
+### Requirement: Mission Data Isolation
+
+**Reason**: L'authentification et la séparation multi-utilisateur ont été supprimées. L'application est 100% locale (IndexedDB), il n'y a plus de notion de propriété ni de row-level security.
+
+**Migration**: Aucune migration nécessaire — les données sont stockées localement dans IndexedDB et accessibles directement.

@@ -4,12 +4,12 @@ context: |
   Project purpose: Personal workload visibility and arbitration tool for managing professional missions
   Primary actors: Individual professional user, Product Managers (viewers)
   Business domain: Workload management and project planning
-  Technical stack: Next.js (React/TypeScript), Tailwind CSS, Shadcn/ui, Supabase (PostgreSQL), Prisma ORM
-  Architecture: Single-user web application with authentication, mission/project/task management
+  Technical stack: Vite (React/TypeScript), Tailwind CSS, Shadcn/ui, Dexie (IndexedDB)
+  Architecture: Single-user local web application (no authentication), mission/project/task management
   Compatibility constraints: None documented
-  Security constraints: User data protected via Supabase Auth, row-level security on database
-  Code and test conventions: Vitest for testing, Prisma for database operations
-  Deployment constraints: Vercel optimized for Next.js
+  Security constraints: No authentication — data stored locally in IndexedDB
+  Code and test conventions: Vitest for testing, Dexie for IndexedDB operations
+  Deployment constraints: Static hosting (GitHub Pages, Hostinger, any static server)
   Known boundaries: Not a task management tool, not time tracking, not collaborative platform
 
 rules:
