@@ -4,6 +4,12 @@ import Dexie, { type EntityTable } from 'dexie';
 
 export type MissionState = 'Backlog' | 'Queued' | 'Active' | 'Suspended' | 'Terminated';
 export type MissionReason = 'Done' | 'Cancelled' | 'Blocked' | 'Deprioritized' | null;
+export type ConfidenceLevel = 1 | 2 | 3 | 4 | 5;
+
+export function migrateConfidence(percentage: number): ConfidenceLevel {
+  const value = Math.max(0, Math.min(100, Number(percentage) || 0));
+  return Math.max(1, Math.min(5, Math.ceil(value / 20))) as ConfidenceLevel;
+}
 
 // ─── Entity interfaces ─────────────────────────────────────────────
 
@@ -24,7 +30,7 @@ export interface Mission {
   title: string;
   type: string;
   estimation: number;
-  confidence: number | null;
+  confidence: ConfidenceLevel | null;
   state: MissionState;
   reason: MissionReason;
   priority: string | null;
@@ -32,8 +38,6 @@ export interface Mission {
   notes: string | null;
   estimated_delivery_date: string | null;
   desired_delivery_date: string | null;
-  rom_size: string | null;
-  load_source: string;
   project_id: string | null;
   project_parent: string | null;
   created_at: string;
@@ -97,6 +101,20 @@ class LePlanDB extends Dexie {
       milestones: 'id, mission_id, date',
       milestoneTypes: 'id, name',
       statusHistory: 'id, mission_id, created_at',
+    });
+    this.version(2).stores({
+      projects: 'id, name, status',
+      missions: 'id, state, priority, project_id, estimated_delivery_date',
+      subtasks: 'id, mission_id, is_completed, position',
+      milestones: 'id, mission_id, date',
+      milestoneTypes: 'id, name',
+      statusHistory: 'id, mission_id, created_at',
+    }).upgrade(async transaction => {
+      await transaction.table('missions').toCollection().modify(mission => {
+        if (mission.confidence != null) mission.confidence = migrateConfidence(mission.confidence);
+        delete mission.rom_size;
+        delete mission.load_source;
+      });
     });
   }
 }

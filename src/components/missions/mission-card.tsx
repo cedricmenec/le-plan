@@ -4,7 +4,9 @@ import { MissionActions } from './mission-actions'
 import { StateBadge } from './state-badge'
 import { MissionState, MissionReason } from '@/lib/types'
 import { formatRelativeDuration } from '@/lib/utils'
-import { romToDays, calculateTaskRemainingLoad, ROMSize } from '@/lib/load-utils'
+import { calculateTaskRemainingLoad } from '@/lib/load-utils'
+import { CONFIDENCE_LABELS } from '@/components/ui/confidence-select'
+import type { ConfidenceLevel } from '@/lib/db'
 import { calculateMissionDurations, StatusHistoryEntry } from '@/lib/missions/duration-utils'
 import {
   Tooltip,
@@ -17,12 +19,9 @@ import {
   Wrench, 
   FileText, 
   MoreHorizontal, 
-  ShieldCheck, 
-  AlertTriangle,
   ArrowRight,
   StickyNote,
-  Shirt,
-  ListTodo,
+  Gauge,
   LucideIcon
 } from 'lucide-react'
 
@@ -32,13 +31,11 @@ export type Mission = {
   type: string
   state: MissionState
   reason: MissionReason | null
-  confidence: number | null
+  confidence: ConfidenceLevel | null
   goal: string | null
   notes: string | null
   project_id: string | null
   project_parent: string | null
-  rom_size: string | null
-  load_source: string
   estimated_delivery_date: string | null
   desired_delivery_date: string | null
   priority: string | null
@@ -97,12 +94,11 @@ export function MissionCard({
   
   const Icon = TYPE_ICONS[mission.type] || TYPE_ICONS.other
   const colorClass = TYPE_COLORS[mission.type] || TYPE_COLORS.other
-  const confidence = mission.confidence || 0
-  const isHighConfidence = confidence >= 80
+  const confidence = mission.confidence
   const projectName = mission.projects?.name || mission.project_parent
 
-  const romDays = romToDays(mission.rom_size as ROMSize)
   const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
+  const remainingTasks = (mission.subtasks || []).filter(task => !task.is_completed).length
 
   const durations = calculateMissionDurations(
     (mission.status_history || []).map(h => ({
@@ -124,12 +120,6 @@ export function MissionCard({
       })()
     : null
   
-  const officialEstimationDisplay = mission.load_source === 'tasks' 
-    ? `${tasksDays}j` 
-    : `${romDays}j`
-    
-  const LoadIcon = mission.load_source === 'tasks' ? ListTodo : Shirt
-
   useEffect(() => {
     const checkTruncation = () => {
       if (goalRef.current) {
@@ -183,14 +173,7 @@ export function MissionCard({
               </Tooltip>
             )}
 
-            <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md border ${
-              isHighConfidence 
-                ? 'bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-900/30 text-green-700 dark:text-green-300'
-                : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-100 dark:border-yellow-900/30 text-yellow-700 dark:text-yellow-300'
-            }`}>
-              {isHighConfidence ? <ShieldCheck className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
-              <span className="text-[11px] font-bold">{confidence}%</span>
-            </div>
+            {confidence && <div className="flex items-center gap-1.5 rounded-md border border-blue-100 bg-blue-50 px-2 py-1 text-blue-700 dark:border-blue-900/30 dark:bg-blue-900/20 dark:text-blue-300"><span className="text-[11px] font-bold">{confidence}/5 · {CONFIDENCE_LABELS[confidence]}</span></div>}
             
             <MissionActions 
               onEdit={onEdit} 
@@ -238,10 +221,7 @@ export function MissionCard({
               </>
             )}
             <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
-            <div className="flex items-center gap-1">
-              <LoadIcon className="h-3 w-3" />
-              <span>{officialEstimationDisplay}</span>
-            </div>
+            <Tooltip><TooltipTrigger asChild><div className="flex items-center gap-1 cursor-help"><Gauge className="h-3 w-3" /><span>{mission.estimation}j</span></div></TooltipTrigger><TooltipContent><p>Estimation : {mission.estimation}j{confidence ? ` — Confiance : ${confidence}/5 (${CONFIDENCE_LABELS[confidence]})` : ''}</p><p>Charge restante par tâches : {tasksDays}j ({remainingTasks}/{mission.subtasks?.length ?? 0} restantes)</p></TooltipContent></Tooltip>
           </div>
           <Link 
             to={`/missions/${mission.id}`}

@@ -10,6 +10,8 @@ import { PrioritySelect } from './priority-select'
 import { PriorityLevel } from './priority-badge'
 import { createMission } from '@/app/missions/actions'
 import { getProjects, type Project } from '@/lib/db'
+import { ConfidenceSelect, ESTIMATION_PRESETS } from '@/components/ui/confidence-select'
+import type { ConfidenceLevel } from '@/lib/db'
 
 const MISSION_TYPES = [
   { value: 'feature', label: 'Feature' },
@@ -31,6 +33,8 @@ export function MissionForm({ onSuccess, initialProjectId, isProjectLocked }: Mi
   const [dateWarning, setDateWarning] = useState<string | null>(null)
   const [priority, setPriority] = useState<PriorityLevel>('medium')
   const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>(initialProjectId)
+  const [estimation, setEstimation] = useState(3)
+  const [confidence, setConfidence] = useState<ConfidenceLevel>(3)
 
   useEffect(() => {
     getProjects().then(data => {
@@ -54,8 +58,6 @@ export function MissionForm({ onSuccess, initialProjectId, isProjectLocked }: Mi
     const notes = formData.get('notes') as string
     const estimated_delivery_date = formData.get('estimated_delivery_date') as string || null
     const desired_delivery_date = formData.get('desired_delivery_date') as string || null
-    const estimation = parseFloat(formData.get('estimation') as string)
-    const confidence = parseFloat(formData.get('confidence') as string)
     const project_id_raw = formData.get('project_id') as string
     const project_id = project_id_raw === 'none' ? null : project_id_raw
 
@@ -100,6 +102,8 @@ export function MissionForm({ onSuccess, initialProjectId, isProjectLocked }: Mi
 
       form.reset()
       setPriority('medium')
+      setEstimation(3)
+      setConfidence(3)
       // notify sibling components (e.g. MissionList) to refetch their data
       window.dispatchEvent(new CustomEvent('missions:created'))
       if (onSuccess) onSuccess(mission)
@@ -176,14 +180,15 @@ export function MissionForm({ onSuccess, initialProjectId, isProjectLocked }: Mi
         </p>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="estimation">Estimation (jours)</Label>
-          <Input id="estimation" name="estimation" type="number" step="0.5" defaultValue="1" required />
+          <Input id="estimation" name="estimation" type="number" min="0" step="0.5" value={estimation} onChange={e => setEstimation(Number(e.target.value))} required />
+          <div className="flex flex-wrap gap-1">{ESTIMATION_PRESETS.map(([label, days]) => <Button key={label} type="button" variant="outline" size="sm" onClick={() => setEstimation(days)}>{label}</Button>)}</div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="confidence">Confiance (%)</Label>
-          <Input id="confidence" name="confidence" type="number" min="0" max="100" defaultValue="100" required />
+          <Label>Confiance</Label>
+          <ConfidenceSelect value={confidence} onChange={setConfidence} />
         </div>
       </div>
 

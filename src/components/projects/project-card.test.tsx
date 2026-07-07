@@ -28,7 +28,7 @@ const mockMissions = [
     created_at: '',
     user_id: 'u1',
     type: 'feature',
-    confidence: 100,
+    confidence: 5 as const,
     project_id: '1',
     estimation: 3,
     goal: null,
@@ -36,8 +36,6 @@ const mockMissions = [
     desired_delivery_date: null,
     priority: 'medium',
     project_parent: null,
-    rom_size: null,
-    load_source: 'tasks',
   },
   {
     id: 'm2',
@@ -48,7 +46,7 @@ const mockMissions = [
     created_at: '',
     user_id: 'u1',
     type: 'study',
-    confidence: 100,
+    confidence: 5 as const,
     project_id: '1',
     estimation: 2,
     goal: null,
@@ -56,8 +54,6 @@ const mockMissions = [
     desired_delivery_date: null,
     priority: 'low',
     project_parent: null,
-    rom_size: null,
-    load_source: 'tasks',
   }
 ]
 
