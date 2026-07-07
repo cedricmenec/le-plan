@@ -25,7 +25,9 @@ import {
 interface MissionStateActionsProps {
   state: MissionState
   reason?: MissionReason | null
-  onUpdate: (updates: { state: MissionState, reason?: MissionReason | null }) => Promise<void>
+  estimation?: number
+  subtasks?: Array<{ is_completed: boolean; estimation: number }>
+  onUpdate: (updates: { state: MissionState, reason?: MissionReason | null, estimation?: number }) => Promise<void>
 }
 
 const STATE_ICONS: Record<string, any> = {
@@ -43,11 +45,21 @@ const REASON_LABELS: Record<string, string> = {
   [MissionReason.Cancelled]: 'Annulé',
 }
 
-export function MissionStateActions({ state, reason, onUpdate }: MissionStateActionsProps) {
+export function MissionStateActions({ state, reason, estimation, subtasks = [], onUpdate }: MissionStateActionsProps) {
   const nextStates = MissionStateMachine.getValidNextStates(state)
 
   const handleTransition = async (nextState: MissionState, nextReason?: MissionReason | null) => {
-    await onUpdate({ state: nextState, reason: nextReason })
+    const updates: { state: MissionState; reason?: MissionReason | null; estimation?: number } = { state: nextState, reason: nextReason }
+    if (nextState === MissionState.Terminated && nextReason === MissionReason.Done) {
+      const completedLoad = subtasks.filter(task => task.is_completed).reduce((sum, task) => sum + (Number(task.estimation) || 0), 0)
+      const answer = window.prompt(completedLoad > 0 ? 'Durée réelle en jours (calculée depuis les tâches complétées). Modifiez, validez ou laissez vide pour ignorer.' : 'Durée réelle en jours. Laissez vide pour ignorer.', String(completedLoad || estimation || ''))
+      if (answer !== null && answer.trim() !== '') {
+        const actual = Number(answer)
+        if (!Number.isFinite(actual) || actual < 0) return
+        updates.estimation = actual
+      }
+    }
+    await onUpdate(updates)
   }
 
   return (

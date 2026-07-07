@@ -59,15 +59,13 @@ export type Database = {
           goal: string | null
           notes: string | null
           estimation: number
-          confidence: number | null
+          confidence: 1 | 2 | 3 | 4 | 5 | null
           project_parent: string | null
           project_id: string | null
           status: string
           estimated_delivery_date: string | null
           desired_delivery_date: string | null
           priority: 'low' | 'medium' | 'high' | 'critical'
-          rom_size: string | null
-          load_source: 'rom' | 'tasks'
           completed_at: string | null
           started_at: string | null
         }
@@ -81,15 +79,13 @@ export type Database = {
           goal?: string | null
           notes?: string | null
           estimation?: number
-          confidence?: number | null
+          confidence?: 1 | 2 | 3 | 4 | 5 | null
           project_parent?: string | null
           project_id?: string | null
           status?: string
           estimated_delivery_date?: string | null
           desired_delivery_date?: string | null
           priority?: 'low' | 'medium' | 'high' | 'critical'
-          rom_size?: string | null
-          load_source?: 'rom' | 'tasks'
           completed_at?: string | null
           started_at?: string | null
         }
@@ -103,15 +99,13 @@ export type Database = {
           goal?: string | null
           notes?: string | null
           estimation?: number
-          confidence?: number | null
+          confidence?: 1 | 2 | 3 | 4 | 5 | null
           project_parent?: string | null
           project_id?: string | null
           status?: string
           estimated_delivery_date?: string | null
           desired_delivery_date?: string | null
           priority?: 'low' | 'medium' | 'high' | 'critical'
-          rom_size?: string | null
-          load_source?: 'rom' | 'tasks'
           completed_at?: string | null
           started_at?: string | null
         }

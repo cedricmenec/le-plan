@@ -19,7 +19,14 @@ import {
   importAllData,
   seedDefaultMilestoneTypes,
   generateId,
+  migrateConfidence,
 } from '@/lib/db'
+
+describe('migrateConfidence', () => {
+  it.each([[0, 1], [20, 1], [21, 2], [40, 2], [41, 3], [60, 3], [61, 4], [80, 4], [81, 5], [100, 5]])('maps %s%% to level %s', (percentage, level) => {
+    expect(migrateConfidence(percentage)).toBe(level)
+  })
+})
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
 
@@ -36,7 +43,7 @@ const sampleMission = (projectId: string) => ({
   title: 'Test Mission',
   type: 'feature',
   estimation: 5,
-  confidence: 80,
+  confidence: 4 as const,
   state: 'Backlog' as const,
   reason: null as null,
   priority: 'medium',
@@ -44,8 +51,6 @@ const sampleMission = (projectId: string) => ({
   notes: null,
   estimated_delivery_date: null,
   desired_delivery_date: null,
-  rom_size: null,
-  load_source: 'tasks',
   project_id: projectId,
   project_parent: null,
 })

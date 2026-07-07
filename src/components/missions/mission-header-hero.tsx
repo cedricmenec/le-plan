@@ -17,10 +17,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { romToDays, calculateTaskRemainingLoad, ROM_MAPPING, ROMSize } from '@/lib/load-utils'
+import { calculateTaskRemainingLoad } from '@/lib/load-utils'
+import { ConfidenceSelect, CONFIDENCE_LABELS } from '@/components/ui/confidence-select'
 import { 
-  ShieldCheck, 
-  AlertTriangle, 
   Smartphone, 
   BookOpen, 
   Wrench, 
@@ -29,26 +28,13 @@ import {
   MoreVertical,
   User, 
   History,
-  Shirt,
-  ListTodo,
   Info,
-  Settings2,
   X,
   Pencil,
   Trash2,
   RotateCcw,
   Archive
 } from 'lucide-react'
-
-const ROM_OPTIONS = Object.keys(ROM_MAPPING).map(size => ({
-  label: `${size} (~${ROM_MAPPING[size as ROMSize]}j)`,
-  value: size
-}))
-
-const LOAD_SOURCE_OPTIONS = [
-  { label: 'T-Shirt (ROM)', value: 'rom', icon: Shirt },
-  { label: 'Somme des tâches', value: 'tasks', icon: ListTodo },
-]
 
 const MISSION_TYPES = [
   { label: 'Feature', value: 'feature', icon: Smartphone, color: 'text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-900/20' },
@@ -147,6 +133,8 @@ export function MissionHeaderHero({ mission, onUpdate, readonly }: MissionHeader
             <MissionStateActions 
               state={mission.state} 
               reason={mission.reason} 
+              estimation={mission.estimation}
+              subtasks={mission.subtasks}
               onUpdate={onUpdate} 
             />
           )}
@@ -236,16 +224,9 @@ interface MissionHeroBlockProps {
 }
 
 export function MissionHeroBlock({ mission, onUpdate, readonly }: MissionHeroBlockProps) {
-  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
   const [isAlertDismissed, setIsAlertDismissed] = React.useState(false)
-  const confidence = mission.confidence || 0
-  const isHighConfidence = confidence >= 80
-
-  const romDays = romToDays(mission.rom_size as ROMSize)
   const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
-  const officialEstimation = mission.load_source === 'tasks' ? tasksDays : romDays
-
-  const showSuggestion = !readonly && !isAlertDismissed && mission.load_source === 'rom' && (mission.subtasks?.length > 0) && tasksDays > 0
+  const showSuggestion = !readonly && !isAlertDismissed && mission.subtasks?.length > 0 && tasksDays > 0 && tasksDays !== mission.estimation
 
   return (
     <div className="bg-slate-50/50 dark:bg-slate-900/40 p-8 md:p-10 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-8">
@@ -256,10 +237,10 @@ export function MissionHeroBlock({ mission, onUpdate, readonly }: MissionHeroBlo
         >
           <div 
             className="flex items-center gap-3 cursor-pointer flex-1"
-            onClick={() => onUpdate?.({ load_source: 'tasks' })}
+            onClick={() => onUpdate?.({ estimation: tasksDays })}
           >
             <Info className="h-4 w-4 shrink-0" />
-            <span>Cette mission a des tâches estimées. Passer à la charge par tâches ({tasksDays}j) ?</span>
+            <span>Charge restante par tâches : {tasksDays}j. Ajuster l'estimation ?</span>
           </div>
           <button 
             onClick={(e) => {
@@ -276,104 +257,21 @@ export function MissionHeroBlock({ mission, onUpdate, readonly }: MissionHeroBlo
 
       {/* Timeline visualization */}
       <MissionTimeline 
-        estimation={officialEstimation}
+        estimation={mission.estimation}
         estimatedDelivery={mission.estimated_delivery_date}
         desiredDelivery={mission.desired_delivery_date}
         readonly={readonly}
       />
 
-      {/* Estimation Settings Collapsible */}
-      {!readonly && (
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="ghost" 
-              size="icon-sm"
-              onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-              className={`text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors ${isSettingsOpen ? 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-200' : ''}`}
-              title="Configuration de l'estimation"
-              aria-label="Configuration de l'estimation"
-            >
-              <Settings2 className="h-4 w-4" />
-            </Button>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-              {isSettingsOpen ? 'Estimation Settings' : ''}
-            </span>
-          </div>
-
-          {isSettingsOpen && (
-            <div className="bg-white dark:bg-[#1a2632] border border-slate-200 dark:border-slate-800 rounded-none p-6 animate-in fade-in slide-in-from-top-1 duration-200 shadow-none">
-              <div className="flex flex-wrap items-center gap-10">
-                {/* ROM Selection */}
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                    <Shirt className="h-3 w-3" />
-                    Estimation ROM
-                  </label>
-                  <InlineEditableField
-                    value={mission.rom_size}
-                    type="select"
-                    options={ROM_OPTIONS}
-                    onSave={async (val) => {
-                      onUpdate?.({ rom_size: val })
-                    }}
-                    placeholder="Choisir Taille..."
-                    displayClassName="text-sm font-bold text-slate-700 dark:text-slate-300"
-                  />
-                </div>
-
-                {/* Load Source Toggle */}
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                    <Info className="h-3 w-3" />
-                    Source Officielle
-                  </label>
-                  <InlineEditableField
-                    value={mission.load_source}
-                    type="select"
-                    options={LOAD_SOURCE_OPTIONS}
-                    onSave={async (val) => {
-                      onUpdate?.({ load_source: val })
-                    }}
-                    displayClassName="text-sm font-bold text-blue-600 dark:text-blue-400"
-                  />
-                </div>
-
-                {/* Comparison Display */}
-                <div className="flex items-center gap-4">
-                  <div className="px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col items-center min-w-[60px]">
-                    <span className="text-[9px] font-bold text-slate-400 uppercase">ROM</span>
-                    <span className="text-xs font-black text-slate-700 dark:text-slate-300">{romDays}j</span>
-                  </div>
-                  <div className="px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col items-center min-w-[60px]">
-                    <span className="text-[9px] font-bold text-slate-400 uppercase">Tâches</span>
-                    <span className="text-xs font-black text-slate-700 dark:text-slate-300">{tasksDays}j</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+      <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm dark:border-slate-800 dark:bg-slate-900/50">Estimation mission : <strong>{mission.estimation}j</strong> · Charge restante par tâches : <strong>{tasksDays}j</strong></div>
 
       <div className="h-px bg-slate-100 dark:bg-slate-800" />
 
       {/* Bottom Metrics Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
         <div className="space-y-1.5">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Confidence Score</p>
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-black text-slate-900 dark:text-white">{confidence}%</span>
-            {isHighConfidence ? (
-              <div className="bg-green-100 dark:bg-green-900/30 p-1 rounded-full">
-                <ShieldCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
-              </div>
-            ) : (
-              <div className="bg-yellow-100 dark:bg-yellow-900/30 p-1 rounded-full">
-                <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
-              </div>
-            )}
-          </div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Confiance{mission.confidence ? ` · ${CONFIDENCE_LABELS[mission.confidence as 1|2|3|4|5]}` : ''}</p>
+          <ConfidenceSelect value={mission.confidence} disabled={readonly} onChange={confidence => onUpdate?.({ confidence })} />
         </div>
 
         <div className="space-y-1.5">

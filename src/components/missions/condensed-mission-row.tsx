@@ -3,12 +3,10 @@ import { MissionWithProject } from './mission-card'
 import { MissionActions } from './mission-actions'
 import { PriorityBadge, type PriorityLevel } from './priority-badge'
 import { Badge } from '@/components/ui/badge'
-import { romToDays, calculateTaskRemainingLoad, ROMSize } from '@/lib/load-utils'
-import { 
-  Shirt,
-  ListTodo,
-  LucideIcon
-} from 'lucide-react'
+import { calculateTaskRemainingLoad } from '@/lib/load-utils'
+import { CONFIDENCE_LABELS } from '@/components/ui/confidence-select'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Gauge } from 'lucide-react'
 
 const TYPE_COLORS: Record<string, string> = {
   feature: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400',
@@ -39,14 +37,8 @@ export function CondensedMissionRow({
   const colorClass = TYPE_COLORS[mission.type] || TYPE_COLORS.other
   const projectName = mission.projects?.name || mission.project_parent
 
-  const romDays = romToDays(mission.rom_size as ROMSize)
   const tasksDays = calculateTaskRemainingLoad(mission.subtasks || [])
-  
-  const officialEstimationDisplay = mission.load_source === 'tasks' 
-    ? `${tasksDays}j` 
-    : `${romDays}j`
-    
-  const LoadIcon = mission.load_source === 'tasks' ? ListTodo : Shirt
+  const remainingTasks = (mission.subtasks || []).filter(task => !task.is_completed).length
 
   const handleRowClick = () => {
     navigate(`/missions/${mission.id}`)
@@ -79,10 +71,7 @@ export function CondensedMissionRow({
       </div>
 
       {/* Estimation Column */}
-      <div className="flex justify-start items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 px-2">
-        <span className="text-slate-400"><LoadIcon className="h-3.5 w-3.5" /></span>
-        {officialEstimationDisplay}
-      </div>
+      <Tooltip><TooltipTrigger asChild><div className="flex justify-start items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 px-2"><Gauge className="h-3.5 w-3.5 text-slate-400" />{mission.estimation}j{mission.confidence && <span className="text-blue-600">· {mission.confidence}/5</span>}</div></TooltipTrigger><TooltipContent><p>Estimation : {mission.estimation}j{mission.confidence ? ` — ${CONFIDENCE_LABELS[mission.confidence]}` : ''}</p><p>Charge restante par tâches : {tasksDays}j ({remainingTasks}/{mission.subtasks?.length ?? 0})</p></TooltipContent></Tooltip>
 
       {/* Priority Column */}
       <div className="flex justify-center">

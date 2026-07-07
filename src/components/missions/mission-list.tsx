@@ -14,6 +14,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip"
 import { ProjectEmptyState } from '@/components/projects/project-empty-state'
+import { getMissions, getProjects, getSubtasks } from '@/lib/db'
 
 interface MissionListProps {
   initialMissions?: MissionWithProject[]
@@ -54,6 +55,17 @@ export function MissionList({
       setLoading(false)
     }
   }, [initialMissions])
+
+  useEffect(() => {
+    if (initialMissions !== undefined) return
+    let cancelled = false
+    setLoading(true)
+    Promise.all([getMissions(projectId), getProjects()]).then(async ([rows, projects]) => {
+      const hydrated = await Promise.all(rows.map(async mission => ({ ...mission, projects: projects.find(project => project.id === mission.project_id) ?? null, subtasks: await getSubtasks(mission.id) })))
+      if (!cancelled) setMissions(hydrated)
+    }).catch(error => console.error('Impossible de charger les missions', error)).finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
+  }, [initialMissions, projectId])
 
   useEffect(() => {
     const onCreated = () => {

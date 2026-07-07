@@ -48,8 +48,8 @@ export async function createMission(data: any) {
   return dbCreateMission({
     title: data.title,
     type: data.type || 'feature',
-    estimation: data.estimation || 0,
-    confidence: data.confidence || null,
+    estimation: data.estimation ?? 3,
+    confidence: data.confidence ?? 3,
     state: missionState,
     reason: missionReason,
     priority: data.priority || null,
@@ -57,8 +57,6 @@ export async function createMission(data: any) {
     notes: data.notes || null,
     estimated_delivery_date: data.estimated_delivery_date || null,
     desired_delivery_date: data.desired_delivery_date || null,
-    rom_size: data.rom_size || null,
-    load_source: data.load_source || 'rom',
     project_id: data.project_id || null,
     project_parent: data.project_parent || null,
   });

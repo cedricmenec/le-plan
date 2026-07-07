@@ -17,6 +17,8 @@ import { MissionStateMachine } from '@/lib/missions/state-machine'
 import { getProjects } from '@/lib/db'
 import { PrioritySelect } from './priority-select'
 import { PriorityLevel } from './priority-badge'
+import { ConfidenceSelect, ESTIMATION_PRESETS } from '@/components/ui/confidence-select'
+import type { ConfidenceLevel } from '@/lib/db'
 
 type Project = { id: string; name: string; status: string }
 type Mission = {
@@ -26,12 +28,10 @@ type Mission = {
   status: string
   state: MissionState
   reason: MissionReason | null
-  confidence: number | null
+  confidence: ConfidenceLevel | null
   goal: string | null
   notes: string | null
   project_id: string | null
-  rom_size: string | null
-  load_source: string
   estimated_delivery_date: string | null
   desired_delivery_date: string | null
   priority: string | null
@@ -260,18 +260,11 @@ export function EditMissionModal({
                 onChange={(e) => setFormData({ ...formData, estimation: parseFloat(e.target.value) })}
                 required
               />
+              <div className="flex flex-wrap gap-1">{ESTIMATION_PRESETS.map(([label, days]) => <Button key={label} type="button" variant="outline" size="sm" onClick={() => setFormData({ ...formData, estimation: days })}>{label}</Button>)}</div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-confidence">Confiance (%)</Label>
-              <Input
-                id="edit-confidence"
-                type="number"
-                min="0"
-                max="100"
-                value={formData.confidence || 0}
-                onChange={(e) => setFormData({ ...formData, confidence: parseFloat(e.target.value) })}
-                required
-              />
+              <Label>Confiance</Label>
+              <ConfidenceSelect value={formData.confidence ?? null} onChange={confidence => setFormData({ ...formData, confidence })} />
             </div>
           </div>
 
