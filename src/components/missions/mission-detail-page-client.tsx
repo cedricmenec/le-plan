@@ -12,6 +12,7 @@ import { MissionStatusHistoryList } from '@/components/missions/mission-status-h
 import { MissionHeaderHero, MissionHeroBlock } from '@/components/missions/mission-header-hero'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import type { MissionState } from '@/lib/types'
+import { MissionLifecycle } from './mission-lifecycle'
 
 export function MissionDetailContent() {
   const params = useParams()
@@ -84,6 +85,7 @@ export function MissionDetailContent() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
           <MissionHeaderHero mission={mission} onUpdate={handleUpdate} readonly={isReadonly} />
+          <MissionLifecycle mission={mission} />
           <div className="space-y-10">
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-muted-foreground">

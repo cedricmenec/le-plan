@@ -48,6 +48,26 @@ The system SHALL allow users to mark tasks as completed via checkbox.
 - THEN the system marks the task as not completed
 - AND the task returns to active state
 
+### Requirement: Task-Based Load Indicator
+
+The system SHALL calculate and display the remaining task-based load (sum of estimations for non-completed tasks) as a contextual indicator alongside the mission's unified estimation. This SHALL NOT replace or toggle the mission's main estimation field.
+
+#### Scenario: Task load appears in mission card tooltip
+
+- GIVEN a mission with subtasks that have estimations
+- WHEN the user hovers over the estimation area on a mission card
+- THEN the system displays a tooltip showing:
+  - Mission estimation + confidence level
+  - Task-based remaining load vs estimation
+  - Number of remaining tasks / total tasks
+
+#### Scenario: Task load appears in mission detail
+
+- GIVEN a user viewing a mission with subtasks
+- WHEN the mission detail page is displayed
+- THEN the system shows the task-based remaining load as an informational block
+- AND includes a suggestion to adjust the mission estimation to match the task-based load when they differ significantly
+
 ### Requirement: Task Reordering
 
 The system SHALL allow users to reorder tasks via drag and drop.

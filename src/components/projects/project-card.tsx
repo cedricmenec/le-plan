@@ -46,7 +46,8 @@ export function ProjectCard({ project, missions, onEdit, onDelete }: ProjectCard
     })
     .slice(0, 3)
 
-  const upcomingMissionsCount = missions.filter(m => m.state === MissionState.Backlog || m.state === MissionState.Queued).length
+  const queuedMissionsCount = missions.filter(m => m.state === MissionState.Queued).length
+  const backlogMissionsCount = missions.filter(m => m.state === MissionState.Backlog).length
   const totalMissions = missions.length
 
   const placeholderImage = `https://images.unsplash.com/photo-1572177222102-78617f76cc23?q=80&w=1000&auto=format&fit=crop`
@@ -164,7 +165,7 @@ export function ProjectCard({ project, missions, onEdit, onDelete }: ProjectCard
         <div className="pt-4 border-t border-slate-100 dark:border-slate-800/50 mt-auto flex items-center justify-between text-[11px] font-bold">
           <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
             <ListTodo className="h-3.5 w-3.5" />
-            <span>{upcomingMissionsCount} MISSION{upcomingMissionsCount > 1 ? 'S' : ''} À VENIR</span>
+            <span>{activeMissions.length} ACTIVES · {queuedMissionsCount} EN FILE · {backlogMissionsCount} BACKLOG</span>
           </div>
           <span className="text-slate-400 dark:text-slate-600 uppercase tracking-tighter">
             {totalMissions} MISSION{totalMissions > 1 ? 'S' : ''} TOTAL

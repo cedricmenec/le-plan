@@ -55,6 +55,13 @@
 
 ## Product Scope Questions
 
+- [ ] Should project-level mission queues eventually be consolidated into a single global queue?
+  - Context: The initial scope uses one explicitly ordered `Queued` mission queue per project. The user may alternate between missions belonging to different projects and therefore eventually needs a cross-project view of the intended execution order.
+  - Impact: Affects queue ownership, ordering semantics, drag-and-drop behavior, standalone missions, and the relationship between project-level and global planning views.
+  - Suggested default: Keep project-level queues as the current source of truth; consider a global queue only as a later product evolution, without deriving an artificial total order from project-local positions.
+  - Evidence status: `confirmed`
+  - Status: `open`
+
 - [ ] Should there be a global mission view across all projects?
   - Context: Product mentions project-level views but not a consolidated mission view
   - Impact: Affects navigation and workload visibility

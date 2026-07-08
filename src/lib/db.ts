@@ -39,6 +39,7 @@ export interface Mission {
   estimated_delivery_date: string | null;
   desired_delivery_date: string | null;
   project_id: string | null;
+  queue_position: number | null;
   project_parent: string | null;
   created_at: string;
   updated_at: string;
@@ -116,6 +117,19 @@ class LePlanDB extends Dexie {
         delete mission.load_source;
       });
     });
+    this.version(3).stores({
+      projects: 'id, name, status',
+      missions: 'id, state, priority, project_id, queue_position, [project_id+state+queue_position], estimated_delivery_date',
+      subtasks: 'id, mission_id, is_completed, position',
+      milestones: 'id, mission_id, date',
+      milestoneTypes: 'id, name',
+      statusHistory: 'id, mission_id, created_at',
+    }).upgrade(async transaction => {
+      const table = transaction.table('missions');
+      const missions = await table.toArray() as Mission[];
+      const normalized = normalizeMissionQueues(missions);
+      await table.bulkPut(normalized);
+    });
   }
 }
 
@@ -184,11 +198,16 @@ export async function getMission(id: string): Promise<Mission | undefined> {
 }
 
 export async function createMission(
-  data: Omit<Mission, 'id' | 'created_at' | 'updated_at'>
+  data: Omit<Mission, 'id' | 'created_at' | 'updated_at' | 'queue_position'> & { queue_position?: number | null }
 ): Promise<string> {
   const id = generateId();
   const now = nowISO();
-  await db.missions.add({ id, ...data, created_at: now, updated_at: now });
+  await db.transaction('rw', db.missions, async () => {
+    const queue_position = data.state === 'Queued'
+      ? await nextQueuePosition(data.project_id)
+      : null;
+    await db.missions.add({ id, ...data, queue_position, created_at: now, updated_at: now });
+  });
   return id;
 }
 
@@ -196,29 +215,99 @@ export async function updateMission(
   id: string,
   data: Partial<Omit<Mission, 'id' | 'created_at' | 'updated_at'>>
 ): Promise<void> {
-  const mission = await db.missions.get(id);
-  if (!mission) throw new Error(`Mission ${id} not found`);
-
-  // Track state transitions
-  if (data.state && data.state !== mission.state) {
-    await db.statusHistory.add({
-      id: generateId(),
-      mission_id: id,
-      status: data.state,
-      reason: data.reason ?? null,
-      note: null,
-      created_at: nowISO(),
-    });
-  }
-
-  await db.missions.update(id, { ...data, updated_at: nowISO() });
+  await db.transaction('rw', db.missions, db.statusHistory, async () => {
+    const mission = await db.missions.get(id);
+    if (!mission) throw new Error(`Mission ${id} not found`);
+    const nextState = data.state ?? mission.state;
+    const nextProjectId = data.project_id === undefined ? mission.project_id : data.project_id;
+    const leavesQueue = mission.state === 'Queued' && (nextState !== 'Queued' || nextProjectId !== mission.project_id);
+    const entersQueue = nextState === 'Queued' && (mission.state !== 'Queued' || nextProjectId !== mission.project_id);
+    if (data.state && data.state !== mission.state) {
+      await db.statusHistory.add({ id: generateId(), mission_id: id, status: data.state,
+        reason: data.reason ?? null, note: null, created_at: nowISO() });
+    }
+    const queue_position = entersQueue ? await nextQueuePosition(nextProjectId, id)
+      : nextState !== 'Queued' ? null : mission.queue_position;
+    await db.missions.update(id, { ...data, queue_position, updated_at: nowISO() });
+    if (leavesQueue) await compactQueue(mission.project_id);
+  });
 }
 
 export async function deleteMission(id: string): Promise<void> {
-  await db.subtasks.where('mission_id').equals(id).delete();
-  await db.milestones.where('mission_id').equals(id).delete();
-  await db.statusHistory.where('mission_id').equals(id).delete();
-  await db.missions.delete(id);
+  await db.transaction('rw', db.missions, db.subtasks, db.milestones, db.statusHistory, async () => {
+    const mission = await db.missions.get(id);
+    await db.subtasks.where('mission_id').equals(id).delete();
+    await db.milestones.where('mission_id').equals(id).delete();
+    await db.statusHistory.where('mission_id').equals(id).delete();
+    await db.missions.delete(id);
+    if (mission?.state === 'Queued') await compactQueue(mission.project_id);
+  });
+}
+
+export const STANDALONE_QUEUE_SCOPE = '__standalone__';
+
+export function queueScope(projectId: string | null): string {
+  return projectId ?? STANDALONE_QUEUE_SCOPE;
+}
+
+function legacyQueueSort(a: Mission, b: Mission): number {
+  if (a.estimated_delivery_date && b.estimated_delivery_date) {
+    const byDate = a.estimated_delivery_date.localeCompare(b.estimated_delivery_date);
+    if (byDate) return byDate;
+  } else if (a.estimated_delivery_date) return -1;
+  else if (b.estimated_delivery_date) return 1;
+  return b.created_at.localeCompare(a.created_at) || a.id.localeCompare(b.id);
+}
+
+export function normalizeMissionQueues(missions: Mission[]): Mission[] {
+  const result = missions.map(m => ({ ...m, queue_position: m.state === 'Queued' ? m.queue_position ?? null : null }));
+  const groups = new Map<string, Mission[]>();
+  for (const mission of result.filter(m => m.state === 'Queued')) {
+    const scope = queueScope(mission.project_id);
+    groups.set(scope, [...(groups.get(scope) ?? []), mission]);
+  }
+  for (const group of groups.values()) {
+    const valid = group.every(m => Number.isInteger(m.queue_position) && (m.queue_position as number) >= 0)
+      && new Set(group.map(m => m.queue_position)).size === group.length
+      && group.every((m, i, all) => all.some(other => other.queue_position === i));
+    group.sort(valid
+      ? (a, b) => (a.queue_position as number) - (b.queue_position as number)
+      : legacyQueueSort);
+    group.forEach((mission, index) => { mission.queue_position = index; });
+  }
+  return result;
+}
+
+async function queueMissions(projectId: string | null): Promise<Mission[]> {
+  const all = await db.missions.where('state').equals('Queued').toArray();
+  return all.filter(m => m.project_id === projectId)
+    .sort((a, b) => (a.queue_position ?? Number.MAX_SAFE_INTEGER) - (b.queue_position ?? Number.MAX_SAFE_INTEGER));
+}
+
+async function nextQueuePosition(projectId: string | null, excludeId?: string): Promise<number> {
+  return (await queueMissions(projectId)).filter(m => m.id !== excludeId).length;
+}
+
+async function compactQueue(projectId: string | null): Promise<void> {
+  const missions = await queueMissions(projectId);
+  await Promise.all(missions.map((mission, index) => db.missions.update(mission.id, { queue_position: index })));
+}
+
+export async function getQueuedMissions(projectId: string | null): Promise<Mission[]> {
+  return queueMissions(projectId);
+}
+
+export async function reorderMissionQueue(projectId: string | null, orderedIds: string[]): Promise<void> {
+  await db.transaction('rw', db.missions, async () => {
+    const current = await queueMissions(projectId);
+    if (orderedIds.length !== current.length || new Set(orderedIds).size !== orderedIds.length ||
+        current.some(m => !orderedIds.includes(m.id))) {
+      throw new Error('Reorder must contain every queued mission in the scope exactly once');
+    }
+    const byId = new Map(current.map(m => [m.id, m]));
+    if (orderedIds.some(id => byId.get(id)?.project_id !== projectId)) throw new Error('Cross-scope reorder is not allowed');
+    await Promise.all(orderedIds.map((id, queue_position) => db.missions.update(id, { queue_position, updated_at: nowISO() })));
+  });
 }
 
 // ─── Subtask CRUD ──────────────────────────────────────────────────
@@ -332,7 +421,7 @@ export async function exportAllData(): Promise<ExportData> {
 
 export async function importAllData(data: ExportData): Promise<void> {
   await db.projects.bulkPut(data.projects);
-  await db.missions.bulkPut(data.missions);
+  await db.missions.bulkPut(normalizeMissionQueues(data.missions));
   await db.subtasks.bulkPut(data.subtasks);
   await db.milestones.bulkPut(data.milestones);
   await db.milestoneTypes.bulkPut(data.milestoneTypes);

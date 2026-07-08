@@ -20,11 +20,60 @@ import {
   seedDefaultMilestoneTypes,
   generateId,
   migrateConfidence,
+  getQueuedMissions,
+  reorderMissionQueue,
+  normalizeMissionQueues,
 } from '@/lib/db'
 
 describe('migrateConfidence', () => {
   it.each([[0, 1], [20, 1], [21, 2], [40, 2], [41, 3], [60, 3], [61, 4], [80, 4], [81, 5], [100, 5]])('maps %s%% to level %s', (percentage, level) => {
     expect(migrateConfidence(percentage)).toBe(level)
+  })
+})
+
+describe('Mission queues', () => {
+  beforeEach(clearAllData)
+  afterEach(clearAllData)
+
+  it('appends, compacts, reassigns and reorders within a scope', async () => {
+    const firstProject = await createProject(sampleProject())
+    const secondProject = await createProject({ ...sampleProject(), name: 'Second' })
+    const queued = { ...sampleMission(firstProject), state: 'Queued' as const }
+    const first = await createMission({ ...queued, title: 'First' })
+    const second = await createMission({ ...queued, title: 'Second' })
+    expect((await getQueuedMissions(firstProject)).map(m => [m.id, m.queue_position])).toEqual([[first, 0], [second, 1]])
+
+    await reorderMissionQueue(firstProject, [second, first])
+    expect((await getQueuedMissions(firstProject)).map(m => m.id)).toEqual([second, first])
+    await updateMission(second, { project_id: secondProject })
+    expect((await getQueuedMissions(firstProject)).map(m => [m.id, m.queue_position])).toEqual([[first, 0]])
+    expect((await getQueuedMissions(secondProject))[0].queue_position).toBe(0)
+    await updateMission(first, { state: 'Active' })
+    expect((await getMission(first))?.queue_position).toBeNull()
+  })
+
+  it('rejects incomplete, duplicate and foreign-scope reorder requests without mutation', async () => {
+    const project = await createProject(sampleProject())
+    const other = await createProject({ ...sampleProject(), name: 'Other' })
+    const first = await createMission({ ...sampleMission(project), state: 'Queued', title: 'First' })
+    const second = await createMission({ ...sampleMission(project), state: 'Queued', title: 'Second' })
+    const foreign = await createMission({ ...sampleMission(other), state: 'Queued' })
+    await expect(reorderMissionQueue(project, [first])).rejects.toThrow()
+    await expect(reorderMissionQueue(project, [first, first])).rejects.toThrow()
+    await expect(reorderMissionQueue(project, [first, foreign])).rejects.toThrow()
+    expect((await getQueuedMissions(project)).map(m => m.id)).toEqual([first, second])
+  })
+
+  it('normalizes invalid legacy positions deterministically and clears non-queued positions', () => {
+    const base = { ...sampleMission(null as unknown as string), project_id: null, created_at: '2026-01-01', updated_at: '2026-01-01' }
+    const missions = normalizeMissionQueues([
+      { ...base, id: 'later', title: 'Later', state: 'Queued', queue_position: 4, estimated_delivery_date: '2026-02-01' },
+      { ...base, id: 'sooner', title: 'Sooner', state: 'Queued', queue_position: 4, estimated_delivery_date: '2026-01-01' },
+      { ...base, id: 'backlog', title: 'Backlog', state: 'Backlog', queue_position: 9 },
+    ])
+    expect(missions.find(m => m.id === 'sooner')?.queue_position).toBe(0)
+    expect(missions.find(m => m.id === 'later')?.queue_position).toBe(1)
+    expect(missions.find(m => m.id === 'backlog')?.queue_position).toBeNull()
   })
 })
 

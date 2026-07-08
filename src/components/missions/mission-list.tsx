@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/tooltip"
 import { ProjectEmptyState } from '@/components/projects/project-empty-state'
 import { getMissions, getProjects, getSubtasks } from '@/lib/db'
+import { QueuedMissionList } from './queued-mission-list'
 
 interface MissionListProps {
   initialMissions?: MissionWithProject[]
@@ -42,11 +43,12 @@ export function MissionList({
   const sortedMissions = useMemo(() => sortMissions(missions), [missions])
 
   const activeMissions = useMemo(() => 
-    sortedMissions.filter(m => m.state === MissionState.Active || m.state === MissionState.Suspended), 
+    sortedMissions.filter(m => m.state === MissionState.Active), 
   [sortedMissions])
-
-  const todoMissions = useMemo(() => 
-    sortedMissions.filter(m => m.state === MissionState.Backlog || m.state === MissionState.Queued), 
+  const suspendedMissions = useMemo(() => sortedMissions.filter(m => m.state === MissionState.Suspended), [sortedMissions])
+  const queuedMissions = useMemo(() => missions.filter(m => m.state === MissionState.Queued), [missions])
+  const backlogMissions = useMemo(() => 
+    sortedMissions.filter(m => m.state === MissionState.Backlog), 
   [sortedMissions])
 
   useEffect(() => {
@@ -190,26 +192,37 @@ export function MissionList({
               )}
             </div>
 
-            {/* To Do Missions Section */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold flex items-center gap-2"><span className="h-4 w-1.5 rounded-full bg-amber-500" />Missions suspendues</h3>
+              {suspendedMissions.length ? renderGrid(suspendedMissions) : <p className="text-sm text-slate-500">Aucune mission suspendue.</p>}
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2"><span className="h-4 w-1.5 rounded-full bg-violet-500" />File d'attente</h3>
+              {projectId !== undefined ? <QueuedMissionList missions={queuedMissions} projectId={projectId} /> :
+                Array.from(new Map(queuedMissions.map(m => [m.project_id ?? '__standalone__', m])).keys()).map(scope => {
+                  const group = queuedMissions.filter(m => (m.project_id ?? '__standalone__') === scope)
+                  return <section key={scope} className="space-y-2"><h4 className="text-sm font-bold text-slate-500">{group[0]?.projects?.name ?? 'Missions autonomes'}</h4><QueuedMissionList missions={group} projectId={scope === '__standalone__' ? null : scope} /></section>
+                })}
+            </div>
+            <details open className="space-y-4 rounded-xl">
+              <summary className="flex cursor-pointer list-none items-center justify-between">
                 <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
                   <span className="h-4 w-1.5 rounded-full bg-slate-300 dark:bg-slate-700" />
-                  Missions non commencées
+                  Backlog
                 </h3>
                 <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                  {todoMissions.length} mission{todoMissions.length > 1 ? 's' : ''} en attente
+                  {backlogMissions.length} mission{backlogMissions.length > 1 ? 's' : ''}
                 </span>
-              </div>
+              </summary>
               <CondensedMissionList
-                missions={todoMissions}
+                missions={backlogMissions}
                 showProjectName={showProjectName}
                 onEdit={(m) => setMissionToEdit(m)}
                 onDelete={(m) => setMissionToDelete(m)}
                 updatingId={updatingId}
                 deletingId={deletingId}
               />
-            </div>
+            </details>
           </>
         ) : (
           renderGrid(sortedMissions)

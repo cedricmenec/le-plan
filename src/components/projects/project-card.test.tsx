@@ -101,7 +101,7 @@ test('renders project image when image_url is provided', () => {
   expect(img.src).toBe('https://example.com/image.jpg')
 })
 
-test('renders upcoming missions count', () => {
+test('renders separate lifecycle counts', () => {
   renderWithRouter(
     <ProjectCard 
       project={mockProject as any} 
@@ -110,5 +110,5 @@ test('renders upcoming missions count', () => {
       onDelete={vi.fn()} 
     />
   )
-  expect(screen.getByText(/1 MISSION À VENIR/i)).toBeDefined()
+  expect(screen.getByText(/1 ACTIVES · 0 EN FILE · 1 BACKLOG/i)).toBeDefined()
 })

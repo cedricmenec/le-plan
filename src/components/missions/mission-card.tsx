@@ -35,6 +35,7 @@ export type Mission = {
   goal: string | null
   notes: string | null
   project_id: string | null
+  queue_position: number | null
   project_parent: string | null
   estimated_delivery_date: string | null
   desired_delivery_date: string | null

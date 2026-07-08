@@ -17,6 +17,8 @@ import {
   type Mission,
   type Subtask,
   type Milestone,
+  getQueuedMissions,
+  reorderMissionQueue,
 } from '@/lib/db';
 import { MissionStateMachine } from '@/lib/missions/state-machine';
 import type { MissionState, MissionReason } from '@/lib/types';
@@ -58,6 +60,7 @@ export async function createMission(data: any) {
     estimated_delivery_date: data.estimated_delivery_date || null,
     desired_delivery_date: data.desired_delivery_date || null,
     project_id: data.project_id || null,
+    queue_position: null,
     project_parent: data.project_parent || null,
   });
 }
@@ -145,4 +148,13 @@ export async function reopenMission(id: string) {
   if (mission.state !== 'Terminated') throw new Error('Mission can only be re-opened from Terminated state');
   await dbUpdateMission(id, { state: 'Queued', reason: null });
   return dbGetMission(id);
+}
+
+export async function getMissionQueue(projectId: string | null) {
+  return getQueuedMissions(projectId);
+}
+
+export async function reorderQueue(projectId: string | null, orderedIds: string[]) {
+  await reorderMissionQueue(projectId, orderedIds);
+  return getQueuedMissions(projectId);
 }

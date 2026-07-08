@@ -62,6 +62,7 @@ export type Database = {
           confidence: 1 | 2 | 3 | 4 | 5 | null
           project_parent: string | null
           project_id: string | null
+          queue_position: number | null
           status: string
           estimated_delivery_date: string | null
           desired_delivery_date: string | null

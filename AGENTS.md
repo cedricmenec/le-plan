@@ -1,0 +1,1 @@
+Tu utilises le framework de spec-driven development appelé openspec. Avant toute chose, lis le fichier config.yaml qui contient la configuration du projet. Il est essentiel que ce fichier soit lu avant de faire la moindre action. Vérifie, une fois que tu es sûr que tu as lu ce fichier, et indique à l'utilisateur que tu as bien pris connaissance de la configuration du projet. 
