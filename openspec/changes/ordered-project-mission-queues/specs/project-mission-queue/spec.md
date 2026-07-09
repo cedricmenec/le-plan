@@ -8,11 +8,13 @@ The system SHALL maintain an explicitly ordered queue of `Queued` missions for e
 - **WHEN** the user views a project containing queued missions
 - **THEN** the system displays only that project's queued missions in persisted queue order
 - **AND** each queued mission displays its one-based rank
+- **AND** each queued mission can be opened for detail inspection without changing its queue position
 
 #### Scenario: View standalone queued missions
 - **WHEN** the user views queued missions without a project
 - **THEN** the system displays them in a dedicated standalone queue
 - **AND** the system does not merge them into any project's queue
+- **AND** each queued mission can be opened for detail inspection without changing its queue position
 
 ### Requirement: Queue entry and exit
 
@@ -26,6 +28,16 @@ The system SHALL append a mission to the end of its queue scope whenever it ente
 #### Scenario: Mission leaves queued state
 - **WHEN** a queued mission transitions to `Backlog` or `Active`
 - **THEN** the system clears its queue position
+- **AND** compacts the remaining positions in the same scope
+
+#### Scenario: Queued mission is deprioritized
+- **WHEN** a queued mission transitions to `Backlog`
+- **THEN** the system removes it from the queue
+- **AND** compacts the remaining positions in the same scope
+
+#### Scenario: Queued mission is started
+- **WHEN** a queued mission transitions to `Active`
+- **THEN** the system removes it from the queue
 - **AND** compacts the remaining positions in the same scope
 
 #### Scenario: Queued mission changes project

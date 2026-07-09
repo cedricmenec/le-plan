@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import Dexie from 'dexie'
 import {
+  LePlanDB,
   db,
   clearAllData,
   createProject,
@@ -75,6 +77,113 @@ describe('Mission queues', () => {
     expect(missions.find(m => m.id === 'later')?.queue_position).toBe(1)
     expect(missions.find(m => m.id === 'backlog')?.queue_position).toBeNull()
   })
+
+  it('migrates legacy queued missions into deterministic scoped positions without data loss', async () => {
+    const databaseName = `leplan-migration-${crypto.randomUUID()}`
+    const legacyDb = new Dexie(databaseName)
+    legacyDb.version(2).stores({
+      projects: 'id, name, status',
+      missions: 'id, state, priority, project_id, estimated_delivery_date',
+      subtasks: 'id, mission_id, is_completed, position',
+      milestones: 'id, mission_id, date',
+      milestoneTypes: 'id, name',
+      statusHistory: 'id, mission_id, created_at',
+    })
+
+    const base = {
+      ...sampleMission('project-a'),
+      confidence: 4 as const,
+      reason: null,
+      created_at: '2026-01-01T00:00:00.000Z',
+      updated_at: '2026-01-01T00:00:00.000Z',
+    }
+
+    try {
+      await legacyDb.open()
+      await legacyDb.table('missions').bulkAdd([
+        { ...base, id: 'later', title: 'Later', state: 'Queued', estimated_delivery_date: '2026-02-01' },
+        { ...base, id: 'newer-undated', title: 'Newer undated', state: 'Queued', estimated_delivery_date: null, created_at: '2026-01-03T00:00:00.000Z' },
+        { ...base, id: 'sooner', title: 'Sooner', state: 'Queued', estimated_delivery_date: '2026-01-01', notes: 'keep me' },
+        { ...base, id: 'active', title: 'Active', state: 'Active', queue_position: 99 },
+        { ...base, id: 'standalone', title: 'Standalone', state: 'Queued', project_id: null },
+      ])
+      legacyDb.close()
+
+      const upgradedDb = new LePlanDB(databaseName)
+      await upgradedDb.open()
+      const missions = await upgradedDb.missions.toArray()
+      upgradedDb.close()
+
+      expect(missions.find(m => m.id === 'sooner')).toMatchObject({ state: 'Queued', queue_position: 0, notes: 'keep me' })
+      expect(missions.find(m => m.id === 'later')).toMatchObject({ state: 'Queued', queue_position: 1 })
+      expect(missions.find(m => m.id === 'newer-undated')).toMatchObject({ state: 'Queued', queue_position: 2 })
+      expect(missions.find(m => m.id === 'standalone')).toMatchObject({ state: 'Queued', project_id: null, queue_position: 0 })
+      expect(missions.find(m => m.id === 'active')).toMatchObject({ state: 'Active', queue_position: null })
+      expect(missions).toHaveLength(5)
+    } finally {
+      legacyDb.close()
+      await Dexie.delete(databaseName)
+    }
+  })
+
+  it('preserves queued order when non-state metadata changes', async () => {
+    const project = await createProject(sampleProject())
+    const first = await createMission({ ...sampleMission(project), state: 'Queued', title: 'First' })
+    const second = await createMission({ ...sampleMission(project), state: 'Queued', title: 'Second' })
+
+    await updateMission(first, { priority: 'high', estimated_delivery_date: '2026-01-01' })
+
+    expect((await getQueuedMissions(project)).map(m => m.id)).toEqual([first, second])
+  })
+
+  it('handles queued entry, exit, deletion, reopen and standalone scopes without automatic activation', async () => {
+    const project = await createProject(sampleProject())
+    const queued = await createMission({ ...sampleMission(project), state: 'Queued', title: 'Queued' })
+    const next = await createMission({ ...sampleMission(project), state: 'Queued', title: 'Next' })
+    const standalone = await createMission({ ...sampleMission(null), state: 'Queued', title: 'Standalone' })
+    const active = await createMission({ ...sampleMission(project), state: 'Active', title: 'Active' })
+    const terminated = await createMission({ ...sampleMission(project), state: 'Terminated', reason: 'Done', title: 'Done' })
+
+    expect((await getQueuedMissions(project)).map(m => [m.id, m.queue_position])).toEqual([[queued, 0], [next, 1]])
+    expect((await getQueuedMissions(null)).map(m => [m.id, m.queue_position])).toEqual([[standalone, 0]])
+
+    await updateMission(queued, { state: 'Backlog', reason: null })
+    expect((await getMission(queued))?.queue_position).toBeNull()
+    expect((await getQueuedMissions(project)).map(m => [m.id, m.queue_position])).toEqual([[next, 0]])
+
+    await updateMission(queued, { state: 'Queued', reason: null })
+    expect((await getQueuedMissions(project)).map(m => m.id)).toEqual([next, queued])
+
+    await updateMission(terminated, { state: 'Queued', reason: null })
+    expect((await getQueuedMissions(project)).map(m => m.id)).toEqual([next, queued, terminated])
+
+    await deleteMission(active)
+    expect((await getMission(next))?.state).toBe('Queued')
+
+    await deleteMission(next)
+    expect((await getQueuedMissions(project)).map(m => [m.id, m.queue_position])).toEqual([[queued, 0], [terminated, 1]])
+  })
+
+  it('preserves explicit valid import order and normalizes invalid imported queue data', async () => {
+    const base = { ...sampleMission(null), created_at: '2026-01-01', updated_at: '2026-01-01' }
+    await importAllData({
+      version: '1.0',
+      exported_at: '2026-01-01',
+      projects: [],
+      subtasks: [],
+      milestones: [],
+      milestoneTypes: [],
+      statusHistory: [],
+      missions: [
+        { ...base, id: 'second', title: 'Second', state: 'Queued', queue_position: 1, estimated_delivery_date: '2026-01-01' },
+        { ...base, id: 'first', title: 'First', state: 'Queued', queue_position: 0, estimated_delivery_date: '2026-02-01' },
+        { ...base, id: 'backlog', title: 'Backlog', state: 'Backlog', queue_position: 7 },
+      ],
+    })
+
+    expect((await getQueuedMissions(null)).map(m => m.id)).toEqual(['first', 'second'])
+    expect((await getMission('backlog'))?.queue_position).toBeNull()
+  })
 })
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
@@ -88,7 +197,7 @@ const sampleProject = () => ({
   image_url: null,
 })
 
-const sampleMission = (projectId: string) => ({
+const sampleMission = (projectId: string | null) => ({
   title: 'Test Mission',
   type: 'feature',
   estimation: 5,

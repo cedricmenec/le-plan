@@ -66,7 +66,7 @@ Project detail and the global mission view will render:
 3. `Queued` as ordered pending cards with a visible rank, muted surface, and dashed border;
 4. `Backlog` as a compact secondary list.
 
-Queued cards retain the mission information needed for arbitration and expose a drag handle. Drag and drop is restricted to a single queue scope. The global view groups queue sections by project and standalone scope; it does not permit cross-project ordering.
+Queued cards retain the mission information needed for arbitration, expose a drag handle, and provide a clear way to open the mission detail. Drag and drop is restricted to a single queue scope. The global view groups queue sections by project and standalone scope; it does not permit cross-project ordering.
 
 Project cards report active, queued, and backlog counts separately instead of combining queued and backlog as "upcoming".
 
@@ -76,6 +76,12 @@ Mission detail will add a compact lifecycle indicator that highlights the curren
 
 The existing state action remains the mechanism for changing lifecycle state. The indicator is explanatory, preventing two competing transition controls.
 
+### Open queued missions for decision-making
+
+Queued missions are pending commitments, not read-only queue entries. A queued row or card should let the user open the mission detail without interfering with drag handles, keyboard reorder controls, or action buttons.
+
+The mission detail remains the primary surface for lifecycle decisions. From there, the existing state action exposes the valid `Queued` transitions: move back to `Backlog` when the mission is deprioritized or no longer committed at short term, or move to `Active` when planning allows the work to start. Keeping state changes on the detail view avoids adding competing lifecycle controls to the queue reorder surface while still supporting the natural "inspect, then decide" workflow.
+
 ### Require explicit starts
 
 Completing, suspending, deleting, or moving an active mission does not change another mission's state. Queue rank 1 means "intended next," not "automatically active." This maintains deliberate workload control and matches the existing explicit state machine.
@@ -84,6 +90,7 @@ Completing, suspending, deleting, or moving an active mission does not change an
 
 - **[Risk] Queue positions become sparse, duplicated, or stale after a mutation.** → Route all mutations through transactional helpers, normalize imported data, and test every entry/exit/reassignment path.
 - **[Risk] Drag-and-drop interaction is inaccessible or unclear.** → Provide a visible handle, keyboard-operable reorder controls, rank labels, and an optimistic update that rolls back on persistence failure.
+- **[Risk] Opening a queued mission conflicts with drag-and-drop gestures.** → Scope drag listeners to the explicit handle and make the title or a dedicated detail affordance responsible for navigation.
 - **[Risk] A project with many backlog missions creates excessive visual length.** → Keep backlog compact and allow its section to be collapsed without hiding active or queued work.
 - **[Risk] Grouped global queues are mistaken for a global total order.** → Label every queue with its project and disallow cross-project dragging.
 - **[Trade-off] Rewriting all positions on reorder is O(n).** → Acceptable for personal project queues; transactional simplicity is preferred over fractional ranking complexity.
