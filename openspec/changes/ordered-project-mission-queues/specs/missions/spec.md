@@ -34,6 +34,22 @@ The system SHALL manage mission lifecycle through explicit macro-states: Backlog
 - THEN only Backlog missions appear in the compact Backlog section
 - AND Queued missions appear in the separate ordered queue
 
+#### Scenario: User moves queued mission back to backlog
+
+- GIVEN a user viewing a mission in Queued state
+- WHEN the user moves the mission to Backlog state
+- THEN the system records the state transition
+- AND removes the mission from its project or standalone queue
+- AND the mission appears in the Backlog section
+
+#### Scenario: User starts queued mission
+
+- GIVEN a user viewing a mission in Queued state
+- WHEN the user moves the mission to Active state
+- THEN the system records the state transition
+- AND removes the mission from its project or standalone queue
+- AND the mission appears in the Active section
+
 ### Requirement: Mission Archive
 
 The system SHALL allow users to view and reopen terminated missions from an archive.
@@ -68,4 +84,10 @@ The system SHALL show a mission's current position in the lifecycle from its det
 - **WHEN** the user opens a queued mission
 - **THEN** the system displays its current queue rank and queue scope
 - **AND** provides navigation to the corresponding project queue when the mission belongs to a project
+
+#### Scenario: Change queued mission state from detail
+- **GIVEN** a user has opened a queued mission detail
+- **WHEN** the user opens the mission state action
+- **THEN** the system offers Backlog and Active as valid next states
+- **AND** does not require a reason for either transition
 

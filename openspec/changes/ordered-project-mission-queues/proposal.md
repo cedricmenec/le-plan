@@ -7,6 +7,7 @@ The application stores `Queued` as a distinct mission state but currently merges
 - Separate project missions into distinct operational groups: `Active`, `Suspended`, ordered `Queued`, and `Backlog`.
 - Introduce an explicit, persistent queue position for each `Queued` mission within its project.
 - Allow users to reorder queued missions manually by drag and drop.
+- Allow users to open queued missions from the queue in order to inspect their full detail before deciding whether to start or deprioritize them.
 - Append missions to the end of their project queue when they enter `Queued`, including reopened missions.
 - Remove queue position when a mission leaves `Queued`, without automatically promoting or starting another mission.
 - Give queued missions a visually distinct pending treatment while keeping backlog missions in a compact secondary list.
@@ -28,6 +29,6 @@ The application stores `Queued` as a distinct mission state but currently merges
 
 - Mission data stored in Dexie gains a nullable project-queue ordering field and requires a local database migration.
 - Mission create, update, reopen, delete, project reassignment, import, and export flows must preserve queue invariants.
-- Project detail, global mission list, project cards, mission detail, mission state actions, and condensed mission list components are affected.
+- Project detail, global mission list, project cards, mission detail, mission state actions, queued mission list, and condensed mission list components are affected.
 - Queue reordering requires transactional persistence and focused Vitest coverage.
 - No authentication, network service, collaboration feature, automatic state promotion, or global cross-project queue is introduced.

@@ -9,6 +9,7 @@ The system SHALL organize a project's non-terminated missions into distinct `Act
 - **THEN** active missions appear as prominent solid cards
 - **AND** suspended missions appear in a distinct attention area with their reason
 - **AND** queued missions appear as ranked pending cards with a muted surface and dashed border
+- **AND** queued missions provide access to their mission detail for inspection
 - **AND** backlog missions appear in a compact secondary list
 
 #### Scenario: Lifecycle section is empty
@@ -33,4 +34,5 @@ The system SHALL show project queues as separate groups in the global mission vi
 - **WHEN** the user opens the global mission view
 - **THEN** queued missions are grouped and ordered within their project or standalone scope
 - **AND** the interface does not imply an order between different project queues
+- **AND** queued missions provide access to their mission detail for inspection
 

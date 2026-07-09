@@ -3,6 +3,7 @@ import { DndContext, closestCenter, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { ArrowDown, ArrowUp, GripVertical } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import type { MissionWithProject } from './mission-card'
@@ -14,7 +15,12 @@ function QueueRow({ mission, rank, total, move }: { mission: MissionWithProject;
     className="flex items-center gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/70 p-4 dark:border-slate-700 dark:bg-slate-900/30">
     <button {...attributes} {...listeners} aria-label={`Déplacer ${mission.title}`} className="cursor-grab text-slate-400"><GripVertical className="h-5 w-5" /></button>
     <span className="w-8 text-center text-lg font-bold text-slate-400" aria-label={`Rang ${rank}`}>{rank}</span>
-    <div className="min-w-0 flex-1"><p className="truncate font-semibold">{mission.title}</p><p className="text-xs text-slate-500">{mission.projects?.name ?? 'Missions autonomes'}</p></div>
+    <div className="min-w-0 flex-1">
+      <Link to={`/missions/${mission.id}`} className="block truncate font-semibold hover:text-blue-600 hover:underline">
+        {mission.title}
+      </Link>
+      <p className="text-xs text-slate-500">{mission.projects?.name ?? 'Missions autonomes'}</p>
+    </div>
     <Button size="icon" variant="ghost" disabled={rank === 1} onClick={() => move(-1)} aria-label={`Monter ${mission.title}`}><ArrowUp className="h-4 w-4" /></Button>
     <Button size="icon" variant="ghost" disabled={rank === total} onClick={() => move(1)} aria-label={`Descendre ${mission.title}`}><ArrowDown className="h-4 w-4" /></Button>
   </div>

@@ -85,7 +85,7 @@ export interface StatusHistory {
 
 // ─── Dexie database ────────────────────────────────────────────────
 
-class LePlanDB extends Dexie {
+export class LePlanDB extends Dexie {
   projects!: EntityTable<Project, 'id'>;
   missions!: EntityTable<Mission, 'id'>;
   subtasks!: EntityTable<Subtask, 'id'>;
@@ -93,8 +93,8 @@ class LePlanDB extends Dexie {
   milestoneTypes!: EntityTable<MilestoneType, 'id'>;
   statusHistory!: EntityTable<StatusHistory, 'id'>;
 
-  constructor() {
-    super('leplan');
+  constructor(databaseName = 'leplan') {
+    super(databaseName);
     this.version(1).stores({
       projects: 'id, name, status',
       missions: 'id, state, priority, project_id, estimated_delivery_date',
