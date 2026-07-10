@@ -455,3 +455,7 @@ export async function seedDefaultMilestoneTypes(): Promise<void> {
     await createMilestoneType(mt);
   }
 }
+
+export async function initializeReferenceData(): Promise<void> {
+  await seedDefaultMilestoneTypes();
+}

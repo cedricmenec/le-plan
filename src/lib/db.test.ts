@@ -19,6 +19,7 @@ import {
   deleteMission,
   exportAllData,
   importAllData,
+  initializeReferenceData,
   seedDefaultMilestoneTypes,
   generateId,
   migrateConfidence,
@@ -183,6 +184,37 @@ describe('Mission queues', () => {
 
     expect((await getQueuedMissions(null)).map(m => m.id)).toEqual(['first', 'second'])
     expect((await getMission('backlog'))?.queue_position).toBeNull()
+  })
+})
+
+describe('Reference data initialization', () => {
+  beforeEach(clearAllData)
+  afterEach(clearAllData)
+
+  it('seeds default milestone types for an empty local database', async () => {
+    expect(await db.milestoneTypes.count()).toBe(0)
+
+    await initializeReferenceData()
+
+    const milestoneTypes = await db.milestoneTypes.orderBy('name').toArray()
+    expect(milestoneTypes.map(type => type.name)).toEqual([
+      'Deadline',
+      'Decision',
+      'Delivery',
+      'Review',
+      'Start',
+    ])
+  })
+
+  it('is idempotent when reference data initialization runs repeatedly', async () => {
+    await initializeReferenceData()
+    const firstRead = await db.milestoneTypes.orderBy('name').toArray()
+
+    await initializeReferenceData()
+    const secondRead = await db.milestoneTypes.orderBy('name').toArray()
+
+    expect(secondRead).toEqual(firstRead)
+    expect(new Set(secondRead.map(type => type.name)).size).toBe(secondRead.length)
   })
 })
 
