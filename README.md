@@ -1,126 +1,76 @@
 # Le Plan
 
-Application de gestion de projets et missions en local-first (100% navigateur).
+Le Plan rend la charge de travail visible et facilite les arbitrages entre missions. Cette application web personnelle s’adresse aux professionnels qui pilotent plusieurs sujets en parallèle et souhaitent expliquer leurs priorités et leurs délais à des Product Managers sans recourir à un outil de suivi du temps ou de gestion de tâches complexe.
 
-## Stack
+L’application fonctionne sans compte ni backend. Les projets, missions, tâches, jalons et historiques sont conservés localement dans le navigateur avec IndexedDB.
 
-- **Framework** : Vite + React 19
-- **Routage** : React Router v7
-- **Stockage** : IndexedDB (via Dexie)
-- **UI** : Tailwind CSS v4 + shadcn/ui
-- **Build** : Static (SPA pure)
+## Fonctionnalités principales
 
-## Getting Started
+- organisation des missions par projet et par état (`Backlog`, `Queued`, `Active`, `Suspended`, `Terminated`) ;
+- priorisation et réordonnancement des files de missions ;
+- estimation de charge, niveau de confiance et dates de livraison ;
+- décomposition en tâches et suivi de jalons ;
+- historique des changements d’état ;
+- import et export des données au format JSON.
 
-```bash
-npm install
-npm run dev
-# or
-pnpm install && pnpm dev
-# or
-yarn
-yarn dev
-```
+Le Plan est volontairement mono-utilisateur. Il ne fournit ni authentification, ni synchronisation entre appareils, ni fonctions collaboratives, et n’a pas vocation à devenir un outil de time tracking exhaustif.
 
-Open [http://localhost:5173](http://localhost:5173) with your browser to see the application.
+## Démarrage rapide
 
-## Scripts disponibles
+### Prérequis
 
-| Commande | Description |
-|----------|-------------|
-| `npm run dev` | Lance le serveur de développement Vite |
-| `npm run build` | Build TypeScript puis build Vite vers `dist/` |
-| `npm run preview` | Prévisualise le build statique localement |
-| `npm run lint` | Vérifie le code avec ESLint |
-| `npm run test` | Exécute les tests avec Vitest |
-| `npm run check` | Lint + tests + TypeScript check complet |
+- Node.js 20 ;
+- npm.
 
-## Architecture
+1. Installez les dépendances :
 
-```
-┌─────────────────────────────────────────────────┐
-│                 Browser (SPA)                   │
-├─────────────────────────────────────────────────┤
-│  Vite + React 19   |   React Router v7          │
-│  Tailwind CSS v4   |   shadcn/ui composants     │
-│  Dexie (IndexedDB) |   Export/Import JSON       │
-└─────────────────────────────────────────────────┘
-```
+   ```bash
+   npm ci
+   ```
 
-L'application fonctionne **entièrement en local** dans le navigateur, sans serveur backend. Toutes les données sont stockées dans IndexedDB.
+2. Lancez le serveur de développement :
 
-## Fonctionnalités
+   ```bash
+   npm run dev
+   ```
 
-- Gestion de projets (CRUD)
-- Gestion de missions (CRUD, transitions d'état)
-- Gestion de tâches (CRUD, réordonnancement)
-- Jalons (milestones) avec types
-- Historique des changements de statut
-- Fonctionnement hors ligne complet
-- Export/Import des données (JSON)
-- Indicateur réseau (online/offline)
+3. Ouvrez [http://localhost:5173/le-plan/](http://localhost:5173/le-plan/). Le tableau de bord de Le Plan doit s’afficher.
 
-## Déploiement
+## Données locales
 
-### Build statique
+Les données restent dans le profil du navigateur et sont associées à l’origine depuis laquelle l’application est ouverte. Effacer les données du site ou changer de navigateur, de profil ou d’adresse peut donc rendre le contenu local inaccessible.
+
+Utilisez les fonctions d’export et d’import JSON de l’application pour sauvegarder vos données ou les transférer vers un autre navigateur.
+
+## Scripts utiles
+
+| Commande | Résultat |
+| --- | --- |
+| `npm run dev` | Lance le serveur de développement Vite. |
+| `npm run test` | Exécute la suite de tests avec Vitest. |
+| `npm run build` | Vérifie TypeScript et génère le site statique dans `dist/`. |
+| `npm run preview` | Sert localement le contenu généré dans `dist/`. |
+
+## Architecture et déploiement
+
+Le Plan est une SPA React 19 et TypeScript construite avec Vite. L’interface utilise Tailwind CSS et des composants shadcn/ui ; Dexie fournit l’accès à IndexedDB. Le routage par fragment (`#/...`) permet de servir l’application depuis un hébergement statique sans règle de réécriture côté serveur.
+
+Pour produire les fichiers à déployer :
 
 ```bash
 npm run build
 ```
 
-Le build est généré dans le dossier `dist/`.
+Le dépôt configure Vite pour le chemin de base `/le-plan/`. Adaptez la propriété `base` de `vite.config.ts` si l’application doit être publiée sous un autre chemin. Le workflow [Deploy to GitHub Pages](.github/workflows/deploy-github-pages.yml) construit et déploie automatiquement `dist/` lors d’un push sur `main`.
 
-### GitHub Pages
+## Contribuer
 
-1. Mettre à jour `vite.config.ts` : décommenter `base: '/le-plan/'` (ou le nom de votre repo)
-2. Build : `npm run build`
-3. Déployer le dossier `dist/` sur GitHub Pages
+Le projet n’est pas encore suffisamment mature pour accueillir des contributions externes dans de bonnes conditions. Les modalités de contribution seront publiées dès que le processus sera prêt. Merci de votre intérêt et de votre compréhension.
 
-> **Note** : L'application utilise `createHashRouter` de React Router pour une compatibilité maximale avec les hébergeurs statiques (GitHub Pages, Hostinger, etc.). Les URLs seront de la forme `https://mon-site.github.io/#/projects/123`.
+## Pour aller plus loin
 
-### Hostinger (FTP)
-
-1. Build : `npm run build`
-2. Uploader le contenu du dossier `dist/` via FTP vers le répertoire public
-
-### SPA et le routage
-
-React Router v7 utilise des hooks comme `useRouteError` qui nécessitent un **Data Router** (`createBrowserRouter`, `createHashRouter`, ou `createMemoryRouter`). Le projet utilise `createHashRouter` pour une compatibilité universelle avec les déploiements statiques.
-
-Si vous souhaitez migrer vers `createBrowserRouter` (URLs sans le `#`), vous devrez configurer votre serveur pour rediriger toutes les routes vers `index.html` (SPA fallback).
-
-## Tests
-
-```bash
-npm run test        # Exécute tous les tests
-npx vitest --ui     # Interface vitest UI
-npx vitest run      # Mode run (sans watch)
-```
-
-## Données
-
-L'application stocke toutes les données localement dans IndexedDB. Pour sauvegarder ou transférer vos données :
-
-1. Allez dans les paramètres de l'application
-2. Utilisez "Exporter les données" pour télécharger un fichier JSON
-3. Sur un autre appareil/navigateur, utilisez "Importer les données"
-
-## Projet initial
-
-This project was originally bootstrapped with Next.js (`create-next-app`) and Supabase backend, then migrated to a local-first architecture with Vite + React + IndexedDB.
-
-## SPA et compatibilité
-
-> **Note important** : L'application utilise `createHashRouter` de React Router v7. Cette approche est compatible avec tous les déploiements statiques (GitHub Pages, Hostinger, etc.) mais génère des URLs avec un fragment `#` (ex: `https://site.github.io/#/projects/123`).
-
-Si vous souhaitez implémenter un véritable SPA avec des URLs propres (sans `#`), vous devrez :
-
-1. Remplacer `createHashRouter` par `createBrowserRouter` dans `src/App.tsx`
-2. Configurer votre serveur pour rediriger toutes les routes vers `index.html` (SPA fallback)
-   - **Nginx** : `try_files $uri /index.html;`
-   - **Apache** : `FallbackResource /index.html` ou règles Rewrite
-   - **Hostinger** : Vérifier les options "SPA" ou "Single Page Application" dans le panneau de contrôle
-
-## License
-
-MIT
+- [Vision, objectifs et limites du produit](project-goals-fr.md)
+- [Cycle de vie d’une mission](docs/cycle-de-vie-mission.md)
+- [Spécifications des missions](openspec/specs/missions/spec.md)
+- [Spécifications des projets](openspec/specs/projects/spec.md)
+- [Spécifications des tâches](openspec/specs/tasks/spec.md)
