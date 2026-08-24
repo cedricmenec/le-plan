@@ -10,14 +10,6 @@ vi.mock('@/app/missions/actions', () => ({
 
 vi.mock('@dnd-kit/core', () => ({
   closestCenter: vi.fn(),
-  DndContext: ({ children, onDragEnd }: any) => (
-    <div>
-      <button type="button" onClick={() => onDragEnd({ active: { id: 'first' }, over: { id: 'second' } })}>
-        simulate pointer reorder
-      </button>
-      {children}
-    </div>
-  ),
 }))
 
 vi.mock('@dnd-kit/sortable', () => ({
@@ -71,10 +63,16 @@ describe('QueuedMissionList', () => {
     })
   })
 
-  it('persists pointer reorder within the same scope', async () => {
-    render(<MemoryRouter><QueuedMissionList missions={missions} projectId="project-1" /></MemoryRouter>)
+  it('persists pointer reorder within the same scope via the registered shared handler', async () => {
+    let dragEnd: ((event: { activeId: string; overId: string }) => void) | null = null
+    render(
+      <MemoryRouter>
+        <QueuedMissionList missions={missions} projectId="project-1" registerDragEnd={(scope, handler) => { if (handler) dragEnd = handler }} />
+      </MemoryRouter>,
+    )
 
-    fireEvent.click(screen.getByRole('button', { name: 'simulate pointer reorder' }))
+    await waitFor(() => expect(dragEnd).not.toBeNull())
+    dragEnd!({ activeId: 'first', overId: 'second' })
 
     await waitFor(() => {
       expect(reorderQueue).toHaveBeenCalledWith('project-1', ['second', 'first'])

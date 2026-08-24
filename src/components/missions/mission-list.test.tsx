@@ -1,14 +1,33 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, within, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { MissionList } from './mission-list'
+import { Toaster } from '@/components/ui/toaster'
 import { MissionState } from '@/lib/types'
+import { updateMission } from '@/app/missions/actions'
 
 vi.mock('@/app/missions/actions', () => ({
   updateMission: vi.fn(),
   deleteMission: vi.fn(),
   getMission: vi.fn(),
   reorderQueue: vi.fn().mockResolvedValue([]),
+}))
+
+// DndContext mocké : expose un bouton pour simuler un drop sur la zone active
+vi.mock('@dnd-kit/core', () => ({
+  closestCenter: vi.fn(),
+  DndContext: ({ children, onDragEnd }: any) => (
+    <div>
+      <button
+        type="button"
+        onClick={() => onDragEnd({ active: { id: 'queue:project-1:first' }, over: { id: 'active-zone' } })}
+      >
+        simulate drop on active zone
+      </button>
+      {children}
+    </div>
+  ),
+  useDroppable: () => ({ isOver: false, setNodeRef: vi.fn() }),
 }))
 
 const mission = (overrides: Record<string, unknown>) => ({
@@ -100,5 +119,48 @@ describe('MissionList lifecycle groups', () => {
     expect(screen.getByRole('link', { name: 'Atlas first' })).toBeDefined()
     expect(screen.getByRole('link', { name: 'Nova first' })).toBeDefined()
     expect(screen.getByRole('link', { name: 'Solo first' })).toBeDefined()
+  })
+})
+
+describe('MissionList — drag Queued → Active', () => {
+  beforeEach(() => {
+    vi.mocked(updateMission).mockReset()
+    vi.mocked(updateMission).mockResolvedValue(undefined)
+  })
+
+  it('calls updateMission with Active state when a queued mission is dropped on the active zone', async () => {
+    render(
+      <MemoryRouter>
+        <MissionList layout="split" projectId="project-1" initialMissions={[mission({ id: 'first', title: 'First queued', state: MissionState.Queued, queue_position: 0 })] as any} />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'simulate drop on active zone' }))
+
+    await waitFor(() => {
+      expect(updateMission).toHaveBeenCalledWith('first', { state: MissionState.Active })
+    })
+  })
+
+  it('restores the mission in the queue and shows a toast when persistence fails', async () => {
+    vi.mocked(updateMission).mockRejectedValueOnce(new Error('nope'))
+    render(
+      <MemoryRouter>
+        <MissionList layout="split" projectId="project-1" initialMissions={[mission({ id: 'first', title: 'First queued', state: MissionState.Queued, queue_position: 0 })] as any} />
+        <Toaster />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'simulate drop on active zone' }))
+
+    await waitFor(() => {
+      expect(updateMission).toHaveBeenCalledWith('first', { state: MissionState.Active })
+    })
+    await waitFor(() => {
+      expect(screen.getByRole('link', { name: 'First queued' })).toBeDefined()
+    })
+    await waitFor(() => {
+      expect(screen.getByText('Transition non enregistrée')).toBeDefined()
+    })
   })
 })

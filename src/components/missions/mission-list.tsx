@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MissionCard, MissionWithProject } from './mission-card'
 import { GridPlaceholder } from '@/components/ui/grid-placeholder'
@@ -15,7 +15,19 @@ import {
 } from "@/components/ui/tooltip"
 import { ProjectEmptyState } from '@/components/projects/project-empty-state'
 import { getMissions, getProjects, getSubtasks } from '@/lib/db'
-import { QueuedMissionList } from './queued-mission-list'
+import { QueuedMissionList, parseQueueRowId } from './queued-mission-list'
+import { useToast } from '@/components/ui/use-toast'
+import { DndContext, closestCenter, useDroppable, type DragEndEvent } from '@dnd-kit/core'
+
+/** Zone de dépôt « Missions actives » (droppable, non draggable — sens unique Queued → Active) */
+function ActiveDropZone({ children, transitioning }: { children: React.ReactNode; transitioning: boolean }) {
+  const { isOver, setNodeRef } = useDroppable({ id: 'active-zone', disabled: transitioning })
+  return (
+    <div ref={setNodeRef} className={isOver ? 'rounded-2xl ring-2 ring-blue-500/60 ring-offset-4 ring-offset-transparent' : undefined}>
+      {children}
+    </div>
+  )
+}
 
 interface MissionListProps {
   initialMissions?: MissionWithProject[]
@@ -38,6 +50,9 @@ export function MissionList({
   const [missionToEdit, setMissionToEdit] = useState<any | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [transitioningId, setTransitioningId] = useState<string | null>(null)
+  const reorderHandlers = useRef(new Map<string, (event: { activeId: string; overId: string }) => void>())
+  const { toast } = useToast()
   const navigate = useNavigate()
 
   const sortedMissions = useMemo(() => sortMissions(missions), [missions])
@@ -124,6 +139,47 @@ export function MissionList({
     }
   }
 
+  const handleStartMission = async (missionId: string) => {
+    const mission = missions.find(m => m.id === missionId)
+    if (!mission) return
+    setTransitioningId(missionId)
+    setMissions(prev => prev.filter(m => m.id !== missionId))
+    try {
+      await updateMission(missionId, { state: MissionState.Active })
+      refreshAfterChange()
+    } catch (error) {
+      console.error(error)
+      setMissions(prev => (prev.some(m => m.id === missionId) ? prev : [...prev, mission]))
+      toast({ title: 'Transition non enregistrée', description: `« ${mission.title} » est restée dans la file d'attente.`, variant: 'destructive' })
+    } finally {
+      setTransitioningId(null)
+    }
+  }
+
+  const refreshAfterChange = () => {
+    if (onUpdate) onUpdate()
+    else window.location.reload()
+  }
+
+  /** Routage partagé du drag end : même file → reorder interne ; active-zone → transition d'état */
+  const handleDragEnd = ({ active, over }: DragEndEvent) => {
+    if (!over) return
+    if (over.id === 'active-zone') {
+      const parsed = parseQueueRowId(String(active.id))
+      if (parsed && !transitioningId) void handleStartMission(parsed.missionId)
+      return
+    }
+    const overParsed = parseQueueRowId(String(over.id))
+    if (!overParsed) return
+    const handler = reorderHandlers.current.get(overParsed.scope)
+    handler?.({ activeId: String(active.id).split(':').pop()!, overId: overParsed.missionId })
+  }
+
+  const registerDragEnd = useCallback((scope: string, handler: ((event: { activeId: string; overId: string }) => void) | null) => {
+    if (handler) reorderHandlers.current.set(scope, handler)
+    else reorderHandlers.current.delete(scope)
+  }, [])
+
   if (loading) {
     return <p className="text-slate-500 animate-pulse">Chargement des missions...</p>
   }
@@ -169,8 +225,9 @@ export function MissionList({
         {missions.length === 0 ? (
           <ProjectEmptyState projectId={projectId} />
         ) : layout === 'split' ? (
-          <>
-            {/* Active Missions Section */}
+          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            {/* Active Missions Section — droppable (drop zone Queued → Active) */}
+            <ActiveDropZone transitioning={!!transitioningId}>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
@@ -191,6 +248,7 @@ export function MissionList({
                 </div>
               )}
             </div>
+            </ActiveDropZone>
 
             <div className="space-y-4">
               <h3 className="text-lg font-semibold flex items-center gap-2"><span className="h-4 w-1.5 rounded-full bg-amber-500" />Missions suspendues</h3>
@@ -198,10 +256,10 @@ export function MissionList({
             </div>
             <div className="space-y-4">
               <h3 className="text-lg font-semibold flex items-center gap-2"><span className="h-4 w-1.5 rounded-full bg-violet-500" />File d'attente</h3>
-              {projectId !== undefined ? <QueuedMissionList missions={queuedMissions} projectId={projectId} /> :
+              {projectId !== undefined ? <QueuedMissionList missions={queuedMissions} projectId={projectId} dragDisabled={!!transitioningId} registerDragEnd={registerDragEnd} /> :
                 Array.from(new Map(queuedMissions.map(m => [m.project_id ?? '__standalone__', m])).keys()).map(scope => {
                   const group = queuedMissions.filter(m => (m.project_id ?? '__standalone__') === scope)
-                  return <section key={scope} className="space-y-2"><h4 className="text-sm font-bold text-slate-500">{group[0]?.projects?.name ?? 'Missions autonomes'}</h4><QueuedMissionList missions={group} projectId={scope === '__standalone__' ? null : scope} /></section>
+                  return <section key={scope} className="space-y-2"><h4 className="text-sm font-bold text-slate-500">{group[0]?.projects?.name ?? 'Missions autonomes'}</h4><QueuedMissionList missions={group} projectId={scope === '__standalone__' ? null : scope} dragDisabled={!!transitioningId} registerDragEnd={registerDragEnd} /></section>
                 })}
             </div>
             <details open className="space-y-4 rounded-xl">
@@ -223,7 +281,7 @@ export function MissionList({
                 deletingId={deletingId}
               />
             </details>
-          </>
+          </DndContext>
         ) : (
           renderGrid(sortedMissions)
         )}
