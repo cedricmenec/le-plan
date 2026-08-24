@@ -6,6 +6,9 @@ import {
   clearAllData,
   createProject,
   createMission,
+  createMilestone,
+  createMilestoneType,
+  getMilestone,
   createSubtask,
   getProjects,
   getProject,
@@ -198,11 +201,12 @@ describe('Reference data initialization', () => {
 
     const milestoneTypes = await db.milestoneTypes.orderBy('name').toArray()
     expect(milestoneTypes.map(type => type.name)).toEqual([
-      'Deadline',
-      'Decision',
-      'Delivery',
-      'Review',
-      'Start',
+      'Autre',
+      'Cadrage / Kick-off',
+      'Documentation',
+      'Livraison intermédiaire',
+      'Meeting / Workshop',
+      'Réunion / Review',
     ])
   })
 
@@ -215,6 +219,72 @@ describe('Reference data initialization', () => {
 
     expect(secondRead).toEqual(firstRead)
     expect(new Set(secondRead.map(type => type.name)).size).toBe(secondRead.length)
+  })
+
+  it('preserves user-created milestone types when seeding', async () => {
+    await initializeReferenceData()
+    await createMilestoneType({ name: 'Custom Type', description: 'User created' })
+
+    await initializeReferenceData()
+
+    const names = (await db.milestoneTypes.toArray()).map(t => t.name)
+    expect(names).toContain('Custom Type')
+    expect(names.filter(n => n === 'Custom Type')).toHaveLength(1)
+  })
+
+  it('migrates milestones from legacy English types to French types', async () => {
+    // Simulate a legacy database: seed old English types manually.
+    const legacyTypes: Record<string, string> = {}
+    for (const [name, description] of [
+      ['Start', 'Début de la mission'],
+      ['Decision', 'Point de décision'],
+      ['Deadline', 'Date limite'],
+      ['Review', 'Revue de la mission'],
+      ['Delivery', 'Livraison'],
+    ] as const) {
+      legacyTypes[name] = await createMilestoneType({ name, description })
+    }
+
+    const missionId = await createMission(sampleMission(null))
+    const milestoneIds: Record<string, string> = {}
+    for (const legacyName of Object.keys(legacyTypes)) {
+      milestoneIds[legacyName] = await createMilestone({
+        mission_id: missionId,
+        type_id: legacyTypes[legacyName],
+        title: `Milestone ${legacyName}`,
+        date: '2026-01-01',
+        note: null,
+      })
+    }
+
+    await initializeReferenceData()
+
+    // Milestones remapped to the correct French types.
+    const expectedMapping: Record<string, string> = {
+      Start: 'Cadrage / Kick-off',
+      Decision: 'Réunion / Review',
+      Review: 'Réunion / Review',
+      Deadline: 'Livraison intermédiaire',
+      Delivery: 'Livraison intermédiaire',
+    }
+    for (const [legacyName, frenchName] of Object.entries(expectedMapping)) {
+      const milestone = await getMilestone(milestoneIds[legacyName])
+      expect(milestone).not.toBeNull()
+      const type = await db.milestoneTypes.get(milestone!.type_id)
+      expect(type?.name).toBe(frenchName)
+    }
+
+    // Legacy types removed.
+    const remainingNames = (await db.milestoneTypes.toArray()).map(t => t.name)
+    for (const legacyName of ['Start', 'Decision', 'Deadline', 'Review', 'Delivery']) {
+      expect(remainingNames).not.toContain(legacyName)
+    }
+    expect(remainingNames).toContain('Autre')
+
+    // Second run is a no-op.
+    const snapshotAfterFirstRun = await db.milestones.toArray()
+    await initializeReferenceData()
+    expect(await db.milestones.toArray()).toEqual(snapshotAfterFirstRun)
   })
 })
 

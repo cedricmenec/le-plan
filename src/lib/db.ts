@@ -359,6 +359,10 @@ export async function createMilestone(
   return id;
 }
 
+export async function getMilestone(id: string): Promise<Milestone | undefined> {
+  return db.milestones.get(id);
+}
+
 export async function updateMilestone(
   id: string,
   data: Partial<Omit<Milestone, 'id' | 'created_at'>>
@@ -439,20 +443,62 @@ export async function clearAllData(): Promise<void> {
 
 // ─── Default milestone types ───────────────────────────────────────
 
+export const DEFAULT_MILESTONE_TYPES: ReadonlyArray<{
+  name: string;
+  description: string;
+}> = [
+  { name: 'Cadrage / Kick-off', description: 'Début de la mission' },
+  { name: 'Réunion / Review', description: 'Point de décision ou revue' },
+  { name: 'Meeting / Workshop', description: 'Session de travail collaboratif' },
+  { name: 'Livraison intermédiaire', description: 'Livraison partielle' },
+  { name: 'Documentation', description: 'Livrable documentaire' },
+  { name: 'Autre', description: 'Type non classé' },
+];
+
+const LEGACY_TYPE_MAPPING: Record<string, string> = {
+  Start: 'Cadrage / Kick-off',
+  Decision: 'Réunion / Review',
+  Review: 'Réunion / Review',
+  Deadline: 'Livraison intermédiaire',
+  Delivery: 'Livraison intermédiaire',
+};
+
 export async function seedDefaultMilestoneTypes(): Promise<void> {
-  const existing = await db.milestoneTypes.count();
-  if (existing > 0) return;
+  const existingTypes = await db.milestoneTypes.toArray();
+  const existingNames = new Set(existingTypes.map(t => t.name));
 
-  const defaults = [
-    { name: 'Start', description: 'Début de la mission' },
-    { name: 'Decision', description: 'Point de décision' },
-    { name: 'Deadline', description: 'Date limite' },
-    { name: 'Review', description: 'Revue de la mission' },
-    { name: 'Delivery', description: 'Livraison' },
-  ];
+  // Insert only missing default types, preserving user-created types.
+  for (const mt of DEFAULT_MILESTONE_TYPES) {
+    if (!existingNames.has(mt.name)) {
+      await createMilestoneType(mt);
+    }
+  }
 
-  for (const mt of defaults) {
-    await createMilestoneType(mt);
+  // Migrate legacy English types: remap milestones then remove legacy types.
+  const typesByName = new Map(
+    (await db.milestoneTypes.toArray()).map(t => [t.name, t])
+  );
+  const legacyTypes = Object.keys(LEGACY_TYPE_MAPPING)
+    .map(name => typesByName.get(name))
+    .filter((t): t is MilestoneType => Boolean(t));
+
+  if (legacyTypes.length === 0) return;
+
+  for (const legacyType of legacyTypes) {
+    const targetName = LEGACY_TYPE_MAPPING[legacyType.name];
+    const targetType = (await db.milestoneTypes.toArray()).find(
+      t => t.name === targetName
+    );
+    if (!targetType) continue;
+
+    const allMilestones = await db.milestones.toArray();
+    const milestonesToRemap = allMilestones.filter(
+      m => m.type_id === legacyType.id
+    );
+    await db.milestones.bulkPut(
+      milestonesToRemap.map(m => ({ ...m, type_id: targetType.id }))
+    );
+    await db.milestoneTypes.delete(legacyType.id);
   }
 }
 

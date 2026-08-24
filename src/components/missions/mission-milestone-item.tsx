@@ -1,18 +1,20 @@
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import { 
-  Flag, 
-  Users, 
-  Package, 
-  FileText, 
+import {
+  Flag,
+  Users,
+  Presentation,
+  Package,
+  FileText,
+  CircleEllipsis,
   MoreHorizontal,
   Calendar,
-  ChevronDown,
-  ChevronUp
+  StickyNote
 } from 'lucide-react'
 import { Database } from '@/types/database.types'
 import { useState, useRef, useEffect } from 'react'
 import { MilestoneActions } from './milestone-actions'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 export type Milestone = Database['public']['Tables']['milestones']['Row'] & {
   milestone_types: { name: string } | null
@@ -28,12 +30,13 @@ interface MissionMilestoneItemProps {
 const TYPE_ICONS: Record<string, any> = {
   'Cadrage / Kick-off': Flag,
   'Réunion / Review': Users,
+  'Meeting / Workshop': Presentation,
   'Livraison intermédiaire': Package,
   'Documentation': FileText,
+  'Autre': CircleEllipsis,
 }
 
 export function MissionMilestoneItem({ milestone, onEdit, onDelete, readonly }: MissionMilestoneItemProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
   const [showActions, setShowActions] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -123,12 +126,19 @@ export function MissionMilestoneItem({ milestone, onEdit, onDelete, readonly }: 
             )}
             
             {milestone.note && (
-              <button 
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
-              >
-                {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-              </button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    aria-label="Voir la note"
+                    className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                  >
+                    <StickyNote className="h-3.5 w-3.5" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent side="bottom" align="end" className="w-64 text-xs whitespace-pre-wrap">
+                  {milestone.note}
+                </PopoverContent>
+              </Popover>
             )}
           </div>
         </div>
