@@ -10,6 +10,7 @@ vi.mock('@/app/missions/actions', () => ({
 
 vi.mock('@dnd-kit/core', () => ({
   closestCenter: vi.fn(),
+  useDroppable: () => ({ isOver: false, setNodeRef: vi.fn() }),
 }))
 
 vi.mock('@dnd-kit/sortable', () => ({

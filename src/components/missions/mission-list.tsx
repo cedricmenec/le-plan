@@ -17,15 +17,40 @@ import { ProjectEmptyState } from '@/components/projects/project-empty-state'
 import { getMissions, getProjects, getSubtasks } from '@/lib/db'
 import { QueuedMissionList, parseQueueRowId } from './queued-mission-list'
 import { useToast } from '@/components/ui/use-toast'
-import { DndContext, closestCenter, useDroppable, type DragEndEvent } from '@dnd-kit/core'
+import { DndContext, DragOverlay, PointerSensor, KeyboardSensor, useSensor, useSensors, useDroppable, pointerWithin, type CollisionDetection, type DragEndEvent, type DragStartEvent } from '@dnd-kit/core'
+
+/**
+ * Détection de collision stricte : une cible n'est valide que si le pointeur est
+ * réellement au-dessus d'elle. Empêche un drop « n'importe où » de déclencher
+ * la transition vers la zone la plus proche (comportement de closestCenter).
+ * pointerWithin retourne [] si le pointeur n'est sur aucune cible ou en drag clavier.
+ */
+const strictPointerWithin: CollisionDetection = pointerWithin
 
 /** Zone de dépôt « Missions actives » (droppable, non draggable — sens unique Queued → Active) */
 function ActiveDropZone({ children, transitioning }: { children: React.ReactNode; transitioning: boolean }) {
   const { isOver, setNodeRef } = useDroppable({ id: 'active-zone', disabled: transitioning })
   return (
-    <div ref={setNodeRef} className={isOver ? 'rounded-2xl ring-2 ring-blue-500/60 ring-offset-4 ring-offset-transparent' : undefined}>
+    <div
+      ref={setNodeRef}
+      className={
+        isOver
+          ? 'rounded-xl ring-2 ring-blue-500 bg-blue-50/80 dark:bg-blue-950/40 ring-offset-2 ring-offset-transparent transition-colors'
+          : 'rounded-xl transition-colors'
+      }
+    >
       {children}
     </div>
+  )
+}
+
+/** Bandeau de réception affiché pendant le drag d'une mission en file vers les actives (homogène avec QueueDropZone) */
+function ActiveDropHint({ visible }: { visible: boolean }) {
+  if (!visible) return null
+  return (
+    <p className="rounded-xl border border-dashed border-blue-300 dark:border-blue-700 p-3 text-sm text-blue-500 dark:text-blue-400">
+      Déposez ici pour démarrer la mission.
+    </p>
   )
 }
 
@@ -51,11 +76,24 @@ export function MissionList({
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
   const [transitioningId, setTransitioningId] = useState<string | null>(null)
+  /** Scope de la mission draggée (`<projectId|standalone>`), pour restreindre les cibles de drop valides (design D3) */
+  const [draggingScope, setDraggingScope] = useState<string | null>(null)
   const reorderHandlers = useRef(new Map<string, (event: { activeId: string; overId: string }) => void>())
+  /** Mission en cours de drag, pour l'aperçu DragOverlay */
+  const [dragPreview, setDragPreview] = useState<MissionWithProject | null>(null)
   const { toast } = useToast()
   const navigate = useNavigate()
 
   const sortedMissions = useMemo(() => sortMissions(missions), [missions])
+
+  /**
+   * Sensors avec contrainte d'activation : le drag ne démarre qu'après 8px de déplacement,
+   * un simple clic sur la poignée ne déclenche aucune transition.
+   */
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor),
+  )
 
   const activeMissions = useMemo(() => 
     sortedMissions.filter(m => m.state === MissionState.Active), 
@@ -146,7 +184,9 @@ export function MissionList({
     setMissions(prev => prev.filter(m => m.id !== missionId))
     try {
       await updateMission(missionId, { state: MissionState.Active })
-      refreshAfterChange()
+      // Mise à jour locale : la mission apparaît dans les actives sans rechargement
+      setMissions(prev => [...prev, { ...mission, state: MissionState.Active, queue_position: null }])
+      if (onUpdate) onUpdate()
     } catch (error) {
       console.error(error)
       setMissions(prev => (prev.some(m => m.id === missionId) ? prev : [...prev, mission]))
@@ -161,19 +201,81 @@ export function MissionList({
     else window.location.reload()
   }
 
-  /** Routage partagé du drag end : même file → reorder interne ; active-zone → transition d'état */
+  /** Transition Backlog → Queued : retrait optimiste du Backlog, rollback + toast destructif sur échec (design D4) */
+  const handleQueueBacklogMission = async (missionId: string) => {
+    const mission = missions.find(m => m.id === missionId)
+    if (!mission) return
+    setTransitioningId(missionId)
+    setMissions(prev => prev.filter(m => m.id !== missionId))
+    try {
+      await updateMission(missionId, { state: MissionState.Queued })
+      // Mise à jour locale : la mission apparaît en fin de file sans rechargement.
+      // La position exacte est attribuée par db.ts (fin de queue du scope) ; on l'estime localement.
+      setMissions(prev => {
+        const maxPos = Math.max(-1, ...prev.filter(m => (m.project_id ?? null) === (mission.project_id ?? null) && m.state === MissionState.Queued).map(m => m.queue_position ?? -1))
+        return [...prev, { ...mission, state: MissionState.Queued, queue_position: maxPos + 1 }]
+      })
+      if (onUpdate) onUpdate()
+    } catch (error) {
+      console.error(error)
+      setMissions(prev => (prev.some(m => m.id === missionId) ? prev : [...prev, mission]))
+      toast({ title: 'Transition non enregistrée', description: `« ${mission.title} » est restée dans le backlog.`, variant: 'destructive' })
+    } finally {
+      setTransitioningId(null)
+    }
+  }
+
+  /** Track le début d'un drag pour identifier la mission et son scope (design D3) + aperçu overlay */
+  const handleDragStart = ({ active }: DragStartEvent) => {
+    const activeId = String(active.id)
+    if (activeId.startsWith('backlog:')) {
+      const missionId = activeId.slice('backlog:'.length)
+      const mission = missions.find(m => m.id === missionId)
+      setDraggingScope(mission?.project_id ?? 'standalone')
+      setDragPreview(mission ?? null)
+    } else if (activeId.startsWith('queue:')) {
+      const parsed = parseQueueRowId(activeId)
+      setDraggingScope(parsed?.scope ?? null)
+      setDragPreview(missions.find(m => m.id === parsed?.missionId) ?? null)
+    }
+  }
+
+  /**
+   * Routage partagé du drag end (design D2) :
+   * - queue:<scope> → active-zone : transition Queued → Active
+   * - backlog:<id> → queue:<scope> : transition Backlog → Queued (si scope correspondant)
+   * - backlog:<id> → active-zone ou toute autre combinaison : ignoré silencieusement
+   */
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over) return
+    const activeId = String(active.id)
+    if (activeId.startsWith('backlog:')) {
+      if (transitioningId) return
+      const overId = String(over.id)
+      // Drop restreint à la file du scope de la mission (design D3) ; zone actives ignorée
+      // Cibles valides : une row de la file (`queue:<scope>:<id>`) ou la zone de file entière (`queuezone:queue:<scope>`)
+      const dragged = missions.find(m => m.id === activeId.slice('backlog:'.length))
+      const expectedScope = dragged?.project_id ?? 'standalone'
+      const overScope = overId.startsWith('queuezone:')
+        ? overId.slice('queuezone:'.length).replace(/^queue:/, '')
+        : parseQueueRowId(overId)?.scope
+      if (!overScope || overScope !== expectedScope) return
+      void handleQueueBacklogMission(activeId.slice('backlog:'.length))
+      return
+    }
     if (over.id === 'active-zone') {
-      const parsed = parseQueueRowId(String(active.id))
+      const parsed = parseQueueRowId(activeId)
       if (parsed && !transitioningId) void handleStartMission(parsed.missionId)
       return
     }
     const overParsed = parseQueueRowId(String(over.id))
     if (!overParsed) return
     const handler = reorderHandlers.current.get(overParsed.scope)
-    handler?.({ activeId: String(active.id).split(':').pop()!, overId: overParsed.missionId })
+    handler?.({ activeId: activeId.split(':').pop()!, overId: overParsed.missionId })
   }
+
+  /** Réinitialise le scope draggé et l'aperçu en fin de drag */
+  const clearDraggingScope = () => { setDraggingScope(null); setDragPreview(null) }
 
   const registerDragEnd = useCallback((scope: string, handler: ((event: { activeId: string; overId: string }) => void) | null) => {
     if (handler) reorderHandlers.current.set(scope, handler)
@@ -225,9 +327,16 @@ export function MissionList({
         {missions.length === 0 ? (
           <ProjectEmptyState projectId={projectId} />
         ) : layout === 'split' ? (
-          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            {/* Active Missions Section — droppable (drop zone Queued → Active) */}
-            <ActiveDropZone transitioning={!!transitioningId}>
+          <DndContext sensors={sensors} collisionDetection={strictPointerWithin} onDragStart={handleDragStart} onDragEnd={(event) => { handleDragEnd(event); clearDraggingScope() }} onDragCancel={clearDraggingScope}>
+            {/* Aperçu flottant de la mission en cours de drag */}
+            {dragPreview && (
+              <DragOverlay>
+                <div className="rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-[#15202b] shadow-lg px-4 py-3 text-sm font-semibold text-slate-900 dark:text-white max-w-sm truncate">
+                  {dragPreview.title}
+                </div>
+              </DragOverlay>
+            )}
+            {/* Active Missions Section — zone de réception compacte (drop Queued → Active), homogène avec QueueDropZone */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
@@ -238,17 +347,23 @@ export function MissionList({
                   {activeMissions.length} mission{activeMissions.length > 1 ? 's' : ''} en cours
                 </span>
               </div>
-              {activeMissions.length > 0 ? (
-                renderGrid(activeMissions, 3)
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <GridPlaceholder label="C'est le calme plat... Profites-en pour prendre un café ☕" />
-                  <GridPlaceholder label="Rien à signaler. C'est louche, non ?" />
-                  <GridPlaceholder label="Libre comme l'air ! (Ou presque)" />
-                </div>
-              )}
+              <ActiveDropZone transitioning={!!transitioningId}>
+                {draggingScope !== null && (
+                  <div className="mb-4">
+                    <ActiveDropHint visible />
+                  </div>
+                )}
+                {activeMissions.length > 0 ? (
+                  renderGrid(activeMissions, 3)
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <GridPlaceholder label="C'est le calme plat... Profites-en pour prendre un café ☕" />
+                    <GridPlaceholder label="Rien à signaler. C'est louche, non ?" />
+                    <GridPlaceholder label="Libre comme l'air ! (Ou presque)" />
+                  </div>
+                )}
+              </ActiveDropZone>
             </div>
-            </ActiveDropZone>
 
             <div className="space-y-4">
               <h3 className="text-lg font-semibold flex items-center gap-2"><span className="h-4 w-1.5 rounded-full bg-amber-500" />Missions suspendues</h3>
@@ -256,10 +371,14 @@ export function MissionList({
             </div>
             <div className="space-y-4">
               <h3 className="text-lg font-semibold flex items-center gap-2"><span className="h-4 w-1.5 rounded-full bg-violet-500" />File d'attente</h3>
-              {projectId !== undefined ? <QueuedMissionList missions={queuedMissions} projectId={projectId} dragDisabled={!!transitioningId} registerDragEnd={registerDragEnd} /> :
-                Array.from(new Map(queuedMissions.map(m => [m.project_id ?? '__standalone__', m])).keys()).map(scope => {
+              {projectId !== undefined ? <QueuedMissionList missions={queuedMissions} projectId={projectId} dragDisabled={!!transitioningId} dropDisabled={draggingScope !== null && draggingScope !== projectId} registerDragEnd={registerDragEnd} /> :
+                Array.from(new Map([
+                  ...queuedMissions.map(m => [m.project_id ?? '__standalone__', m] as const),
+                  // File vide pour les scopes ayant des missions Backlog : cible de drop Backlog → file (design D3)
+                  ...backlogMissions.filter(m => m.project_id).map(m => [m.project_id as string, m] as const),
+                ]).keys()).map(scope => {
                   const group = queuedMissions.filter(m => (m.project_id ?? '__standalone__') === scope)
-                  return <section key={scope} className="space-y-2"><h4 className="text-sm font-bold text-slate-500">{group[0]?.projects?.name ?? 'Missions autonomes'}</h4><QueuedMissionList missions={group} projectId={scope === '__standalone__' ? null : scope} dragDisabled={!!transitioningId} registerDragEnd={registerDragEnd} /></section>
+                  return <section key={scope} className="space-y-2"><h4 className="text-sm font-bold text-slate-500">{group[0]?.projects?.name ?? 'Missions autonomes'}</h4><QueuedMissionList missions={group} projectId={scope === '__standalone__' ? null : scope} dragDisabled={!!transitioningId} dropDisabled={draggingScope !== null && draggingScope !== (scope === '__standalone__' ? 'standalone' : scope)} registerDragEnd={registerDragEnd} /></section>
                 })}
             </div>
             <details open className="space-y-4 rounded-xl">
@@ -279,6 +398,7 @@ export function MissionList({
                 onDelete={(m) => setMissionToDelete(m)}
                 updatingId={updatingId}
                 deletingId={deletingId}
+                dragDisabled={!!transitioningId}
               />
             </details>
           </DndContext>

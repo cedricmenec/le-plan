@@ -13,7 +13,7 @@ vi.mock('@/app/missions/actions', () => ({
   reorderQueue: vi.fn().mockResolvedValue([]),
 }))
 
-// DndContext mocké : expose un bouton pour simuler un drop sur la zone active
+// DndContext mocké : expose des boutons pour simuler différents drops
 vi.mock('@dnd-kit/core', () => ({
   closestCenter: vi.fn(),
   DndContext: ({ children, onDragEnd }: any) => (
@@ -24,10 +24,35 @@ vi.mock('@dnd-kit/core', () => ({
       >
         simulate drop on active zone
       </button>
+      <button
+        type="button"
+        onClick={() => onDragEnd({ active: { id: 'backlog:backlog-1' }, over: { id: 'queue:project-1:queued' } })}
+      >
+        simulate drop backlog on own queue
+      </button>
+      <button
+        type="button"
+        onClick={() => onDragEnd({ active: { id: 'backlog:backlog-1' }, over: { id: 'queue:other-project:queued' } })}
+      >
+        simulate drop backlog on other queue
+      </button>
+      <button
+        type="button"
+        onClick={() => onDragEnd({ active: { id: 'backlog:backlog-1' }, over: { id: 'active-zone' } })}
+      >
+        simulate drop backlog on active zone
+      </button>
       {children}
     </div>
   ),
   useDroppable: () => ({ isOver: false, setNodeRef: vi.fn() }),
+  useDraggable: () => ({ attributes: {}, listeners: {}, setNodeRef: vi.fn(), isDragging: false }),
+  useSensors: () => [],
+  useSensor: () => ({}),
+  PointerSensor: class {},
+  KeyboardSensor: class {},
+  pointerWithin: () => [],
+  DragOverlay: ({ children }: any) => (children ? <div>{children}</div> : null),
 }))
 
 const mission = (overrides: Record<string, unknown>) => ({
@@ -158,6 +183,65 @@ describe('MissionList — drag Queued → Active', () => {
     })
     await waitFor(() => {
       expect(screen.getByRole('link', { name: 'First queued' })).toBeDefined()
+    })
+    await waitFor(() => {
+      expect(screen.getByText('Transition non enregistrée')).toBeDefined()
+    })
+  })
+})
+
+describe('MissionList — drag Backlog → Queue', () => {
+  beforeEach(() => {
+    vi.mocked(updateMission).mockReset()
+    vi.mocked(updateMission).mockResolvedValue(undefined)
+  })
+
+  it('calls updateMission with Queued state when a backlog mission is dropped on its own scope queue', async () => {
+    render(
+      <MemoryRouter>
+        <MissionList layout="split" projectId="project-1" initialMissions={[mission({ id: 'backlog-1', title: 'Backlog mission', state: MissionState.Backlog })] as any} />
+        <Toaster />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'simulate drop backlog on own queue' }))
+
+    await waitFor(() => {
+      expect(updateMission).toHaveBeenCalledWith('backlog-1', { state: MissionState.Queued })
+    })
+  })
+
+  it('ignores drops of a backlog mission on another scope queue and on the active zone', async () => {
+    render(
+      <MemoryRouter>
+        <MissionList layout="split" projectId="project-1" initialMissions={[mission({ id: 'backlog-1', title: 'Backlog mission', state: MissionState.Backlog })] as any} />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'simulate drop backlog on other queue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'simulate drop backlog on active zone' }))
+
+    // Laisse un micro-délai pour détecter tout appel indu
+    await new Promise(resolve => setTimeout(resolve, 0))
+    expect(updateMission).not.toHaveBeenCalled()
+  })
+
+  it('restores the mission in the backlog and shows a toast when persistence fails', async () => {
+    vi.mocked(updateMission).mockRejectedValueOnce(new Error('nope'))
+    render(
+      <MemoryRouter>
+        <MissionList layout="split" projectId="project-1" initialMissions={[mission({ id: 'backlog-1', title: 'Backlog mission', state: MissionState.Backlog })] as any} />
+        <Toaster />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'simulate drop backlog on own queue' }))
+
+    await waitFor(() => {
+      expect(updateMission).toHaveBeenCalledWith('backlog-1', { state: MissionState.Queued })
+    })
+    await waitFor(() => {
+      expect(screen.getByText('Backlog mission')).toBeDefined()
     })
     await waitFor(() => {
       expect(screen.getByText('Transition non enregistrée')).toBeDefined()

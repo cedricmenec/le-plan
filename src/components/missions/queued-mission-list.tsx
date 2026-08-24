@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { SortableContext, verticalListSortingStrategy, arrayMove, useSortable } from '@dnd-kit/sortable'
+import { useDroppable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import { ArrowDown, ArrowUp, GripVertical } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -29,8 +30,8 @@ export function parseQueueRowId(id: string): { scope: string; missionId: string 
   return { scope: rest.slice(0, sep), missionId: rest.slice(sep + 1) }
 }
 
-function QueueRow({ mission, rowId, rank, total, move, dragDisabled }: { mission: MissionWithProject; rowId: string; rank: number; total: number; move: (delta: number) => void; dragDisabled: boolean }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: rowId, disabled: dragDisabled })
+function QueueRow({ mission, rowId, rank, total, move, dragDisabled, dropDisabled }: { mission: MissionWithProject; rowId: string; rank: number; total: number; move: (delta: number) => void; dragDisabled: boolean; dropDisabled: boolean }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: rowId, disabled: { draggable: dragDisabled, droppable: dropDisabled } })
   return <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }}
     className="flex items-center gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/70 p-4 dark:border-slate-700 dark:bg-slate-900/30">
     <button {...attributes} {...(dragDisabled ? {} : listeners)} aria-label={`Déplacer ${mission.title}`} className="cursor-grab text-slate-400"><GripVertical className="h-5 w-5" /></button>
@@ -46,16 +47,35 @@ function QueueRow({ mission, rowId, rank, total, move, dragDisabled }: { mission
   </div>
 }
 
+/** Zone de dépôt de la file entière : accepte les missions Backlog même sur une file vide (design D3) */
+function QueueDropZone({ scope, dropDisabled, children }: { scope: string; dropDisabled: boolean; children: React.ReactNode }) {
+  const { setNodeRef, isOver } = useDroppable({ id: `queuezone:${scope}`, disabled: dropDisabled })
+  return (
+    <div
+      ref={setNodeRef}
+      className={
+        isOver
+          ? 'rounded-xl ring-2 ring-violet-500 bg-violet-50/80 dark:bg-violet-950/40 ring-offset-2 ring-offset-transparent transition-colors'
+          : 'rounded-xl transition-colors'
+      }
+    >
+      {children}
+    </div>
+  )
+}
+
 interface QueuedMissionListProps {
   missions: MissionWithProject[]
   projectId: string | null
   /** Désactive l'initiation d'un drag pendant une transition en cours */
   dragDisabled?: boolean
+  /** Désactive la réception d'un drop (cible invalide : scope différent de la mission draggée, design D3) */
+  dropDisabled?: boolean
   /** Enregistre le gestionnaire de reorder interne pour ce scope, appelé par le DndContext partagé */
   registerDragEnd?: (scope: string, handler: ((event: { activeId: string; overId: string }) => void) | null) => void
 }
 
-export function QueuedMissionList({ missions, projectId, dragDisabled = false, registerDragEnd }: QueuedMissionListProps) {
+export function QueuedMissionList({ missions, projectId, dragDisabled = false, dropDisabled = false, registerDragEnd }: QueuedMissionListProps) {
   const scope = queueScopeId(projectId)
   const ordered = [...missions].sort((a, b) => (a.queue_position ?? 0) - (b.queue_position ?? 0))
   const [items, setItems] = useState(ordered)
@@ -83,8 +103,12 @@ export function QueuedMissionList({ missions, projectId, dragDisabled = false, r
     return () => registerDragEnd?.(scope, null)
   })
 
-  if (!items.length) return <p className="rounded-xl border border-dashed p-5 text-sm text-slate-500">Aucune mission en file.</p>
-  return <SortableContext items={items.map(m => queueRowId(scope, m.id))} strategy={verticalListSortingStrategy}>
-    <div className="space-y-3">{items.map((mission, index) => <QueueRow key={mission.id} mission={mission} rowId={queueRowId(scope, mission.id)} rank={index + 1} total={items.length} move={delta => move(index, delta)} dragDisabled={dragDisabled} />)}</div>
-  </SortableContext>
+  if (!items.length) return <QueueDropZone scope={scope} dropDisabled={dropDisabled}><p className="rounded-xl border border-dashed p-5 text-sm text-slate-500">Aucune mission en file.</p></QueueDropZone>
+  return <>
+    <QueueDropZone scope={scope} dropDisabled={dropDisabled}>
+      <SortableContext items={items.map(m => queueRowId(scope, m.id))} strategy={verticalListSortingStrategy}>
+        <div className="space-y-3">{items.map((mission, index) => <QueueRow key={mission.id} mission={mission} rowId={queueRowId(scope, mission.id)} rank={index + 1} total={items.length} move={delta => move(index, delta)} dragDisabled={dragDisabled} dropDisabled={dropDisabled} />)}</div>
+      </SortableContext>
+    </QueueDropZone>
+  </>
 }

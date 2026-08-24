@@ -31,3 +31,28 @@ The system SHALL allow the user to start a queued mission by dragging it from it
 - **WHEN** a `Queued → Active` transition is being persisted for a mission
 - **THEN** the system prevents initiating another drag for missions until the transition completes or rolls back
 
+#### Scenario: Drop outside the active missions section is ignored
+- **WHEN** the user drops a dragged queued mission outside the active missions drop zone
+- **THEN** the system performs no state transition
+- **AND** the mission remains in its queue
+
+#### Scenario: Drag starts only after an intentional movement
+- **WHEN** the user presses on a queued mission handle without moving beyond the activation distance
+- **THEN** no drag begins and no state transition occurs
+
+#### Scenario: Floating preview follows the pointer during drag
+- **WHEN** a queued mission drag toward the active section is in progress
+- **THEN** a floating preview of the mission follows the pointer via a drag overlay
+
+#### Scenario: Active drop zone highlights while hovered
+- **WHEN** a dragged queued mission hovers over the active missions drop zone
+- **THEN** that zone shows a visual highlight indicating it accepts the drop
+
+#### Scenario: Active section shows a drop hint while a queue drag is in progress
+- **WHEN** a queued mission drag is active
+- **THEN** the active missions section displays a hint inviting the user to drop the mission there
+
+#### Scenario: Active list updates without page reload after transition
+- **WHEN** the `Queued → Active` transition succeeds
+- **THEN** the mission appears in the active missions section immediately without a page reload
+

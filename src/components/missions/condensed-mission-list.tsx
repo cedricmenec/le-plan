@@ -1,5 +1,6 @@
 import { MissionWithProject } from './mission-card'
 import { CondensedMissionRow } from './condensed-mission-row'
+import { useDraggable } from '@dnd-kit/core'
 
 interface CondensedMissionListProps {
   missions: MissionWithProject[]
@@ -8,6 +9,8 @@ interface CondensedMissionListProps {
   onDelete: (mission: MissionWithProject) => void
   updatingId?: string | null
   deletingId?: string | null
+  /** Désactive l'initiation d'un drag pendant une transition en cours */
+  dragDisabled?: boolean
 }
 
 export function CondensedMissionList({
@@ -17,6 +20,7 @@ export function CondensedMissionList({
   onDelete,
   updatingId,
   deletingId,
+  dragDisabled = false,
 }: CondensedMissionListProps) {
   if (missions.length === 0) {
     return (
@@ -40,17 +44,29 @@ export function CondensedMissionList({
       {/* List */}
       <div className="divide-y divide-slate-100 dark:divide-slate-800">
         {missions.map((mission) => (
-          <CondensedMissionRow
-            key={mission.id}
-            mission={mission}
-            showProjectName={showProjectName}
-            onEdit={() => onEdit(mission)}
-            onDelete={() => onDelete(mission)}
-            isUpdating={updatingId === mission.id}
-            isDeleting={deletingId === mission.id}
-          />
+          <BacklogDraggableRow key={mission.id} mission={mission} disabled={dragDisabled}>
+            <CondensedMissionRow
+              mission={mission}
+              showProjectName={showProjectName}
+              onEdit={() => onEdit(mission)}
+              onDelete={() => onDelete(mission)}
+              isUpdating={updatingId === mission.id}
+              isDeleting={deletingId === mission.id}
+              dragHandle={!dragDisabled}
+            />
+          </BacklogDraggableRow>
         ))}
       </div>
+    </div>
+  )
+}
+
+/** Enveloppe draggable d'une row Backlog : source de drag simple, pas de réordonnancement interne (design D1) */
+function BacklogDraggableRow({ mission, children, disabled }: { mission: MissionWithProject; children: React.ReactNode; disabled: boolean }) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: `backlog:${mission.id}`, disabled })
+  return (
+    <div ref={setNodeRef} {...attributes} {...(disabled ? {} : listeners)} className={isDragging ? 'opacity-50' : undefined}>
+      {children}
     </div>
   )
 }

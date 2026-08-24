@@ -168,6 +168,18 @@ describe('Mission queues', () => {
     expect((await getQueuedMissions(project)).map(m => [m.id, m.queue_position])).toEqual([[queued, 0], [terminated, 1]])
   })
 
+  it('appends a backlog mission at the end of the queue without shifting existing positions', async () => {
+    const project = await createProject(sampleProject())
+    const first = await createMission({ ...sampleMission(project), state: 'Queued', title: 'First' })
+    const second = await createMission({ ...sampleMission(project), state: 'Queued', title: 'Second' })
+    const fromBacklog = await createMission({ ...sampleMission(project), state: 'Backlog', title: 'From backlog' })
+
+    await updateMission(fromBacklog, { state: 'Queued', reason: null })
+
+    expect(await getMission(fromBacklog)).toMatchObject({ state: 'Queued', queue_position: 2 })
+    expect((await getQueuedMissions(project)).map(m => [m.id, m.queue_position])).toEqual([[first, 0], [second, 1], [fromBacklog, 2]])
+  })
+
   it('preserves explicit valid import order and normalizes invalid imported queue data', async () => {
     const base = { ...sampleMission(null), created_at: '2026-01-01', updated_at: '2026-01-01' }
     await importAllData({

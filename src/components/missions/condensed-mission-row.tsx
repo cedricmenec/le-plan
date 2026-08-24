@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { calculateTaskRemainingLoad } from '@/lib/load-utils'
 import { CONFIDENCE_LABELS } from '@/components/ui/confidence-select'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { Gauge } from 'lucide-react'
+import { Gauge, GripVertical } from 'lucide-react'
 
 const TYPE_COLORS: Record<string, string> = {
   feature: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400',
@@ -23,6 +23,8 @@ interface CondensedMissionRowProps {
   onDelete: () => void
   isUpdating?: boolean
   isDeleting?: boolean
+  /** Affiche la poignée de drag (drag vers la file activé) */
+  dragHandle?: boolean
 }
 
 export function CondensedMissionRow({
@@ -32,6 +34,7 @@ export function CondensedMissionRow({
   onDelete,
   isUpdating,
   isDeleting,
+  dragHandle = false,
 }: CondensedMissionRowProps) {
   const navigate = useNavigate()
   const colorClass = TYPE_COLORS[mission.type] || TYPE_COLORS.other
@@ -52,7 +55,8 @@ export function CondensedMissionRow({
       }`}
     >
       {/* Type Column */}
-      <div className="flex justify-center">
+      <div className="flex justify-center items-center gap-1">
+        {dragHandle && <GripVertical aria-hidden className="h-4 w-4 text-slate-300 dark:text-slate-600 group-hover:text-slate-400 transition-colors" />}
         <Badge variant="secondary" className={`text-[10px] font-bold uppercase py-0 px-2 h-5 border-none ${colorClass}`}>
           {mission.type}
         </Badge>
