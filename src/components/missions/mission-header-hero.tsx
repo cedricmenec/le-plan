@@ -197,6 +197,25 @@ export function MissionHeaderHero({ mission, onUpdate, readonly }: MissionHeader
         className="text-3xl"
       />
 
+      {mission.state === 'Queued' && (
+        <p className="text-sm text-muted-foreground">
+          Rang <strong>#{(mission.queue_position ?? 0) + 1}</strong> dans{' '}
+          {mission.project_id && mission.projects ? (
+            <>
+              {mission.projects.name} ·{' '}
+              <Link
+                to={`/projects/${mission.project_id}`}
+                className="font-semibold text-blue-600 hover:underline dark:text-blue-400"
+              >
+                Voir la file du projet
+              </Link>
+            </>
+          ) : (
+            'la file autonome'
+          )}
+        </p>
+      )}
+
       <EditMissionModal
         mission={mission}
         open={isEditModalOpen}

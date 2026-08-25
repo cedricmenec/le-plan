@@ -251,16 +251,16 @@ The system SHALL allow users to add a main goal and supplementary notes to each 
 
 ### Requirement: Mission lifecycle context
 
-The system SHALL show a mission's current position in the lifecycle from its detail view and SHALL provide queue context for queued missions.
+The system SHALL show the mission's current state via its state badge in the mission detail header and SHALL provide queue context for queued missions within the same header. The system SHALL NOT display a dedicated lifecycle widget (multi-state pills with suspension branch) in the mission detail view.
 
-#### Scenario: View mission lifecycle
-- **WHEN** the user opens a non-terminated mission
-- **THEN** the system displays a compact lifecycle indicator highlighting its current macro-state
-- **AND** represents suspension as a branch from active work rather than as active work
+#### Scenario: View mission state
+- **WHEN** the user opens a mission detail view
+- **THEN** the system displays the current macro-state via the state badge in the header
+- **AND** no dedicated lifecycle widget is rendered
 
 #### Scenario: View queued mission context
 - **WHEN** the user opens a queued mission
-- **THEN** the system displays its current queue rank and queue scope
+- **THEN** the header displays its current queue rank and queue scope
 - **AND** provides navigation to the corresponding project queue when the mission belongs to a project
 
 #### Scenario: Change queued mission state from detail

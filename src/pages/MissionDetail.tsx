@@ -8,7 +8,6 @@ import { MissionDetailMilestones } from '@/components/missions/mission-detail-mi
 import { StatusTimeline } from '@/components/missions/status-timeline'
 import { MissionStatusHistoryList } from '@/components/missions/mission-status-history-list'
 import { MissionHeaderHero, MissionHeroBlock } from '@/components/missions/mission-header-hero'
-import { MissionLifecycle } from '@/components/missions/mission-lifecycle'
 import { InlineEditableField } from '@/components/ui/inline-editable-field/inline-editable-field'
 import type { MissionState } from '@/lib/types'
 
@@ -108,7 +107,6 @@ export default function MissionDetail() {
           </div>
         </div>
         <div className="lg:col-span-1 space-y-10">
-          <MissionLifecycle mission={mission} />
           <MissionDetailMilestones missionId={id!} initialMilestones={milestones} readonly={isReadonly} />
           <StatusTimeline history={mission.status_history || []} />
           <div>

@@ -51,7 +51,7 @@ vi.mock('@/components/missions/task-list', () => ({
 }))
 
 describe('MissionDetail', () => {
-  it('shows lifecycle and queue context in the mission detail page', async () => {
+  it('shows queue context in the mission detail header', async () => {
     render(
       <MemoryRouter initialEntries={['/missions/mission-1']}>
         <Routes>
@@ -61,10 +61,24 @@ describe('MissionDetail', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByText('Cycle de vie')).toBeDefined()
+      expect(screen.getByText('#2')).toBeDefined()
     })
-    expect(screen.getByText('#2')).toBeDefined()
     expect(screen.getAllByText(/Atlas/).length).toBeGreaterThan(0)
     expect(screen.getByRole('link', { name: /Voir la file/ }).getAttribute('href')).toBe('/projects/project-1')
+  })
+
+  it('does not render the lifecycle widget', async () => {
+    render(
+      <MemoryRouter initialEntries={['/missions/mission-1']}>
+        <Routes>
+          <Route path="/missions/:id" element={<MissionDetail />} />
+        </Routes>
+      </MemoryRouter>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('#2')).toBeDefined()
+    })
+    expect(screen.queryByText('Cycle de vie')).toBeNull()
   })
 })
