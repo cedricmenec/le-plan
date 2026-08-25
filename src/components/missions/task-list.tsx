@@ -108,7 +108,7 @@ function SortableTaskItem({ task, onUpdate, onDelete, isPending, readonly }: Sor
           onSave={async (newTitle) => {
             if (!readonly) await onUpdate(task.id, { title: newTitle })
           }}
-          trigger={readonly ? "none" : "doubleClick"}
+          trigger={readonly ? undefined : "doubleClick"}
           className="flex-1"
           isExternalPending={isPending}
           displayClassName={isDone ? 'line-through text-slate-300 dark:text-slate-700' : 'text-slate-700 dark:text-slate-200'}

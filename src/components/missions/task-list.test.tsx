@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { TaskList } from './task-list'
 import * as actions from '@/app/missions/actions'
-import { getSubtasks } from '@/lib/db'
+import { getSubtasks, type Subtask } from '@/lib/db'
 
 vi.mock('@/app/missions/actions', () => ({
   createTask: vi.fn(),
@@ -41,7 +41,7 @@ vi.mock('@/components/ui/inline-editable-field/inline-editable-field', () => ({
   InlineEditableField: ({ value }: any) => <span>{value}</span>,
 }))
 
-const task = (overrides: Partial<actions.Subtask> = {}): actions.Subtask => ({
+const task = (overrides: Partial<Subtask> = {}): Subtask => ({
   id: 't1',
   mission_id: 'm1',
   title: 'Tâche 1',
